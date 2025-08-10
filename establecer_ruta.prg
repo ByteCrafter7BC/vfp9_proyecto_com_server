@@ -50,6 +50,6 @@ FUNCTION establecer_ruta
                 modulo\rubro, ;
                 modulo\subrubro, ;
                 modulo\zona, ;
-                prog, ;
-                C:\turtle\allparts\integrad.000
+                prog
+*                C:\turtle\allparts\integrad.000
 ENDFUNC

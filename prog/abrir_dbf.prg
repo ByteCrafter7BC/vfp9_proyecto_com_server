@@ -1,3 +1,5 @@
+#DEFINE CARPETA_DATOS    'C:\turtle\allparts\integrad.000\'
+
 FUNCTION abrir_dbf
     LPARAMETERS tcTabla, tlModoEscritura
 
@@ -11,17 +13,20 @@ FUNCTION abrir_dbf
     ENDIF
     * fin { validaciones de parámetros }
 
+    LOCAL lcDbf
+    lcDbf = ADDBS(CARPETA_DATOS) + tcTabla + '.dbf'
+
     IF !USED(tcTabla) THEN
-        IF !FILE(tcTabla + '.dbf') THEN
-            MESSAGEBOX("Archivo '" + tcTabla + '.dbf' + "' no existe.", 0+16, ;
-                'Ha ocurrido un error', 10000)
+        IF !FILE(lcDbf) THEN
+            registrar_error('abrir_dbf', 'abrir_dbf', ;
+                "Archivo '" + lcDbf + "' no existe.")
             RETURN .F.
         ENDIF
 
         IF !tlModoEscritura THEN
-            USE (tcTabla) IN 0 SHARED NOUPDATE
+            USE (lcDbf) IN 0 SHARED NOUPDATE
         ELSE
-            USE (tcTabla) IN 0 SHARED
+            USE (lcDbf) IN 0 SHARED
         ENDIF
     ENDIF
 ENDFUNC
