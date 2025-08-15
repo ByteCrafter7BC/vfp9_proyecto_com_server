@@ -1,7 +1,7 @@
 **/
 * es_digito() función
 *
-* Derechos de autor (C) 2000-2025 José Acuña <jacuna.dev@gmail.com>
+* Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
 * bajo los términos de la Licencia Pública General GNU publicada por

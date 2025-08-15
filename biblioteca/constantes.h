@@ -1,4 +1,4 @@
-* Copyright (C) 2000-2025 by ByteCrafter. All rights reserved.
+* Copyright (C) 2000-2025 by ByteCrafter7BC. All rights reserved.
 * https://github.com/harbour/core/blob/master/include/inkey.ch
 
 */ Misc. keys.

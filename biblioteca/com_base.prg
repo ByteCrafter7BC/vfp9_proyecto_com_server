@@ -29,9 +29,45 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    FUNCTION contar(tcCondicionFiltro AS String) AS Integer ;
+        HELPSTRING 'Devuelve el número de registros en el repositorio actual.'
+        RETURN THIS.oRepositorio.contar(tcCondicionFiltro)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION nuevo_codigo() AS Integer ;
+        HELPSTRING 'Devuelve un número que se utiliza como código para un nuevo registro. En caso de error, devuelve -1.'
+        RETURN THIS.oRepositorio.nuevo_codigo()
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     FUNCTION obtener_por_codigo(tnCodigo AS Integer) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si el código existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.obtener_por_codigo(tnCodigo)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION obtener_por_nombre(tcNombre AS String) AS Object ;
+        HELPSTRING 'Devuelve un objeto (Object) si el nombre existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.obtener_por_nombre(tcNombre)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION obtener_todos(tcCondicionFiltro AS String, tcOrden AS String) AS String ;
+        HELPSTRING 'Devuelve una cadena con formato XML que contiene el resultado de la búsqueda; de lo contrario, devuelve una cadena vacía. En caso de error, devuelve una cadena vacía.'
+
+        LOCAL lcCursor, lcXml
+        lcCursor = 'tm_' + THIS.cModelo
+        lcXml = ''
+
+        IF THIS.oRepositorio.obtener_todos(tcCondicionFiltro, tcOrden) THEN
+            IF USED(lcCursor) THEN
+                CURSORTOXML(lcCursor, 'lcXml', 1, 0, 0, '1')
+                USE IN (lcCursor)
+            ENDIF
+        ENDIF
+
+        RETURN lcXml
     ENDFUNC
 
     **/
