@@ -71,8 +71,33 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Métodos protegidos.
+    * Devuelve un objeto de transferencia de datos (DTO) vacío.
+    *
+    * El patrón DTO tiene como finalidad de crear un objeto plano (POJO) con
+    * una serie de atributos que puedan ser enviados o recuperados del servidor
+    * en una sola invocación, de tal forma que un DTO puede contener
+    * información de múltiples fuentes o tablas y concentrarlas en una única
+    * clase simple.
+    * https://www.oscarblancarteblog.com/2018/11/30/data-transfer-object-dto-patron-diseno/
     */
+    FUNCTION obtener_dto() AS Object ;
+        HELPSTRING 'Devuelve un objeto plano (POJO) con una serie de atributos que se pueden enviar o recuperar del servidor.'
+
+        LOCAL lcClase, loObjeto, loExcepcion
+        lcClase = 'dto_' + LOWER(ALLTRIM(THIS.cModelo))
+
+        TRY
+            loObjeto = NEWOBJECT(lcClase, lcClase + '.prg')
+        CATCH TO loExcepcion
+            registrar_error(lcClase, 'obtener_dto', loExcepcion.Message)
+        ENDTRY
+
+        RETURN loObjeto
+    ENDFUNC
+
+    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
+    *                            PROTECTED METHODS                            *
+    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION Init
