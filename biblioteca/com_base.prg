@@ -81,7 +81,7 @@ DEFINE CLASS com_base AS Session
     * https://www.oscarblancarteblog.com/2018/11/30/data-transfer-object-dto-patron-diseno/
     */
     FUNCTION obtener_dto() AS Object ;
-        HELPSTRING 'Devuelve un objeto plano (POJO) con una serie de atributos que se pueden enviar o recuperar del servidor.'
+        HELPSTRING 'Devuelve un objeto (Object) si tiene éxito; de lo contrario, devuelve falso (.F.).'
 
         LOCAL lcClase, loObjeto, loExcepcion
         lcClase = 'dto_' + LOWER(ALLTRIM(THIS.cModelo))
@@ -93,6 +93,24 @@ DEFINE CLASS com_base AS Session
         ENDTRY
 
         RETURN loObjeto
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION agregar(toDto AS Object) AS Logical ;
+        HELPSTRING 'Devuelve verdadero (.T.) si puede agregar el registro; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.agregar(THIS.convertir_dto_a_modelo(toDto))
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION modificar(toDto AS Object) AS Logical ;
+        HELPSTRING 'Devuelve verdadero (.T.) si puede modificar el registro; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.modificar(THIS.convertir_dto_a_modelo(toDto))
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION borrar(tnCodigo AS Integer) AS Logical ;
+        HELPSTRING 'Devuelve verdadero (.T.) si puede borrar el registro; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.borrar(tnCodigo)
     ENDFUNC
 
     **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
@@ -136,10 +154,31 @@ DEFINE CLASS com_base AS Session
         THIS.oRepositorio = crear_repositorio(THIS.cModelo)
 
         IF VARTYPE(THIS.oRepositorio) != 'O' THEN
-            registrar_error('com_' + LOWER(ALLTRIM(THIS.cModelo)), ;
+            registrar_error('com_' + LOWER(THIS.cModelo), ;
                 'establecer_repositorio', ;
                 STRTRAN(ERROR_INSTANCIA_CLASE, '{}', THIS.cModelo))
             RETURN .F.
         ENDIF
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION convertir_dto_a_modelo
+        LPARAMETERS toDto
+
+        IF VARTYPE(toDto) != 'O'
+                *OR LOWER(toDto.Class) != 'com_' + LOWER(THIS.cModelo) THEN
+            RETURN .F.
+        ENDIF
+
+        LOCAL lnCodigo, lcNombre, llVigente
+
+        WITH toDto
+            lnCodigo = .obtener_codigo()
+            lcNombre = ALLTRIM(.obtener_nombre())
+            llVigente = .esta_vigente()
+        ENDWITH
+
+        RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
+            lnCodigo, lcNombre, llVigente)
     ENDFUNC
 ENDDEFINE
