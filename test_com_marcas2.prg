@@ -1,5 +1,5 @@
 PRIVATE poRepositorio, poModelo, pcXml, pcDto
-poRepositorio = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
+poRepositorio = NEWOBJECT('com_marcas2', 'com_marcas2.prg')
 
 IF VARTYPE(poRepositorio) != 'O' THEN
     ? "ERROR: El objeto 'poRepositorio' no existe."

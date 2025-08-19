@@ -1,4 +1,4 @@
-#DEFINE CARPETA_DATOS    'C:\turtle\allparts\integrad.000\'
+#DEFINE CARPETA_DATOS    'C:\turtle\aya\integrad.000\'
 
 FUNCTION abrir_dbf
     LPARAMETERS tcTabla, tlModoEscritura

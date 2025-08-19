@@ -45,11 +45,12 @@ FUNCTION establecer_ruta
                 modulo\familia, ;
                 modulo\maquina, ;
                 modulo\marcas1, ;
-                modulo\modelo, ;
+                modulo\marcas2, ;
+                modulo\modelos, ;
                 modulo\pais, ;
                 modulo\rubro, ;
                 modulo\subrubro, ;
                 modulo\zona, ;
                 prog
-*                C:\turtle\allparts\integrad.000
+*                C:\turtle\aya\integrad.000
 ENDFUNC

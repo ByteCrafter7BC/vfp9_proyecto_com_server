@@ -1,5 +1,5 @@
 PRIVATE poRepositorio, poModelo, pcXml, pcDto
-poRepositorio = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
+poRepositorio = NEWOBJECT('com_modelos', 'com_modelos.prg')
 
 IF VARTYPE(poRepositorio) != 'O' THEN
     ? "ERROR: El objeto 'poRepositorio' no existe."
@@ -16,31 +16,31 @@ IF !poRepositorio.codigo_existe(3) THEN
 ENDIF
 
 separador()
-? "Prueba: 2 | Método: 'codigo_existe' | Valor: 888"
+? "Prueba: 2 | Método: 'codigo_existe' | Valor: 1999"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.codigo_existe(888), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.codigo_existe(1999), 'Sí', 'No')
 
-IF poRepositorio.codigo_existe(888) THEN
+IF poRepositorio.codigo_existe(1999) THEN
     RETURN .F.
 ENDIF
 
 esperar()
 
 separador()
-? "Prueba: 3 | Método: 'nombre_existe' | Valor: 'husqvarna'"
+? "Prueba: 3 | Método: 'nombre_existe' | Valor: 'FS 280', 3, 2"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('husqvarna'), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.nombre_existe('FS 280', 3, 2), 'Sí', 'No')
 
-IF !poRepositorio.nombre_existe('husqvarna') THEN
+IF !poRepositorio.nombre_existe('FS 280', 3, 2) THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 4 | Método: 'nombre_existe' | Valor: 'monark'"
+? "Prueba: 4 | Método: 'nombre_existe' | Valor: 'monark', 0, 0"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('monark'), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.nombre_existe('monark', 0, 0), 'Sí', 'No')
 
-IF poRepositorio.nombre_existe('monark') THEN
+IF poRepositorio.nombre_existe('monark', 0, 0) THEN
     RETURN .F.
 ENDIF
 
@@ -56,11 +56,11 @@ IF !poRepositorio.esta_vigente(3) THEN
 ENDIF
 
 separador()
-? "Prueba: 6 | Método: 'esta_vigente' | Valor: 888"
+? "Prueba: 6 | Método: 'esta_vigente' | Valor: 1999"
 ? 'Resultado esperado: fallar'
-? 'Vigente: ' + IIF(poRepositorio.esta_vigente(888), 'Sí', 'No')
+? 'Vigente: ' + IIF(poRepositorio.esta_vigente(1999), 'Sí', 'No')
 
-IF poRepositorio.esta_vigente(888) THEN
+IF poRepositorio.esta_vigente(1999) THEN
     RETURN .F.
 ENDIF
 
@@ -126,9 +126,9 @@ IF !imprimir() THEN
 ENDIF
 
 separador()
-? "Prueba: 13 | Método: 'obtener_por_codigo' | Valor: 888"
+? "Prueba: 13 | Método: 'obtener_por_codigo' | Valor: 1999"
 ? 'Resultado esperado: fallar'
-poModelo = poRepositorio.obtener_por_codigo(888)
+poModelo = poRepositorio.obtener_por_codigo(1999)
 IF imprimir() THEN
     RETURN .F.
 ENDIF
@@ -136,17 +136,17 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'briggs & stratton'"
+? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'FS 280', 3, 2"
 ? 'Resultado esperado: pasar'
-poModelo = poRepositorio.obtener_por_nombre('briggs & stratton')
+poModelo = poRepositorio.obtener_por_nombre('FS 280', 3, 2)
 IF !imprimir() THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 15 | Método: 'obtener_por_nombre' | Valor: 'monark'"
+? "Prueba: 15 | Método: 'obtener_por_nombre' | Valor: 'monark', 0, 0"
 ? 'Resultado esperado: fallar'
-poModelo = poRepositorio.obtener_por_nombre('monark')
+poModelo = poRepositorio.obtener_por_nombre('monark', 0, 0)
 IF imprimir() THEN
     RETURN .F.
 ENDIF
@@ -162,14 +162,14 @@ ENDIF
 
 ? "Prueba: 17 | Método: 'obtener_todos' | Valor: 'C%'"
 ? 'Resultado esperado: pasar'
-pcXml = poRepositorio.obtener_todos('nombre LIKE [C%]')
+pcXml = poRepositorio.obtener_todos('a.nombre LIKE [C%]')
 IF !mostrar() THEN
     RETURN .F.
 ENDIF
 
-? "Prueba: 18 | Método: 'obtener_todos' | Valor: 'C%', 'codigo'"
+? "Prueba: 18 | Método: 'obtener_todos' | Valor: 'C%', 'a.codigo'"
 ? 'Resultado esperado: pasar'
-pcXml = poRepositorio.obtener_todos('nombre LIKE [C%]', 'codigo')
+pcXml = poRepositorio.obtener_todos('a.nombre LIKE [C%]', 'a.codigo')
 IF !mostrar() THEN
     RETURN .F.
 ENDIF
@@ -221,11 +221,17 @@ ENDIF
 
 WITH pcDto
     .establecer_nombre('nombre ' + ALLTRIM(STR(.obtener_codigo())) + ' (modificado)')
+    .establecer_maquina(2)
+    .establecer_marca(3)
     .establecer_vigente(.F.)
 ENDWITH
 
 ? 'Código: ' + ALLTRIM(STR(pcDto.obtener_codigo()))
 ? 'Modificado: ' + IIF(poRepositorio.modificar(pcDto), 'Sí', 'No')
+
+IF !poRepositorio.modificar(pcDto) THEN
+    ? 'Error: ' + poRepositorio.obtener_ultimo_error()
+ENDIF
 
 separador()
 
@@ -254,6 +260,8 @@ FUNCTION imprimir
     WITH poModelo
         ? 'Código: ' + ALLTRIM(STR(.obtener_codigo()))
         ? 'Nombre: ' + .obtener_nombre()
+        ? 'Máquina: ' + ALLTRIM(STR(.obtener_maquina()))
+        ? 'Marca: ' + ALLTRIM(STR(.obtener_marca()))
         ? 'Vigente: ' + IIF(.esta_vigente(), 'Sí', 'No')
     ENDWITH
 ENDFUNC

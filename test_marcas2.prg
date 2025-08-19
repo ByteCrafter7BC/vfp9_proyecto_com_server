@@ -1,5 +1,5 @@
 LOCAL loRepositorio, loModelo
-loRepositorio = NEWOBJECT('repositorio_marcas1', 'repositorio_marcas1.prg')
+loRepositorio = NEWOBJECT('repositorio_marcas2', 'repositorio_marcas2.prg')
 
 IF VARTYPE(loRepositorio) != 'O' THEN
     ? 'ERROR: El objeto "loRepositorio" no existe.'

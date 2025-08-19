@@ -3,7 +3,7 @@ DEFINE CLASS repositorio AS Custom
 
     **--------------------------------------------------------------------------
     FUNCTION Init
-        DIMENSION THIS.aRepositorio[11, 2]
+        DIMENSION THIS.aRepositorio[12, 2]
 
         WITH THIS
             .aRepositorio[01, 1] = 'barrio'
@@ -12,11 +12,12 @@ DEFINE CLASS repositorio AS Custom
             .aRepositorio[04, 1] = 'familia'
             .aRepositorio[05, 1] = 'maquina'
             .aRepositorio[06, 1] = 'marcas1'
-            .aRepositorio[07, 1] = 'modelo'
-            .aRepositorio[08, 1] = 'pais'
-            .aRepositorio[09, 1] = 'rubro'
-            .aRepositorio[10, 1] = 'subrubro'
-            .aRepositorio[11, 1] = 'zona'
+            .aRepositorio[07, 1] = 'marcas2'
+            .aRepositorio[08, 1] = 'modelos'
+            .aRepositorio[09, 1] = 'pais'
+            .aRepositorio[10, 1] = 'rubro'
+            .aRepositorio[11, 1] = 'subrubro'
+            .aRepositorio[12, 1] = 'zona'
         ENDWITH
     ENDFUNC
 

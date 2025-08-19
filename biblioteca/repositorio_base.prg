@@ -147,13 +147,19 @@ DEFINE CLASS repositorio_base AS Custom
     **--------------------------------------------------------------------------
     FUNCTION obtener_nombre_maquina
         LPARAMETERS tnMaquina
-        RETURN THIS.obtener_nombre_referencial('maquina', tnMaquina)
+        RETURN THIS.obtener_nombre_referencial('maquinas', tnMaquina)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_marca
+    FUNCTION obtener_nombre_marcas1
         LPARAMETERS tnMarca
-        RETURN THIS.obtener_nombre_referencial('marca', tnMarca)
+        RETURN THIS.obtener_nombre_referencial('marcas1', tnMarca)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_marcas2
+        LPARAMETERS tnMarca
+        RETURN THIS.obtener_nombre_referencial('marcas2', tnMarca)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -230,7 +236,7 @@ DEFINE CLASS repositorio_base AS Custom
 
         IF VARTYPE(THIS.cSqlOrder) != 'C' OR EMPTY(THIS.cSqlOrder) THEN
             DO CASE
-            CASE THIS.cModelo == 'modelo'
+            CASE THIS.cModelo == 'modelos'
                 THIS.cSqlOrder = 'nombre_completo'
             OTHERWISE
                 THIS.cSqlOrder = 'nombre'
@@ -248,7 +254,7 @@ DEFINE CLASS repositorio_base AS Custom
                 THIS.cSqlSelect = 'codigo, nombre, pais, vigente'
             CASE THIS.cModelo == 'familia'
                 THIS.cSqlSelect = 'codigo, nombre, p1, p2, p3, p4, p5, vigente'
-            CASE THIS.cModelo == 'modelo'
+            CASE THIS.cModelo == 'modelos'
                 IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
                     THIS.cSqlSelect = 'codigo, nombre, ' + ;
                         'COALESCE(maquina, 0) AS maquina, ' + ;

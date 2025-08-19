@@ -25,9 +25,9 @@
 * Especifica la expresión de caracteres que es_digito() prueba.
 *
 * @return boolean
-* es_digito() devuelve true (.T.) si los caracteres de la expresión de
-* caracteres especificada son dígitos (del 0 al 9); de lo contrario,
-* es_digito() devuelve false (.F.).
+* es_digito() devuelve verdadero (.T.) si los caracteres de la expresión
+* de caracteres especificada son dígitos (del 0 al 9); de lo contrario,
+* es_digito() devuelve falso (.F.).
 */
 
 FUNCTION es_digito

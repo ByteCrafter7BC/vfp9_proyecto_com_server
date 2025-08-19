@@ -1,6 +1,7 @@
 DEFINE CLASS com_base AS Session
     PROTECTED cModelo
     PROTECTED oRepositorio
+    PROTECTED cUltimoError
 
     DataSession = 2    && 2 – Private data session.
 
@@ -70,21 +71,12 @@ DEFINE CLASS com_base AS Session
         RETURN lcXml
     ENDFUNC
 
-    **/
-    * Devuelve un objeto de transferencia de datos (DTO) vacío.
-    *
-    * El patrón DTO tiene como finalidad de crear un objeto plano (POJO) con
-    * una serie de atributos que puedan ser enviados o recuperados del servidor
-    * en una sola invocación, de tal forma que un DTO puede contener
-    * información de múltiples fuentes o tablas y concentrarlas en una única
-    * clase simple.
-    * https://www.oscarblancarteblog.com/2018/11/30/data-transfer-object-dto-patron-diseno/
-    */
+    **--------------------------------------------------------------------------
     FUNCTION obtener_dto() AS Object ;
-        HELPSTRING 'Devuelve un objeto (Object) si tiene éxito; de lo contrario, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve un objeto (Object) si puede crear el objeto; de lo contrario, devuelve falso (.F.).'
 
         LOCAL lcClase, loObjeto, loExcepcion
-        lcClase = 'dto_' + LOWER(ALLTRIM(THIS.cModelo))
+        lcClase = 'dto_' + LOWER(THIS.cModelo)
 
         TRY
             loObjeto = NEWOBJECT(lcClase, lcClase + '.prg')
@@ -96,15 +88,28 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    FUNCTION obtener_ultimo_error
+        RETURN IIF(VARTYPE(THIS.cUltimoError) == 'C', THIS.cUltimoError, '')
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     FUNCTION agregar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede agregar el registro; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.agregar(THIS.convertir_dto_a_modelo(toDto))
+
+        IF !THIS.oRepositorio.agregar(THIS.convertir_dto_a_modelo(toDto)) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
+            RETURN .F.
+        ENDIF
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION modificar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede modificar el registro; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.modificar(THIS.convertir_dto_a_modelo(toDto))
+
+        IF !THIS.oRepositorio.modificar(THIS.convertir_dto_a_modelo(toDto)) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
+            RETURN .F.
+        ENDIF
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -165,8 +170,7 @@ DEFINE CLASS com_base AS Session
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF VARTYPE(toDto) != 'O'
-                *OR LOWER(toDto.Class) != 'com_' + LOWER(THIS.cModelo) THEN
+        IF VARTYPE(toDto) != 'O' THEN
             RETURN .F.
         ENDIF
 

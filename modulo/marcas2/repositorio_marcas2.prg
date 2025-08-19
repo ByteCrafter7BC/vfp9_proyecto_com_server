@@ -1,4 +1,4 @@
-DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
+DEFINE CLASS repositorio_marcas2 AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
@@ -18,7 +18,12 @@ DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
 
         IF !llRelacionado THEN
             llRelacionado = ;
-                repositorio_existe_referencia('maesprod', lcCondicionFiltro)
+                repositorio_existe_referencia('modelos', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

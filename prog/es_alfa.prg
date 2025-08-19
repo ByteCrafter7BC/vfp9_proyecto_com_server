@@ -25,9 +25,9 @@
 * Especifica la expresión de caracteres que es_alfa() prueba.
 *
 * @return boolean
-* es_alfa() devuelve true (.T.) si los caracteres de la expresión
+* es_alfa() devuelve verdadero (.T.) si los caracteres de la expresión
 * de caracteres especificada son letras (de la A a la Z); de lo contrario,
-* es_alfa() devuelve false (.F.).
+* es_alfa() devuelve falso (.F.).
 */
 
 FUNCTION es_alfa
