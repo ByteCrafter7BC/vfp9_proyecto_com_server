@@ -318,7 +318,7 @@ DEFINE CLASS repositorio_base AS Custom
         lnMinimo = 1
         lnMaximo = 9999
 
-        IF INLIST(tcModelo, 'maquina', 'marca') THEN
+        IF INLIST(tcModelo, 'maquinas', 'marcas2') THEN
             lnMinimo = 0
         ENDIF
 

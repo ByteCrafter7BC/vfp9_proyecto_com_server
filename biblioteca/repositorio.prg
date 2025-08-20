@@ -10,7 +10,7 @@ DEFINE CLASS repositorio AS Custom
             .aRepositorio[02, 1] = 'ciudad'
             .aRepositorio[03, 1] = 'depar'
             .aRepositorio[04, 1] = 'familia'
-            .aRepositorio[05, 1] = 'maquina'
+            .aRepositorio[05, 1] = 'maquinas'
             .aRepositorio[06, 1] = 'marcas1'
             .aRepositorio[07, 1] = 'marcas2'
             .aRepositorio[08, 1] = 'modelos'

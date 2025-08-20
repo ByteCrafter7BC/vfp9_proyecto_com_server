@@ -16,6 +16,7 @@
 * Debería haber recibido una copia de la Licencia Pública General de GNU
 * junto con este programa. Si no es así, consulte
 * <https://www.gnu.org/licenses/>.
+*/
 
 **/
 * Determina si los caracteres de la expresión de caracteres especificada
