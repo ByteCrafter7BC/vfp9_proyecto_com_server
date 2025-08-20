@@ -4,17 +4,14 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     **--------------------------------------------------------------------------
     FUNCTION nombre_existe(tcNombre AS String, tnMaquina AS Integer, ;
             tnMarca AS Integer) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el nombre existe ' + ;
-            'u ocurre un error; de lo contrario, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve verdadero (.T.) si el nombre existe u ocurre un error; de lo contrario, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.nombre_existe(tcNombre, tnMaquina, tnMarca)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_nombre(tcNombre AS String, tnMaquina AS Integer, ;
             tnMarca AS Integer) AS Object ;
-        HELPSTRING 'Devuelve un objeto (Object) si el nombre existe; ' + ;
-            'de lo contrario, devuelve falso (.F.). En caso de error, ' + ;
-            'devuelve falso (.F.).'
+        HELPSTRING 'Devuelve un objeto (Object) si el nombre existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.obtener_por_nombre(tcNombre, tnMaquina, ;
             tnMarca)
     ENDFUNC

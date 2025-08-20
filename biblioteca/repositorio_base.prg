@@ -169,9 +169,15 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_rubro
+    FUNCTION obtener_nombre_rubros1
         LPARAMETERS tnRubro
-        RETURN THIS.obtener_nombre_referencial('rubro', tnRubro)
+        RETURN THIS.obtener_nombre_referencial('rubros1', tnRubro)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_rubros2
+        LPARAMETERS tnSubRubro
+        RETURN THIS.obtener_nombre_referencial('rubros2', tnSubRubro)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -272,8 +278,6 @@ DEFINE CLASS repositorio_base AS Custom
             CASE THIS.cModelo == 'pais'
                 THIS.cSqlSelect = ;
                     'codigo, nombre, cod_alfa2, cod_alfa3, cod_num, vigente'
-            CASE THIS.cModelo == 'subrubro'
-                THIS.cSqlSelect = 'codigo, nombre, rubro, vigente'
             OTHERWISE
                 THIS.cSqlSelect = 'codigo, nombre, vigente'
             ENDCASE
@@ -387,7 +391,13 @@ DEFINE CLASS repositorio_base AS Custom
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnRubro_Valid
         LPARAMETERS tnRubro
-        RETURN THIS.validar_codigo_referencial('rubro', tnRubro)
+        RETURN THIS.validar_codigo_referencial('rubros1', tnRubro)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnSubRubro_Valid
+        LPARAMETERS tnSubRubro
+        RETURN THIS.validar_codigo_referencial('rubros2', tnSubRubro)
     ENDFUNC
 
     **--------------------------------------------------------------------------

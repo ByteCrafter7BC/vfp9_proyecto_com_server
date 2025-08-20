@@ -15,8 +15,8 @@ DEFINE CLASS repositorio AS Custom
             .aRepositorio[07, 1] = 'marcas2'
             .aRepositorio[08, 1] = 'modelos'
             .aRepositorio[09, 1] = 'pais'
-            .aRepositorio[10, 1] = 'rubro'
-            .aRepositorio[11, 1] = 'subrubro'
+            .aRepositorio[10, 1] = 'rubros1'
+            .aRepositorio[11, 1] = 'rubros2'
             .aRepositorio[12, 1] = 'zona'
         ENDWITH
     ENDFUNC

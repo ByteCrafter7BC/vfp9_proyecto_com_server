@@ -13,78 +13,33 @@ del /s TM*.*
 del /s *.PRG~
 
 cd bd
-ren barrio.cdx barrio.cdx
-ren barrio.dbf barrio.dbf
-ren barrio_aud.cdx barrio_aud.cdx
-ren barrio_aud.dbf barrio_aud.dbf
-ren ciudad.cdx ciudad.cdx
-ren ciudad.dbf ciudad.dbf
-ren ciudad_aud.cdx ciudad_aud.cdx
-ren ciudad_aud.dbf ciudad_aud.dbf
-ren depar.cdx depar.cdx
-ren depar.dbf depar.dbf
-ren depar_aud.cdx depar_aud.cdx
-ren depar_aud.dbf depar_aud.dbf
-ren familia.cdx familia.cdx
-ren familia.dbf familia.dbf
-ren familia_aud.cdx familia_aud.cdx
-ren familia_aud.dbf familia_aud.dbf
-ren maquina.cdx maquina.cdx
-ren maquina.dbf maquina.dbf
-ren maquina_aud.cdx maquina_aud.cdx
-ren maquina_aud.dbf maquina_aud.dbf
-ren marca.cdx marca.cdx
-ren marca.dbf marca.dbf
-ren marca_aud.cdx marca_aud.cdx
-ren marca_aud.dbf marca_aud.dbf
-ren modelo.cdx modelo.cdx
-ren modelo.dbf modelo.dbf
-ren modelo_aud.cdx modelo_aud.cdx
-ren modelo_aud.dbf modelo_aud.dbf
-ren pais.cdx pais.cdx
-ren pais.dbf pais.dbf
-ren pais_aud.cdx pais_aud.cdx
-ren pais_aud.dbf pais_aud.dbf
-ren rubro.cdx rubro.cdx
-ren rubro.dbf rubro.dbf
-ren rubro_aud.cdx rubro_aud.cdx
-ren rubro_aud.dbf rubro_aud.dbf
-ren subrubro.cdx subrubro.cdx
-ren subrubro.dbf subrubro.dbf
-ren subrubro_aud.cdx subrubro_aud.cdx
-ren subrubro_aud.dbf subrubro_aud.dbf
-ren zona.cdx zona.cdx
-ren zona.dbf zona.dbf
-ren zona_aud.cdx zona_aud.cdx
-ren zona_aud.dbf zona_aud.dbf
 cd..
 
 cd biblioteca
-ren auditoria_base.prg auditoria_base.prg
+ren com_base.prg com_base.prg
 ren constantes.h constantes.h
 ren crear_repositorio.prg crear_repositorio.prg
-ren frm_base.prg frm_base.prg
-ren frm_listar_base.prg frm_listar_base.prg
-ren libvfp9.vct libvfp9.vct
-ren libvfp9.vcx libvfp9.vcx
+ren dto_base.prg dto_base.prg
 ren modelo_base.prg modelo_base.prg
 ren repositorio.prg repositorio.prg
 ren repositorio_base.prg repositorio_base.prg
 ren repositorio_codigo_existe.prg repositorio_codigo_existe.prg
+ren repositorio_existe_referencia.prg repositorio_existe_referencia.prg
 ren repositorio_obtener_nombre.prg repositorio_obtener_nombre.prg
 ren repositorio_obtener_por_codigo.prg repositorio_obtener_por_codigo.prg
 ren validador_base.prg validador_base.prg
 cd..
 
-cd img
-cd bmp
-ren disquete_blanco.bmp disquete_blanco.bmp
-ren disquete_rojo.bmp disquete_rojo.bmp
-ren lupa.bmp lupa.bmp
-cd..
-cd ico
-ren form.ico form.ico
-cd..
+cd binario
+ren anular_registro.bat anular_registro.bat
+ren com_interop.dll com_interop.dll
+ren com_interop.tlb com_interop.tlb
+ren com_interop.VBR com_interop.vbr
+ren gdiplus.dll gdiplus.dll
+ren msvcr71.dll msvcr71.dll
+ren registrar.bat registrar.bat
+ren vfp9resn.dll vfp9resn.dll
+ren vfp9t.dll vfp9t.dll
 cd..
 
 cd modulo
@@ -136,41 +91,47 @@ ren frm_listar_familia.scx frm_listar_familia.scx
 ren repositorio_familia.prg repositorio_familia.prg
 ren validador_familia.prg validador_familia.prg
 cd..
-cd maquina
-ren frm_listar_maquina.prg frm_listar_maquina.prg
-ren frm_listar_maquina.sct frm_listar_maquina.sct
-ren frm_listar_maquina.scx frm_listar_maquina.scx
-ren frm_maquina.prg frm_maquina.prg
-ren frm_maquina.sct frm_maquina.sct
-ren frm_maquina.scx frm_maquina.scx
-ren maquina.prg maquina.prg
-ren maquina_aud.prg maquina_aud.prg
-ren repositorio_maquina.prg repositorio_maquina.prg
-ren validador_maquina.prg validador_maquina.prg
+cd maquinas
+ren com_maquinas.prg com_maquinas.prg
+ren dto_maquinas.prg dto_maquinas.prg
+ren maquinas.prg maquinas.prg
+ren repositorio_maquinas.prg repositorio_maquinas.prg
+ren validador_maquinas.prg validador_maquinas.prg
 cd..
-cd marca
-ren frm_listar_marca.prg frm_listar_marca.prg
-ren frm_listar_marca.sct frm_listar_marca.sct
-ren frm_listar_marca.scx frm_listar_marca.scx
-ren frm_marca.prg frm_marca.prg
-ren frm_marca.sct frm_marca.sct
-ren frm_marca.scx frm_marca.scx
-ren marca.prg marca.prg
-ren marca_aud.prg marca_aud.prg
-ren repositorio_marca.prg repositorio_marca.prg
-ren validador_marca.prg validador_marca.prg
+cd marcas1
+ren com_marcas1.prg com_marcas1.prg
+ren dto_marcas1.prg dto_marcas1.prg
+ren marcas1.prg marcas1.prg
+ren repositorio_marcas1.prg repositorio_marcas1.prg
+ren validador_marcas1.prg validador_marcas1.prg
 cd..
-cd modelo
-ren frm_listar_modelo.prg frm_listar_modelo.prg
-ren frm_listar_modelo.sct frm_listar_modelo.sct
-ren frm_listar_modelo.scx frm_listar_modelo.scx
-ren frm_modelo.prg frm_modelo.prg
-ren frm_modelo.sct frm_modelo.sct
-ren frm_modelo.scx frm_modelo.scx
-ren modelo.prg modelo.prg
-ren modelo_aud.prg modelo_aud.prg
-ren repositorio_modelo.prg repositorio_modelo.prg
-ren validador_modelo.prg validador_modelo.prg
+cd marcas2
+ren com_marcas2.prg com_marcas2.prg
+ren dto_marcas2.prg dto_marcas2.prg
+ren marcas2.prg marcas2.prg
+ren repositorio_marcas2.prg repositorio_marcas2.prg
+ren validador_marcas2.prg validador_marcas2.prg
+cd..
+cd modelos
+ren com_modelos.prg com_modelos.prg
+ren dto_modelos.prg dto_modelos.prg
+ren modelos.prg modelos.prg
+ren repositorio_modelos.prg repositorio_modelos.prg
+ren validador_modelos.prg validador_modelos.prg
+cd..
+cd rubros1
+ren com_rubros1.prg com_rubros1.prg
+ren dto_rubros1.prg dto_rubros1.prg
+ren repositorio_rubros1.prg repositorio_rubros1.prg
+ren rubros1.prg rubros1.prg
+ren validador_rubros1.prg validador_rubros1.prg
+cd..
+cd rubros2
+ren com_rubros2.prg com_rubros2.prg
+ren dto_rubros2.prg dto_rubros2.prg
+ren repositorio_rubros2.prg repositorio_rubros2.prg
+ren rubros2.prg rubros2.prg
+ren validador_rubros2.prg validador_rubros2.prg
 cd..
 cd pais
 ren frm_listar_pais.prg frm_listar_pais.prg
@@ -208,39 +169,20 @@ ren subrubro_aud.prg subrubro_aud.prg
 ren repositorio_subrubro.prg repositorio_subrubro.prg
 ren validador_subrubro.prg validador_subrubro.prg
 cd..
-cd zona
-ren frm_listar_zona.prg frm_listar_zona.prg
-ren frm_listar_zona.sct frm_listar_zona.sct
-ren frm_listar_zona.scx frm_listar_zona.scx
-ren frm_zona.prg frm_zona.prg
-ren frm_zona.sct frm_zona.sct
-ren frm_zona.scx frm_zona.scx
-ren repositorio_zona.prg repositorio_zona.prg
-ren validador_zona.prg validador_zona.prg
-ren zona_aud.prg zona_aud.prg
-ren zona.prg zona.prg
-cd..
 cd..
 
 cd prog
 ren abrir_dbf.prg abrir_dbf.prg
 ren base_datos.prg base_datos.prg
 ren cerrar_dbf.prg cerrar_dbf.prg
-ren comprimir_zip.prg comprimir_zip.prg
-ren createmp.prg createmp.prg
-ren descomprimir_zip.prg descomprimir_zip.prg
-ren pa_calcular_dv_11_a.sql pa_calcular_dv_11_a.sql
-ren sanitizar_cadena_busqueda.prg sanitizar_cadena_busqueda.prg
-ren textbox_bueno.prg textbox_bueno.prg
-ren textbox_malo.prg textbox_malo.prg
-ren textbox_normal.prg textbox_normal.prg
-ren textbox_requerido.prg textbox_requerido.prg
+ren es_alfa.prg es_alfa.prg
+ren es_digito.prg es_digito.prg
+ren generar_token.prg generar_token.prg
+ren registrar_error.prg registrar_error.prg
 cd..
 
-ren aguateria.sublime-project aguateria.sublime-project
-ren aguateria.sublime-workspace aguateria.sublime-workspace
+ren construir.prg construir.prg
 ren establecer_ruta.prg establecer_ruta.prg
 ren limpiar.bat limpiar.bat
-ren notas.txt notas.txt
-ren test_repositorio_ciudad.prg test_repositorio_ciudad.prg
-ren test_repositorio_zona.prg test_repositorio_zona.prg
+ren README.md README.md
+ren test.prg test.prg

@@ -36,9 +36,6 @@ FUNCTION establecer_ruta
     SET PATH TO bd, ;
                 biblioteca, ;
                 binario, ;
-                img\bmp, ;
-                img\ico, ;
-                menu, ;
                 modulo\barrio, ;
                 modulo\ciudad, ;
                 modulo\depar, ;
@@ -48,9 +45,9 @@ FUNCTION establecer_ruta
                 modulo\marcas2, ;
                 modulo\modelos, ;
                 modulo\pais, ;
-                modulo\rubro, ;
-                modulo\subrubro, ;
-                modulo\zona, ;
-                prog
-*                C:\turtle\aya\integrad.000
+                modulo\rubros1, ;
+                modulo\rubros2, ;
+                prog, ;
+                proyecto, ;
+                prueba
 ENDFUNC

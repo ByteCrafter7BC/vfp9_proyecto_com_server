@@ -1,3 +1,5 @@
+#INCLUDE 'constantes.h'
+
 DEFINE CLASS com_base AS Session
     PROTECTED cModelo
     PROTECTED oRepositorio
@@ -54,7 +56,8 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_todos(tcCondicionFiltro AS String, tcOrden AS String) AS String ;
+    FUNCTION obtener_todos(tcCondicionFiltro AS String, tcOrden AS String) ;
+            AS String ;
         HELPSTRING 'Devuelve una cadena con formato XML que contiene el resultado de la búsqueda; de lo contrario, devuelve una cadena vacía. En caso de error, devuelve una cadena vacía.'
 
         LOCAL lcCursor, lcXml
@@ -115,7 +118,11 @@ DEFINE CLASS com_base AS Session
     **--------------------------------------------------------------------------
     FUNCTION borrar(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede borrar el registro; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.borrar(tnCodigo)
+
+        IF !THIS.oRepositorio.borrar(tnCodigo) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
+            RETURN .F.
+        ENDIF
     ENDFUNC
 
     **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
