@@ -19,6 +19,21 @@
 */
 
 **------------------------------------------------------------------------------
+CREATE TABLE familias (;
+    codigo N(4), ;
+    nombre C(30), ;
+    p1 N(6,2), ;
+    p2 N(6,2), ;
+    p3 N(6,2), ;
+    p4 N(6,2), ;
+    p5 N(6,2), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
 CREATE TABLE maquinas (;
     codigo N(3), ;
     nombre C(30), ;

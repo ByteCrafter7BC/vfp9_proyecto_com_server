@@ -39,7 +39,7 @@ FUNCTION establecer_ruta
                 modulo\barrio, ;
                 modulo\ciudad, ;
                 modulo\depar, ;
-                modulo\familia, ;
+                modulo\familias, ;
                 modulo\maquinas, ;
                 modulo\marcas1, ;
                 modulo\marcas2, ;

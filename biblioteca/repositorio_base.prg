@@ -258,7 +258,7 @@ DEFINE CLASS repositorio_base AS Custom
                 THIS.cSqlSelect = 'codigo, nombre, pais, departamen, vigente'
             CASE THIS.cModelo == 'depar'
                 THIS.cSqlSelect = 'codigo, nombre, pais, vigente'
-            CASE THIS.cModelo == 'familia'
+            CASE THIS.cModelo == 'familias'
                 THIS.cSqlSelect = 'codigo, nombre, p1, p2, p3, p4, p5, vigente'
             CASE THIS.cModelo == 'modelos'
                 IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN

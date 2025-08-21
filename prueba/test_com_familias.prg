@@ -1,0 +1,300 @@
+PRIVATE poRepositorio, poModelo, pcXml, pcDto
+poRepositorio = NEWOBJECT('com_familias', 'com_familias.prg')
+
+IF VARTYPE(poRepositorio) != 'O' THEN
+    ? "ERROR: El objeto 'poRepositorio' no existe."
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 1 | Método: 'codigo_existe' | Valor: 2"
+? 'Resultado esperado: pasar'
+? 'Existe: ' + IIF(poRepositorio.codigo_existe(2), 'Sí', 'No')
+
+IF !poRepositorio.codigo_existe(2) THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 2 | Método: 'codigo_existe' | Valor: 888"
+? 'Resultado esperado: fallar'
+? 'Existe: ' + IIF(poRepositorio.codigo_existe(888), 'Sí', 'No')
+
+IF poRepositorio.codigo_existe(888) THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 3 | Método: 'nombre_existe' | Valor: 'Trapp repuestos'"
+? 'Resultado esperado: pasar'
+? 'Existe: ' + IIF(poRepositorio.nombre_existe('Trapp repuestos'), 'Sí', 'No')
+
+IF !poRepositorio.nombre_existe('Trapp repuestos') THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 4 | Método: 'nombre_existe' | Valor: 'monark'"
+? 'Resultado esperado: fallar'
+? 'Existe: ' + IIF(poRepositorio.nombre_existe('monark'), 'Sí', 'No')
+
+IF poRepositorio.nombre_existe('monark') THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 5 | Método: 'esta_vigente' | Valor: 2"
+? 'Resultado esperado: pasar'
+? 'Vigente: ' + IIF(poRepositorio.esta_vigente(2), 'Sí', 'No')
+
+IF !poRepositorio.esta_vigente(2) THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 6 | Método: 'esta_vigente' | Valor: 888"
+? 'Resultado esperado: fallar'
+? 'Vigente: ' + IIF(poRepositorio.esta_vigente(888), 'Sí', 'No')
+
+IF poRepositorio.esta_vigente(888) THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 7 | Método: 'esta_relacionado' | Valor: 2"
+? 'Resultado esperado: pasar'
+? 'Relacionado: ' + IIF(poRepositorio.esta_relacionado(2), 'Sí', 'No')
+
+IF !poRepositorio.esta_relacionado(2) THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 8 | Método: 'esta_relacionado' | Valor: 888"
+? 'Resultado esperado: pasar'
+? 'Relacionado: ' + IIF(poRepositorio.esta_relacionado(888), 'Sí', 'No')
+
+IF !poRepositorio.esta_relacionado(888) THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 9 | Método: 'contar'"
+? 'Resultado esperado: pasar'
+? 'Cantidad de registros: ' + ALLTRIM(STR(poRepositorio.contar()))
+
+IF poRepositorio.contar() = 0 THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 10 | Método: 'contar' | Valor: 'nombre == [CALOI                         ]'"
+? 'Resultado esperado: pasar'
+? 'Cantidad de registros: ' + ALLTRIM(STR(poRepositorio.contar('nombre == [CALOI                         ]')))
+
+IF poRepositorio.contar() = 0 THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 11 | Método: 'nuevo_codigo'"
+? 'Resultado esperado: pasar'
+? 'Nuevo código: ' + ALLTRIM(STR(poRepositorio.nuevo_codigo()))
+
+IF poRepositorio.nuevo_codigo() <= 0 THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 12 | Método: 'obtener_por_codigo' | Valor: 2"
+? 'Resultado esperado: pasar'
+poModelo = poRepositorio.obtener_por_codigo(2)
+IF !imprimir() THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 13 | Método: 'obtener_por_codigo' | Valor: 888"
+? 'Resultado esperado: fallar'
+poModelo = poRepositorio.obtener_por_codigo(888)
+IF imprimir() THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+separador()
+? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'Trapp repuestos'"
+? 'Resultado esperado: pasar'
+poModelo = poRepositorio.obtener_por_nombre('Trapp repuestos')
+IF !imprimir() THEN
+    RETURN .F.
+ENDIF
+
+separador()
+? "Prueba: 15 | Método: 'obtener_por_nombre' | Valor: 'monark'"
+? 'Resultado esperado: fallar'
+poModelo = poRepositorio.obtener_por_nombre('monark')
+IF imprimir() THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+? "Prueba: 16 | Método: 'obtener_todos'"
+? 'Resultado esperado: pasar'
+pcXml = poRepositorio.obtener_todos()
+IF !mostrar() THEN
+    RETURN .F.
+ENDIF
+
+? "Prueba: 17 | Método: 'obtener_todos' | Valor: 'C%'"
+? 'Resultado esperado: pasar'
+pcXml = poRepositorio.obtener_todos('nombre LIKE [C%]')
+IF !mostrar() THEN
+    RETURN .F.
+ENDIF
+
+? "Prueba: 18 | Método: 'obtener_todos' | Valor: 'C%', 'codigo'"
+? 'Resultado esperado: pasar'
+pcXml = poRepositorio.obtener_todos('nombre LIKE [C%]', 'codigo')
+IF !mostrar() THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+? "Prueba: 19 | Método: 'obtener_dto'"
+? 'Resultado esperado: pasar'
+pcDto = poRepositorio.obtener_dto()
+? 'DTO creado: ' + IIF(VARTYPE(pcDto) == 'O', 'Sí', 'No')
+
+IF VARTYPE(pcDto) != 'O' THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+? "Prueba: 20 | Método: 'agregar'"
+? 'Resultado esperado: pasar'
+pcDto = poRepositorio.obtener_dto()
+
+IF VARTYPE(pcDto) != 'O' THEN
+    RETURN .F.
+ENDIF
+
+WITH pcDto
+    .establecer_codigo(poRepositorio.nuevo_codigo())
+    .establecer_nombre('Nombre ' + ALLTRIM(STR(.obtener_codigo())))
+    .establecer_p1(1)
+    .establecer_p2(2)
+    .establecer_p3(3)
+    .establecer_p4(4)
+    .establecer_p5(5)
+    .establecer_vigente(.T.)
+ENDWITH
+
+? 'Código: ' + ALLTRIM(STR(pcDto.obtener_codigo()))
+? 'Agregado: ' + IIF(poRepositorio.agregar(pcDto), 'Sí', 'No')
+
+separador()
+
+poModelo = poRepositorio.obtener_por_codigo(pcDto.obtener_codigo())
+IF !imprimir() THEN
+    RETURN .F.
+ENDIF
+
+separador()
+
+? "Prueba: 21 | Método: 'modificar'"
+? 'Resultado esperado: pasar'
+IF VARTYPE(pcDto) != 'O' THEN
+    RETURN .F.
+ENDIF
+
+WITH pcDto
+    .establecer_nombre('nombre ' + ALLTRIM(STR(.obtener_codigo())) + ' (modificado)')
+    .establecer_p1(500)
+    .establecer_p2(400)
+    .establecer_p3(300)
+    .establecer_p4(200)
+    .establecer_p5(100)
+    .establecer_vigente(.F.)
+ENDWITH
+
+? 'Código: ' + ALLTRIM(STR(pcDto.obtener_codigo()))
+? 'Modificado: ' + IIF(poRepositorio.modificar(pcDto), 'Sí', 'No')
+
+separador()
+
+poModelo = poRepositorio.obtener_por_codigo(pcDto.obtener_codigo())
+IF !imprimir() THEN
+    RETURN .F.
+ENDIF
+
+esperar()
+
+? "Prueba: 22 | Método: 'borrar' | Valor: 2"
+? 'Resultado esperado: fallar'
+? 'Borrado: ' + IIF(poRepositorio.borrar(2), 'Sí', 'No')
+
+IF !poRepositorio.codigo_existe(2) THEN
+    RETURN .F.
+ENDIF
+
+**------------------------------------------------------------------------------
+FUNCTION imprimir
+    IF VARTYPE(poModelo) != 'O' THEN
+        ? "ERROR: El objeto 'poModelo' no existe."
+        RETURN .F.
+    ENDIF
+
+    WITH poModelo
+        ? 'Código: ' + ALLTRIM(STR(.obtener_codigo()))
+        ? 'Nombre: ' + .obtener_nombre()
+        ? 'P1: ' + ALLTRIM(STR(.obtener_p1()))
+        ? 'P2: ' + ALLTRIM(STR(.obtener_p2()))
+        ? 'P3: ' + ALLTRIM(STR(.obtener_p3()))
+        ? 'P4: ' + ALLTRIM(STR(.obtener_p4()))
+        ? 'P5: ' + ALLTRIM(STR(.obtener_p5()))
+        ? 'Vigente: ' + IIF(.esta_vigente(), 'Sí', 'No')
+    ENDWITH
+ENDFUNC
+
+**------------------------------------------------------------------------------
+FUNCTION separador
+    ? REPLICATE('-', 80)
+ENDFUNC
+
+**------------------------------------------------------------------------------
+FUNCTION esperar
+    WAIT 'Presione cualquier tecla para continuar ...' WINDOW
+    CLEAR
+ENDFUNC
+
+**------------------------------------------------------------------------------
+FUNCTION mostrar
+    IF VARTYPE(pcXml) != 'C' OR EMPTY(pcXml) THEN
+        RETURN .F.
+    ENDIF
+
+    XMLTOCURSOR(pcXml, 'tm_resultado')
+
+    IF USED('tm_resultado') THEN
+        SELECT tm_resultado
+        BROWSE NOEDIT
+        USE IN tm_resultado
+    ENDIF
+ENDFUNC

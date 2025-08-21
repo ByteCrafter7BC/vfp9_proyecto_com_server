@@ -79,17 +79,12 @@ ren frm_listar_depar.scx frm_listar_depar.scx
 ren repositorio_depar.prg repositorio_depar.prg
 ren validador_depar.prg validador_depar.prg
 cd..
-cd familia
-ren familia.prg familia.prg
-ren familia_aud.prg familia_aud.prg
-ren frm_familia.prg frm_familia.prg
-ren frm_familia.sct frm_familia.sct
-ren frm_familia.scx frm_familia.scx
-ren frm_listar_familia.prg frm_listar_familia.prg
-ren frm_listar_familia.sct frm_listar_familia.sct
-ren frm_listar_familia.scx frm_listar_familia.scx
-ren repositorio_familia.prg repositorio_familia.prg
-ren validador_familia.prg validador_familia.prg
+cd familias
+ren com_familias.prg com_familias.prg
+ren dto_familias.prg dto_familias.prg
+ren familias.prg familias.prg
+ren repositorio_familias.prg repositorio_familias.prg
+ren validador_familias.prg validador_familias.prg
 cd..
 cd maquinas
 ren com_maquinas.prg com_maquinas.prg
@@ -179,6 +174,21 @@ ren es_alfa.prg es_alfa.prg
 ren es_digito.prg es_digito.prg
 ren generar_token.prg generar_token.prg
 ren registrar_error.prg registrar_error.prg
+cd..
+
+cd proyecto
+ren com_interop.pjt com_interop.pjt
+ren com_interop.pjx com_interop.pjx
+cd..
+
+cd prueba
+ren test_com_familias.prg test_com_familias.prg
+ren test_com_maquinas.prg test_com_maquinas.prg
+ren test_com_marcas1.prg test_com_marcas1.prg
+ren test_com_marcas2.prg test_com_marcas2.prg
+ren test_com_modelos.prg test_com_modelos.prg
+ren test_com_rubros1.prg test_com_rubros1.prg
+ren test_com_rubros2.prg test_com_rubros2.prg
 cd..
 
 ren construir.prg construir.prg
