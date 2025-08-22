@@ -1,5 +1,5 @@
 **/
-* repositorio_marcas1.prg
+* repositorio_depar.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,7 +18,7 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
+DEFINE CLASS repositorio_depar AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
@@ -30,7 +30,7 @@ DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
 
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
-        lcCondicionFiltro = 'marca == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'departamen == ' + ALLTRIM(STR(tnCodigo))
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
             lcCondicionFiltro = STRTRAN(lcCondicionFiltro, '==', '=')
@@ -38,7 +38,22 @@ DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
 
         IF !llRelacionado THEN
             llRelacionado = ;
-                repositorio_existe_referencia('maesprod', lcCondicionFiltro)
+                repositorio_existe_referencia('barrios', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('ciudades', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('clientes', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

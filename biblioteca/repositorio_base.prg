@@ -256,8 +256,6 @@ DEFINE CLASS repositorio_base AS Custom
                     'codigo, nombre, pais, departamen, ciudad, vigente'
             CASE THIS.cModelo == 'ciudad'
                 THIS.cSqlSelect = 'codigo, nombre, pais, departamen, vigente'
-            CASE THIS.cModelo == 'depar'
-                THIS.cSqlSelect = 'codigo, nombre, pais, vigente'
             CASE THIS.cModelo == 'familias'
                 THIS.cSqlSelect = 'codigo, nombre, p1, p2, p3, p4, p5, vigente'
             CASE THIS.cModelo == 'modelos'

@@ -68,14 +68,9 @@ ren repositorio_ciudad.prg repositorio_ciudad.prg
 ren validador_ciudad.prg validador_ciudad.prg
 cd..
 cd depar
+ren com_depar.prg com_depar.prg
 ren depar.prg depar.prg
-ren depar_aud.prg depar_aud.prg
-ren frm_depar.prg frm_depar.prg
-ren frm_depar.sct frm_depar.sct
-ren frm_depar.scx frm_depar.scx
-ren frm_listar_depar.prg frm_listar_depar.prg
-ren frm_listar_depar.sct frm_listar_depar.sct
-ren frm_listar_depar.scx frm_listar_depar.scx
+ren dto_depar.prg dto_depar.prg
 ren repositorio_depar.prg repositorio_depar.prg
 ren validador_depar.prg validador_depar.prg
 cd..
@@ -177,6 +172,7 @@ ren com_interop.pjx com_interop.pjx
 cd..
 
 cd prueba
+ren test_com_depar.prg test_com_depar.prg
 ren test_com_familias.prg test_com_familias.prg
 ren test_com_maquinas.prg test_com_maquinas.prg
 ren test_com_marcas1.prg test_com_marcas1.prg

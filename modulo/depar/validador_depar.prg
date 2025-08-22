@@ -1,5 +1,5 @@
 **/
-* validador_marcas1.prg
+* validador_depar.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,5 +18,5 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS validador_marcas1 AS validador_base OF validador_base.prg
+DEFINE CLASS validador_depar AS validador_base OF validador_base.prg
 ENDDEFINE
