@@ -34,7 +34,7 @@ cd binario
 ren anular_registro.bat anular_registro.bat
 ren com_interop.dll com_interop.dll
 ren com_interop.tlb com_interop.tlb
-ren com_interop.VBR com_interop.vbr
+ren com_interop.vbr com_interop.vbr
 ren gdiplus.dll gdiplus.dll
 ren msvcr71.dll msvcr71.dll
 ren registrar.bat registrar.bat
@@ -128,17 +128,12 @@ ren repositorio_rubros2.prg repositorio_rubros2.prg
 ren rubros2.prg rubros2.prg
 ren validador_rubros2.prg validador_rubros2.prg
 cd..
-cd pais
-ren frm_listar_pais.prg frm_listar_pais.prg
-ren frm_listar_pais.sct frm_listar_pais.sct
-ren frm_listar_pais.scx frm_listar_pais.scx
-ren frm_pais.prg frm_pais.prg
-ren frm_pais.sct frm_pais.sct
-ren frm_pais.scx frm_pais.scx
-ren pais.prg pais.prg
-ren pais_aud.prg pais_aud.prg
-ren repositorio_pais.prg repositorio_pais.prg
-ren validador_pais.prg validador_pais.prg
+cd proceden
+ren com_proceden.prg com_proceden.prg
+ren dto_proceden.prg dto_proceden.prg
+ren proceden.prg proceden.prg
+ren repositorio_proceden.prg repositorio_proceden.prg
+ren validador_proceden.prg validador_proceden.prg
 cd..
 cd rubro
 ren frm_listar_rubro.prg frm_listar_rubro.prg
@@ -187,6 +182,7 @@ ren test_com_maquinas.prg test_com_maquinas.prg
 ren test_com_marcas1.prg test_com_marcas1.prg
 ren test_com_marcas2.prg test_com_marcas2.prg
 ren test_com_modelos.prg test_com_modelos.prg
+ren test_com_proceden.prg test_com_proceden.prg
 ren test_com_rubros1.prg test_com_rubros1.prg
 ren test_com_rubros2.prg test_com_rubros2.prg
 cd..

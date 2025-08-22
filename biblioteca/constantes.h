@@ -1,4 +1,21 @@
-* Copyright (C) 2000-2025 by ByteCrafter7BC. All rights reserved.
+**/
+* Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
+*
+* Este programa es software libre: puede redistribuirlo y/o modificarlo
+* bajo los términos de la Licencia Pública General GNU publicada por
+* la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+* (a su elección) cualquier versión posterior.
+*
+* Este programa se distribuye con la esperanza de que sea útil,
+* pero SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de
+* COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulte la
+* Licencia Pública General de GNU para obtener más detalles.
+*
+* Debería haber recibido una copia de la Licencia Pública General de GNU
+* junto con este programa. Si no es así, consulte
+* <https://www.gnu.org/licenses/>.
+*/
+
 * https://github.com/harbour/core/blob/master/include/inkey.ch
 
 */ Misc. keys.
@@ -46,7 +63,6 @@
 #DEFINE ULONG_MAX    18446744073709551615
 
 */ Configuración.
-#DEFINE CAMPO_OBLIGATORIO RGB(255, 252, 200)
 #DEFINE CARPETA_EXPORTAR 'c:\exportar\'
 
 */ SQL.

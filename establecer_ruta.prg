@@ -44,7 +44,7 @@ FUNCTION establecer_ruta
                 modulo\marcas1, ;
                 modulo\marcas2, ;
                 modulo\modelos, ;
-                modulo\pais, ;
+                modulo\proceden, ;
                 modulo\rubros1, ;
                 modulo\rubros2, ;
                 prog, ;

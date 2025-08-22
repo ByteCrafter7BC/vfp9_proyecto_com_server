@@ -163,9 +163,9 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_pais
-        LPARAMETERS tnPais
-        RETURN THIS.obtener_nombre_referencial('pais', tnPais)
+    FUNCTION obtener_nombre_procedenci
+        LPARAMETERS tnProcedenci
+        RETURN THIS.obtener_nombre_referencial('proceden', tnProcedenci)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -275,9 +275,6 @@ DEFINE CLASS repositorio_base AS Custom
                             "ALLTRIM(c.nombre) + ' ', '') + " + ;
                         'ALLTRIM(a.nombre) AS nombre_completo'
                 ENDIF
-            CASE THIS.cModelo == 'pais'
-                THIS.cSqlSelect = ;
-                    'codigo, nombre, cod_alfa2, cod_alfa3, cod_num, vigente'
             OTHERWISE
                 THIS.cSqlSelect = 'codigo, nombre, vigente'
             ENDCASE
