@@ -1,5 +1,5 @@
 **/
-* repositorio_obtener_nombre() función
+* repositorio_obtener_nombre.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *

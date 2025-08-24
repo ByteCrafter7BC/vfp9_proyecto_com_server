@@ -37,7 +37,7 @@ FUNCTION establecer_ruta
                 biblioteca, ;
                 binario, ;
                 modulo\barrio, ;
-                modulo\ciudad, ;
+                modulo\ciudades, ;
                 modulo\depar, ;
                 modulo\familias, ;
                 modulo\maquinas, ;
@@ -47,6 +47,7 @@ FUNCTION establecer_ruta
                 modulo\proceden, ;
                 modulo\rubros1, ;
                 modulo\rubros2, ;
+                modulo\sifen, ;
                 prog, ;
                 proyecto, ;
                 prueba

@@ -1,3 +1,23 @@
+**/
+* repositorio_base.prg
+*
+* Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
+*
+* Este programa es software libre: puede redistribuirlo y/o modificarlo
+* bajo los términos de la Licencia Pública General GNU publicada por
+* la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+* (a su elección) cualquier versión posterior.
+*
+* Este programa se distribuye con la esperanza de que sea útil,
+* pero SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de
+* COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulte la
+* Licencia Pública General de GNU para obtener más detalles.
+*
+* Debería haber recibido una copia de la Licencia Pública General de GNU
+* junto con este programa. Si no es así, consulte
+* <https://www.gnu.org/licenses/>.
+*/
+
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS repositorio_base AS Custom
@@ -135,7 +155,7 @@ DEFINE CLASS repositorio_base AS Custom
     **--------------------------------------------------------------------------
     FUNCTION obtener_nombre_ciudad
         LPARAMETERS tnCiudad
-        RETURN THIS.obtener_nombre_referencial('ciudad', tnCiudad)
+        RETURN THIS.obtener_nombre_referencial('ciudades', tnCiudad)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -252,10 +272,9 @@ DEFINE CLASS repositorio_base AS Custom
         IF VARTYPE(THIS.cSqlSelect) != 'C' OR EMPTY(THIS.cSqlSelect) THEN
             DO CASE
             CASE THIS.cModelo == 'barrio'
-                THIS.cSqlSelect = ;
-                    'codigo, nombre, pais, departamen, ciudad, vigente'
-            CASE THIS.cModelo == 'ciudad'
-                THIS.cSqlSelect = 'codigo, nombre, pais, departamen, vigente'
+                THIS.cSqlSelect = 'codigo, nombre, departamen, ciudad, vigente'
+            CASE THIS.cModelo == 'ciudades'
+                THIS.cSqlSelect = 'codigo, nombre, departamen, sifen, vigente'
             CASE THIS.cModelo == 'familias'
                 THIS.cSqlSelect = 'codigo, nombre, p1, p2, p3, p4, p5, vigente'
             CASE THIS.cModelo == 'modelos'
@@ -317,9 +336,14 @@ DEFINE CLASS repositorio_base AS Custom
         lnMinimo = 1
         lnMaximo = 9999
 
-        IF INLIST(tcModelo, 'maquinas', 'marcas2') THEN
+        DO CASE
+        CASE INLIST(tcModelo, 'depar', 'maquinas')
+            lnMaximo = 999
+        CASE INLIST(tcModelo, 'ciudades', 'sifen')
+            lnMaximo = 99999
+        CASE INLIST(tcModelo, 'maquinas', 'marcas2')
             lnMinimo = 0
-        ENDIF
+        ENDCASE
 
         IF VARTYPE(tnCodigo) != 'N' ;
                 OR !BETWEEN(tnCodigo, lnMinimo, lnMaximo) THEN
@@ -384,6 +408,12 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnDepartamen_Valid
+        LPARAMETERS tnDepartamen
+        RETURN THIS.validar_codigo_referencial('depar', tnDepartamen)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnRubro_Valid
         LPARAMETERS tnRubro
         RETURN THIS.validar_codigo_referencial('rubros1', tnRubro)
@@ -398,13 +428,25 @@ DEFINE CLASS repositorio_base AS Custom
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnMaquina_Valid
         LPARAMETERS tnMaquina
-        RETURN THIS.validar_codigo_referencial('maquina', tnMaquina)
+        RETURN THIS.validar_codigo_referencial('maquinas', tnMaquina)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION tnMarca_Valid
+    PROTECTED FUNCTION tnMarca1_Valid
         LPARAMETERS tnMarca
-        RETURN THIS.validar_codigo_referencial('marca', tnMarca)
+        RETURN THIS.validar_codigo_referencial('marcas1', tnMarca)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnMarca2_Valid
+        LPARAMETERS tnMarca
+        RETURN THIS.validar_codigo_referencial('marcas2', tnMarca)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnSifen_Valid    && ciudades
+        LPARAMETERS tnSifen
+        RETURN THIS.validar_codigo_referencial('sifen', tnSifen)
     ENDFUNC
 
     **--------------------------------------------------------------------------

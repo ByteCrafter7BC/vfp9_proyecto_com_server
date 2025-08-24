@@ -1,5 +1,5 @@
 **/
-* base_datos() procedimiento
+* base_datos.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -22,6 +22,18 @@
 CREATE TABLE depar (;
     codigo N(3), ;
     nombre C(30), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
+CREATE TABLE ciudades (;
+    codigo N(5), ;
+    nombre C(30), ;
+    departamen N(3), ;
+    sifen N(5), ;
     vigente L(1) ;
 )
 

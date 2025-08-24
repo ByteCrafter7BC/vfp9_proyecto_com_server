@@ -38,16 +38,12 @@ DEFINE CLASS modelos AS modelo_base OF modelo_base.prg
     FUNCTION es_igual
         LPARAMETERS toModelo
 
-        IF VARTYPE(toModelo) != 'O' ;
-                OR LOWER(toModelo.Class) != LOWER(THIS.Name) THEN
+        IF !modelo_base::es_igual(toModelo) THEN
             RETURN .F.
         ENDIF
 
-        IF toModelo.obtener_codigo() != THIS.nCodigo ;
-                OR toModelo.obtener_nombre() != THIS.cNombre ;
-                OR toModelo.obtener_maquina() != THIS.nMaquina ;
-                OR toModelo.obtener_marca() != THIS.nMarca ;
-                OR toModelo.esta_vigente() != THIS.lVigente THEN
+        IF toModelo.obtener_maquina() != THIS.nMaquina ;
+                OR toModelo.obtener_marca() != THIS.nMarca THEN
             RETURN .F.
         ENDIF
     ENDFUNC

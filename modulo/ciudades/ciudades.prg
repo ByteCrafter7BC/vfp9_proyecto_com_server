@@ -1,5 +1,5 @@
 **/
-* modelo_base.prg
+* ciudades.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,55 +18,49 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS modelo_base AS Custom
-    PROTECTED nCodigo
-    PROTECTED cNombre
-    PROTECTED lVigente
+DEFINE CLASS ciudades AS modelo_base OF modelo_base.prg
+    PROTECTED nDepartamen
+    PROTECTED nSifen
 
     **--------------------------------------------------------------------------
     FUNCTION Init
-        LPARAMETERS tnCodigo, tcNombre, tlVigente
+        LPARAMETERS tnCodigo, tcNombre, tnDepartamen, tnSifen, tlVigente
 
-        IF VARTYPE(tnCodigo) != 'N' ;
-                OR VARTYPE(tcNombre) != 'C' ;
-                OR VARTYPE(tlVigente) != 'L' THEN
+        IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
+            RETURN .F.
+        ENDIF
+
+        IF VARTYPE(tnDepartamen) != 'N' ;
+                OR VARTYPE(tnSifen) != 'N' THEN
             RETURN .F.
         ENDIF
 
         WITH THIS
-            .nCodigo = tnCodigo
-            .cNombre = tcNombre
-            .lVigente = tlVigente
+            .nDepartamen = tnDepartamen
+            .nSifen = tnSifen
         ENDWITH
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_codigo
-        RETURN THIS.nCodigo
+    FUNCTION obtener_departamen
+        RETURN THIS.nDepartamen
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre
-        RETURN THIS.cNombre
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    FUNCTION esta_vigente
-        RETURN THIS.lVigente
+    FUNCTION obtener_sifen
+        RETURN THIS.nSifen
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION es_igual
         LPARAMETERS toModelo
 
-        IF VARTYPE(toModelo) != 'O' ;
-                OR LOWER(toModelo.Class) != LOWER(THIS.Name) THEN
+        IF !modelo_base::es_igual(toModelo) THEN
             RETURN .F.
         ENDIF
 
-        IF toModelo.obtener_codigo() != THIS.nCodigo ;
-                OR toModelo.obtener_nombre() != THIS.cNombre ;
-                OR toModelo.esta_vigente() != THIS.lVigente THEN
+        IF toModelo.obtener_departamen() != THIS.nDepartamen ;
+                OR toModelo.obtener_sifen() != THIS.nSifen THEN
             RETURN .F.
         ENDIF
     ENDFUNC

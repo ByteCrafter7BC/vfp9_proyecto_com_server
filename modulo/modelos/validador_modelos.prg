@@ -74,7 +74,8 @@ DEFINE CLASS validador_modelos AS validador_base OF validador_base.prg
         ENDIF
 
         IF lnMaquina > 9999 THEN
-            RETURN lcEtiqueta + STRTRAN(MENOR_QUE, '{}', ALLTRIM(STR(9999 + 1)))
+            RETURN lcEtiqueta + ;
+                STRTRAN(MENOR_QUE, '{}', ALLTRIM(STR(9999 + 1)))
         ENDIF
 
         IF lnMaquina > 0 THEN
@@ -118,7 +119,8 @@ DEFINE CLASS validador_modelos AS validador_base OF validador_base.prg
         ENDIF
 
         IF lnMarca > 9999 THEN
-            RETURN lcEtiqueta + STRTRAN(MENOR_QUE, '{}', ALLTRIM(STR(9999 + 1)))
+            RETURN lcEtiqueta + ;
+                STRTRAN(MENOR_QUE, '{}', ALLTRIM(STR(9999 + 1)))
         ENDIF
 
         IF lnMarca > 0 THEN

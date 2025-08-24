@@ -1,5 +1,5 @@
 **/
-* dto_base.prg
+* dto_ciudades.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,24 +18,28 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS dto_base AS Custom
-    PROTECTED nCodigo
-    PROTECTED cNombre
-    PROTECTED lVigente
+DEFINE CLASS dto_ciudades AS dto_base OF dto_base.prg
+    PROTECTED nDepartamen
+    PROTECTED nSifen
 
     **--------------------------------------------------------------------------
     FUNCTION Init
-        LPARAMETERS tnCodigo, tcNombre, tlVigente
+        LPARAMETERS tnCodigo, tcNombre, tnDepartamen, tnSifen, tlVigente
 
-        IF PARAMETERS() != 3 THEN
+        IF PARAMETERS() != 5 THEN
             tnCodigo = 0
             tcNombre = ''
+            tnDepartamen = 0
+            tnSifen = 0
             tlVigente = .F.
         ENDIF
 
-        IF !THIS.establecer_codigo(tnCodigo) ;
-                OR !THIS.establecer_nombre(tcNombre) ;
-                OR !THIS.establecer_vigente(tlVigente) THEN
+        IF !dto_base::Init(tnCodigo, tcNombre, tlVigente) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.establecer_departamen(tnDepartamen) ;
+                OR !THIS.establecer_sifen(tnSifen) THEN
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -45,18 +49,13 @@ DEFINE CLASS dto_base AS Custom
     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_codigo
-        RETURN THIS.nCodigo
+    FUNCTION obtener_departamen
+        RETURN THIS.nDepartamen
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre
-        RETURN THIS.cNombre
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    FUNCTION esta_vigente
-        RETURN THIS.lVigente
+    FUNCTION obtener_sifen
+        RETURN THIS.nSifen
     ENDFUNC
 
     **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
@@ -64,35 +63,24 @@ DEFINE CLASS dto_base AS Custom
     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     **--------------------------------------------------------------------------
-    FUNCTION establecer_codigo
-        LPARAMETERS tnCodigo
+    FUNCTION establecer_departamen
+        LPARAMETERS tnDepartamen
 
-        IF VARTYPE(tnCodigo) != 'N' THEN
+        IF VARTYPE(tnDepartamen) != 'N' THEN
             RETURN .F.
         ENDIF
 
-        THIS.nCodigo = tnCodigo
+        THIS.nDepartamen = tnDepartamen
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION establecer_nombre
-        LPARAMETERS tcNombre
+    FUNCTION establecer_sifen
+        LPARAMETERS tnSifen
 
-        IF VARTYPE(tcNombre) != 'C' THEN
+        IF VARTYPE(tnSifen) != 'N' THEN
             RETURN .F.
         ENDIF
 
-        THIS.cNombre = ALLTRIM(tcNombre)
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    FUNCTION establecer_vigente
-        LPARAMETERS tlVigente
-
-        IF VARTYPE(tlVigente) != 'L' THEN
-            RETURN .F.
-        ENDIF
-
-        THIS.lVigente = tlVigente
+        THIS.nSifen = tnSifen
     ENDFUNC
 ENDDEFINE
