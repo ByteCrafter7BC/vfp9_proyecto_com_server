@@ -48,6 +48,7 @@ FUNCTION establecer_ruta
                 modulo\rubros1, ;
                 modulo\rubros2, ;
                 modulo\sifen, ;
+                modulo\vendedor, ;
                 prog, ;
                 proyecto, ;
                 prueba

@@ -137,6 +137,13 @@ cd..
 cd sifen
 ren sifen_ciudades.prg sifen_ciudades.prg
 cd..
+cd vendedor
+ren com_vendedor.prg com_vendedor.prg
+ren dto_vendedor.prg dto_vendedor.prg
+ren repositorio_vendedor.prg repositorio_vendedor.prg
+ren validador_vendedor.prg validador_vendedor.prg
+ren vendedor.prg vendedor.prg
+cd..
 cd..
 
 cd prog
@@ -167,6 +174,7 @@ ren test_com_modelos.prg test_com_modelos.prg
 ren test_com_proceden.prg test_com_proceden.prg
 ren test_com_rubros1.prg test_com_rubros1.prg
 ren test_com_rubros2.prg test_com_rubros2.prg
+ren test_com_vendedor.prg test_com_vendedor.prg
 cd..
 
 ren .gitignore .gitignore

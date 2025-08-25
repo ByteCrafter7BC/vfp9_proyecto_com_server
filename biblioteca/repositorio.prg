@@ -37,6 +37,7 @@ DEFINE CLASS repositorio AS Custom
             .aRepositorio[09, 1] = 'proceden'
             .aRepositorio[10, 1] = 'rubros1'
             .aRepositorio[11, 1] = 'rubros2'
+            .aRepositorio[12, 1] = 'vendedor'
         ENDWITH
     ENDFUNC
 
