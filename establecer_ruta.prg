@@ -36,7 +36,7 @@ FUNCTION establecer_ruta
     SET PATH TO bd, ;
                 biblioteca, ;
                 binario, ;
-                modulo\barrio, ;
+                modulo\barrios, ;
                 modulo\ciudades, ;
                 modulo\depar, ;
                 modulo\familias, ;

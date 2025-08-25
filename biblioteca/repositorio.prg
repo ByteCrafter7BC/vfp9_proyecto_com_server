@@ -26,7 +26,7 @@ DEFINE CLASS repositorio AS Custom
         DIMENSION THIS.aRepositorio[12, 2]
 
         WITH THIS
-            .aRepositorio[01, 1] = 'barrio'
+            .aRepositorio[01, 1] = 'barrios'
             .aRepositorio[02, 1] = 'ciudades'
             .aRepositorio[03, 1] = 'depar'
             .aRepositorio[04, 1] = 'familias'

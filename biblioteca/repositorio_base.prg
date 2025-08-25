@@ -153,6 +153,12 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_barrio
+        LPARAMETERS tnBarrio
+        RETURN THIS.obtener_nombre_referencial('barrios', tnBarrio)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     FUNCTION obtener_nombre_ciudad
         LPARAMETERS tnCiudad
         RETURN THIS.obtener_nombre_referencial('ciudades', tnCiudad)
@@ -271,7 +277,7 @@ DEFINE CLASS repositorio_base AS Custom
 
         IF VARTYPE(THIS.cSqlSelect) != 'C' OR EMPTY(THIS.cSqlSelect) THEN
             DO CASE
-            CASE THIS.cModelo == 'barrio'
+            CASE THIS.cModelo == 'barrios'
                 THIS.cSqlSelect = 'codigo, nombre, departamen, ciudad, vigente'
             CASE THIS.cModelo == 'ciudades'
                 THIS.cSqlSelect = 'codigo, nombre, departamen, sifen, vigente'
@@ -339,7 +345,7 @@ DEFINE CLASS repositorio_base AS Custom
         DO CASE
         CASE INLIST(tcModelo, 'depar', 'maquinas')
             lnMaximo = 999
-        CASE INLIST(tcModelo, 'ciudades', 'sifen')
+        CASE INLIST(tcModelo, 'barrios', 'ciudades', 'sifen')
             lnMaximo = 99999
         CASE INLIST(tcModelo, 'maquinas', 'marcas2')
             lnMinimo = 0
@@ -405,6 +411,12 @@ DEFINE CLASS repositorio_base AS Custom
                 OR LEN(ALLTRIM(tcCodNum)) != 3 OR !es_digito(tcCodNum) THEN
             RETURN .F.
         ENDIF
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnCiudad_Valid
+        LPARAMETERS tnCiudad
+        RETURN THIS.validar_codigo_referencial('barrios', tnCiudad)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -1078,7 +1090,10 @@ DEFINE CLASS repositorio_base AS Custom
             RETURN .F.
         ENDIF
 
-        INSERT INTO (THIS.cModelo) FROM MEMVAR
+        INSERT INTO (THIS.cModelo) ;
+            (codigo, nombre, vigente) ;
+        VALUES ;
+            (m.codigo, m.nombre, m.vigente)
 
         WITH THIS
             .cUltimoError = ''

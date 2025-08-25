@@ -1,5 +1,5 @@
 **/
-* registrar_error() función
+* registrar_error.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *

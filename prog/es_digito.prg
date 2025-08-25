@@ -1,5 +1,5 @@
 **/
-* es_digito() función
+* es_digito.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *

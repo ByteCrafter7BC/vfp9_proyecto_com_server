@@ -1,5 +1,5 @@
 **/
-* cerrar_dbf() función
+* cerrar_dbf.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *

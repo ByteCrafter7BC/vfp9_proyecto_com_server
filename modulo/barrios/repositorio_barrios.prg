@@ -1,5 +1,5 @@
 **/
-* repositorio_ciudades.prg
+* repositorio_barrios.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -20,26 +20,15 @@
 
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
+DEFINE CLASS repositorio_barrios AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     FUNCTION nombre_existe
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_nombre_existe(tcNombre, tnDepartamen)
+            RETURN THIS.odbc_nombre_existe(tcNombre, tnDepartamen, tnCiudad)
         ELSE
-            RETURN THIS.dbf_nombre_existe(tcNombre, tnDepartamen)
-        ENDIF
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    FUNCTION sifen_existe
-        LPARAMETERS tnSifen
-
-        IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_sifen_existe(tnSifen)
-        ELSE
-            RETURN THIS.dbf_sifen_existe(tnSifen)
+            RETURN THIS.dbf_nombre_existe(tcNombre, tnDepartamen, tnCiudad)
         ENDIF
     ENDFUNC
 
@@ -54,15 +43,10 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
-        lcCondicionFiltro = 'ciudad == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'barrio == ' + ALLTRIM(STR(tnCodigo))
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
             lcCondicionFiltro = STRTRAN(lcCondicionFiltro, '==', '=')
-        ENDIF
-
-        IF !llRelacionado THEN
-            llRelacionado = ;
-                repositorio_existe_referencia('barrios', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN
@@ -84,23 +68,13 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_nombre
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_obtener_por_nombre(tcNombre, tnDepartamen)
+            RETURN THIS.odbc_obtener_por_nombre(tcNombre, tnDepartamen, ;
+                tnCiudad)
         ELSE
-            RETURN THIS.dbf_obtener_por_nombre(tcNombre, tnDepartamen)
-        ENDIF
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    FUNCTION obtener_por_sifen
-        LPARAMETERS tnSifen
-
-        IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_obtener_por_sifen(tnSifen)
-        ELSE
-            RETURN THIS.dbf_obtener_por_sifen(tnSifen)
+            RETURN THIS.dbf_obtener_por_nombre(tcNombre, tnDepartamen, tnCiudad)
         ENDIF
     ENDFUNC
 
@@ -116,7 +90,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        IF !THIS.tnSifen_Valid(toModelo.obtener_sifen()) THEN
+        IF !THIS.tnCiudad_Valid(toModelo.obtener_ciudad()) THEN
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -128,7 +102,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION dbf_nombre_existe
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
@@ -137,6 +111,11 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
         IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnDepartamen')
+            RETURN .T.
+        ENDIF
+
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
+            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCiudad')
             RETURN .T.
         ENDIF
 
@@ -151,10 +130,10 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         LOCAL llExiste
 
         SELECT (THIS.cModelo)
-        SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3)
+        SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3) + STR(ciudad, 5)
         IF SEEK(tcNombre) THEN
             SCAN WHILE UPPER(nombre) == tcNombre
-                IF departamen == tnDepartamen THEN
+                IF departamen == tnDepartamen AND ciudad == tnCiudad THEN
                     llExiste = .T.
                     EXIT
                 ENDIF
@@ -171,7 +150,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION odbc_nombre_existe
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
@@ -180,6 +159,11 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
         IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnDepartamen')
+            RETURN .T.
+        ENDIF
+
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
+            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCiudad')
             RETURN .T.
         ENDIF
 
@@ -196,69 +180,8 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         lnConexion = _oSCREEN.oConexion.obtener_conexion()
         lcSql = 'SELECT COUNT(*) AS cantidad ' + ;
             'FROM ' + THIS.cModelo + ' ' + ;
-            'WHERE UPPER(nombre) = ?tcNombre AND departamen = ?tnDepartamen'
-
-        IF SQLEXEC(lnConexion, lcSql) == SQL_EXITO THEN
-            llExiste = VAL(cantidad) > 0
-            USE
-            THIS.cUltimoError = ''
-        ELSE
-            AERROR(laError)
-            THIS.cUltimoError = laError[2]
-        ENDIF
-
-        RETURN llExiste
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_sifen_existe
-        LPARAMETERS tnSifen
-
-        IF !THIS.tnSifen_Valid(tnSifen) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnSifen')
-            RETURN .T.
-        ENDIF
-
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
-            RETURN .T.
-        ENDIF
-
-        LOCAL llExiste
-
-        SELECT (THIS.cModelo)
-        SET ORDER TO 0
-        LOCATE FOR sifen == tnSifen
-        llExiste = FOUND()
-
-        WITH THIS
-            .cUltimoError = ''
-            .desconectar()
-        ENDWITH
-
-        RETURN llExiste
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_sifen_existe
-        LPARAMETERS tnSifen
-
-        IF !THIS.tnSifen_Valid(tnSifen) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnSifen')
-            RETURN .T.
-        ENDIF
-
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
-            RETURN .T.
-        ENDIF
-
-        LOCAL llExiste, lnConexion, lcSql
-        llExiste = .T.
-        lnConexion = _oSCREEN.oConexion.obtener_conexion()
-        lcSql = 'SELECT COUNT(*) AS cantidad ' + ;
-            'FROM ' + THIS.cModelo + ' ' + ;
-            'WHERE sifen = ?tnSifen'
+            'WHERE UPPER(nombre) = ?tcNombre ' + ;
+            'AND departamen = ?tnDepartamen AND ciudad = ?tnCiudad'
 
         IF SQLEXEC(lnConexion, lcSql) == SQL_EXITO THEN
             llExiste = VAL(cantidad) > 0
@@ -274,7 +197,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION dbf_obtener_por_nombre
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
@@ -284,6 +207,11 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .F.
+        ENDIF
+
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
+            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCiudad')
+            RETURN .T.
         ENDIF
 
         tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
@@ -297,10 +225,10 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         LOCAL loModelo
 
         SELECT (THIS.cModelo)
-        SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3)
+        SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3) + STR(ciudad, 5)
         IF SEEK(tcNombre) THEN
             SCAN WHILE UPPER(nombre) == tcNombre
-                IF departamen == tnDepartamen THEN
+                IF departamen == tnDepartamen AND ciudad == tnCiudad THEN
                     loModelo = THIS.obtener_modelo()
                     EXIT
                 ENDIF
@@ -317,7 +245,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION odbc_obtener_por_nombre
-        LPARAMETERS tcNombre, tnDepartamen
+        LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
@@ -327,6 +255,11 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
             THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .F.
+        ENDIF
+
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
+            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCiudad')
+            RETURN .T.
         ENDIF
 
         tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
@@ -341,73 +274,8 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         lnConexion = _oSCREEN.oConexion.obtener_conexion()
         lcSql = 'SELECT ' + THIS.cSqlSelect + ' ' + ;
             'FROM ' + THIS.cModelo + ' ' + ;
-            'WHERE UPPER(nombre) = ?tcNombre AND departamen = ?tnDepartamen'
-
-        IF SQLEXEC(lnConexion, lcSql) == SQL_EXITO THEN
-            IF RECCOUNT() > 0 THEN
-                GOTO TOP
-                loModelo = THIS.obtener_modelo()
-            ENDIF
-            USE
-            THIS.cUltimoError = ''
-        ELSE
-            AERROR(laError)
-            THIS.cUltimoError = laError[2]
-        ENDIF
-
-        RETURN loModelo
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_obtener_por_sifen
-        LPARAMETERS tnSifen
-
-        IF !THIS.tnSifen_Valid(tnSifen) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnSifen')
-            RETURN .F.
-        ENDIF
-
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        LOCAL loModelo
-
-        SELECT (THIS.cModelo)
-        SET ORDER TO 0
-        LOCATE FOR sifen == tnSifen
-        IF FOUND() THEN
-            loModelo = THIS.obtener_modelo()
-        ENDIF
-
-        WITH THIS
-            .cUltimoError = ''
-            .desconectar()
-        ENDWITH
-
-        RETURN loModelo
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_obtener_por_sifen
-        LPARAMETERS tnSifen
-
-        IF !THIS.tnSifen_Valid(tnSifen) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnSifen')
-            RETURN .F.
-        ENDIF
-
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        LOCAL loModelo, lnConexion, lcSql
-        lnConexion = _oSCREEN.oConexion.obtener_conexion()
-        lcSql = 'SELECT ' + THIS.cSqlSelect + ' ' + ;
-            'FROM ' + THIS.cModelo + ' ' + ;
-            'WHERE sifen = ?tnSifen'
+            'WHERE UPPER(nombre) = ?tcNombre ' + ;
+            'AND departamen = ?tnDepartamen AND ciudad = ?tnCiudad'
 
         IF SQLEXEC(lnConexion, lcSql) == SQL_EXITO THEN
             IF RECCOUNT() > 0 THEN
@@ -433,14 +301,13 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
-              loModelo
+        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente
 
         WITH toModelo
             m.codigo = .obtener_codigo()
             m.nombre = .obtener_nombre()
             m.departamen = .obtener_departamen()
-            m.sifen = .obtener_sifen()
+            m.ciudad = .obtener_ciudad()
             m.vigente = .esta_vigente()
         ENDWITH
 
@@ -450,15 +317,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.departamen) THEN
+        IF THIS.nombre_existe(m.nombre, m.departamen, m.ciudad) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
-            RETURN .F.
-        ENDIF
-
-        IF THIS.sifen_existe(m.sifen) THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' ya existe."
             RETURN .F.
         ENDIF
 
@@ -468,12 +329,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = ;
-            NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
-
-        IF VARTYPE(loModelo) != 'O' THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' no existe."
+        IF !repositorio_codigo_existe('ciudades', m.ciudad) THEN
+            THIS.cUltimoError = "El código de ciudad '" + ;
+                ALLTRIM(STR(m.ciudad)) + "' no existe."
             RETURN .F.
         ENDIF
 
@@ -483,9 +341,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         ENDIF
 
         INSERT INTO (THIS.cModelo) ;
-            (codigo, nombre, departamen, sifen, vigente) ;
+            (codigo, nombre, departamen, ciudad, vigente) ;
         VALUES ;
-            (m.codigo, m.nombre, m.departamen, m.sifen, m.vigente)
+            (m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente)
 
         WITH THIS
             .cUltimoError = ''
@@ -502,14 +360,14 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
+        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente, ;
               loModelo, lnConexion, lcSql
 
         WITH toModelo
             m.codigo = .obtener_codigo()
             m.nombre = .obtener_nombre()
             m.departamen = .obtener_departamen()
-            m.sifen = .obtener_sifen()
+            m.ciudad = .obtener_ciudad()
             m.vigente = IIF(.esta_vigente(), 1, 0)
         ENDWITH
 
@@ -519,15 +377,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.departamen) THEN
+        IF THIS.nombre_existe(m.nombre, m.departamen, m.ciudad) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
-            RETURN .F.
-        ENDIF
-
-        IF THIS.sifen_existe(m.sifen) THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' ya existe."
             RETURN .F.
         ENDIF
 
@@ -537,12 +389,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = ;
-            NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
-
-        IF VARTYPE(loModelo) != 'O' THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' no existe."
+        IF !repositorio_codigo_existe('ciudades', m.ciudad) THEN
+            THIS.cUltimoError = "El código de ciudad '" + ;
+                ALLTRIM(STR(m.ciudad)) + "' no existe."
             RETURN .F.
         ENDIF
 
@@ -553,7 +402,8 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
 
         lnConexion = _oSCREEN.oConexion.obtener_conexion()
         lcSql = 'INSERT INTO ' + THIS.cModelo + ' ' + ;
-            'VALUES (?m.codigo, ?m.nombre, ?m.departamen, ?m.sifen, ?m.vigente)'
+            'VALUES (?m.codigo, ?m.nombre, ?m.departamen, ?m.ciudad, ' + ;
+            '?m.vigente)'
 
         IF SQLEXEC(lnConexion, lcSql) == SQL_EXITO THEN
             THIS.cUltimoError = ''
@@ -574,14 +424,14 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
+        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente, ;
               loModelo
 
         WITH toModelo
             m.codigo = .obtener_codigo()
             m.nombre = .obtener_nombre()
             m.departamen = .obtener_departamen()
-            m.sifen = .obtener_sifen()
+            m.ciudad = .obtener_ciudad()
             m.vigente = .esta_vigente()
         ENDWITH
 
@@ -591,22 +441,12 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen)
+        loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen, m.ciudad)
 
         IF VARTYPE(loModelo) == 'O' THEN
             IF loModelo.obtener_codigo() != m.codigo THEN
                 THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                     "' ya existe."
-                RETURN .F.
-            ENDIF
-        ENDIF
-
-        loModelo = THIS.obtener_por_sifen(m.sifen)
-
-        IF VARTYPE(loModelo) == 'O' THEN
-            IF loModelo.obtener_codigo() != m.codigo THEN
-                THIS.cUltimoError = "El código del SIFEN '" + ;
-                    ALLTRIM(STR(m.sifen)) + "' ya existe."
                 RETURN .F.
             ENDIF
         ENDIF
@@ -617,12 +457,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = ;
-            NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
-
-        IF VARTYPE(loModelo) != 'O' THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' no existe."
+        IF !repositorio_codigo_existe('ciudades', m.ciudad) THEN
+            THIS.cUltimoError = "El código de ciudad '" + ;
+                ALLTRIM(STR(m.ciudad)) + "' no existe."
             RETURN .F.
         ENDIF
 
@@ -650,7 +487,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         IF SEEK(m.codigo) THEN
             REPLACE nombre WITH ALLTRIM(m.nombre), ;
                     departamen WITH m.departamen, ;
-                    sifen WITH m.sifen, ;
+                    ciudad WITH m.ciudad, ;
                     vigente WITH m.vigente
             THIS.cUltimoError = ''
         ELSE
@@ -672,14 +509,14 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
+        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente, ;
               loModelo
 
         WITH toModelo
             m.codigo = .obtener_codigo()
             m.nombre = .obtener_nombre()
             m.departamen = .obtener_departamen()
-            m.sifen = .obtener_sifen()
+            m.ciudad = .obtener_ciudad()
             m.vigente = .esta_vigente()
         ENDWITH
 
@@ -689,22 +526,12 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen)
+        loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen, m.ciudad)
 
         IF VARTYPE(loModelo) == 'O' THEN
             IF loModelo.obtener_codigo() != m.codigo THEN
                 THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                     "' ya existe."
-                RETURN .F.
-            ENDIF
-        ENDIF
-
-        loModelo = THIS.obtener_por_sifen(m.sifen)
-
-        IF VARTYPE(loModelo) == 'O' THEN
-            IF loModelo.obtener_codigo() != m.codigo THEN
-                THIS.cUltimoError = "El código del SIFEN '" + ;
-                    ALLTRIM(STR(m.sifen)) + "' ya existe."
                 RETURN .F.
             ENDIF
         ENDIF
@@ -715,12 +542,9 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        loModelo = ;
-            NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
-
-        IF VARTYPE(loModelo) != 'O' THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' no existe."
+        IF !repositorio_codigo_existe('ciudades', m.ciudad) THEN
+            THIS.cUltimoError = "El código de ciudad '" + ;
+                ALLTRIM(STR(m.ciudad)) + "' no existe."
             RETURN .F.
         ENDIF
 
@@ -746,7 +570,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
         lnConexion = _oSCREEN.oConexion.obtener_conexion()
         lcSql = 'UPDATE ' + THIS.cModelo + ' ' + ;
             'SET nombre = ?m.nombre, departamen = ?m.departamen, ' + ;
-            'sifen = ?m.sifen, vigente = ?m.vigente ' + ;
+            'ciudad = ?m.ciudad, vigente = ?m.vigente ' + ;
             'WHERE codigo = ?m.codigo'
         m.vigente = IIF(toModelo.esta_vigente(), 1, 0)
 
@@ -763,12 +587,12 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION dbf_obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, ALLTRIM(nombre), departamen, sifen, vigente)
+            codigo, ALLTRIM(nombre), departamen, ciudad, vigente)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION odbc_obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, ALLTRIM(nombre), departamen, sifen, vigente == 1)
+            codigo, ALLTRIM(nombre), departamen, ciudad, vigente == 1)
     ENDFUNC
 ENDDEFINE

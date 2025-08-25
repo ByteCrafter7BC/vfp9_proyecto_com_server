@@ -19,6 +19,18 @@
 */
 
 **------------------------------------------------------------------------------
+CREATE TABLE barrios (;
+    codigo N(5), ;
+    nombre C(30), ;
+    departamen N(3), ;
+    ciudad N(5), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
 CREATE TABLE depar (;
     codigo N(3), ;
     nombre C(30), ;

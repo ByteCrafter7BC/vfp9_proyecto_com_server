@@ -43,29 +43,19 @@ ren vfp9t.dll vfp9t.dll
 cd..
 
 cd modulo
-cd barrio
-ren barrio.prg barrio.prg
-ren barrio_aud.prg barrio_aud.prg
-ren frm_barrio.prg frm_barrio.prg
-ren frm_barrio.sct frm_barrio.sct
-ren frm_barrio.scx frm_barrio.scx
-ren frm_listar_barrio.prg frm_listar_barrio.prg
-ren frm_listar_barrio.sct frm_listar_barrio.sct
-ren frm_listar_barrio.scx frm_listar_barrio.scx
-ren repositorio_barrio.prg repositorio_barrio.prg
-ren validador_barrio.prg validador_barrio.prg
+cd barrios
+ren barrios.prg barrios.prg
+ren com_barrios.prg com_barrios.prg
+ren dto_barrios.prg dto_barrios.prg
+ren repositorio_barrios.prg repositorio_barrios.prg
+ren validador_barrios.prg validador_barrios.prg
 cd..
-cd ciudad
-ren ciudad.prg ciudad.prg
-ren ciudad_aud.prg ciudad_aud.prg
-ren frm_ciudad.prg frm_ciudad.prg
-ren frm_ciudad.sct frm_ciudad.sct
-ren frm_ciudad.scx frm_ciudad.scx
-ren frm_listar_ciudad.prg frm_listar_ciudad.prg
-ren frm_listar_ciudad.sct frm_listar_ciudad.sct
-ren frm_listar_ciudad.scx frm_listar_ciudad.scx
-ren repositorio_ciudad.prg repositorio_ciudad.prg
-ren validador_ciudad.prg validador_ciudad.prg
+cd ciudades
+ren ciudades.prg ciudades.prg
+ren com_ciudades.prg com_ciudades.prg
+ren dto_ciudades.prg dto_ciudades.prg
+ren repositorio_ciudades.prg repositorio_ciudades.prg
+ren validador_ciudades.prg validador_ciudades.prg
 cd..
 cd depar
 ren com_depar.prg com_depar.prg
@@ -130,29 +120,22 @@ ren proceden.prg proceden.prg
 ren repositorio_proceden.prg repositorio_proceden.prg
 ren validador_proceden.prg validador_proceden.prg
 cd..
-cd rubro
-ren frm_listar_rubro.prg frm_listar_rubro.prg
-ren frm_listar_rubro.sct frm_listar_rubro.sct
-ren frm_listar_rubro.scx frm_listar_rubro.scx
-ren frm_rubro.prg frm_rubro.prg
-ren frm_rubro.sct frm_rubro.sct
-ren frm_rubro.scx frm_rubro.scx
-ren repositorio_rubro.prg repositorio_rubro.prg
-ren rubro.prg rubro.prg
-ren rubro_aud.prg rubro_aud.prg
-ren validador_rubro.prg validador_rubro.prg
+cd rubros1
+ren com_rubros1.prg com_rubros1.prg
+ren dto_rubros1.prg dto_rubros1.prg
+ren repositorio_rubros1.prg repositorio_rubros1.prg
+ren rubros1.prg rubros1.prg
+ren validador_rubros1.prg validador_rubros1.prg
 cd..
-cd subrubro
-ren frm_listar_subrubro.prg frm_listar_subrubro.prg
-ren frm_listar_subrubro.sct frm_listar_subrubro.sct
-ren frm_listar_subrubro.scx frm_listar_subrubro.scx
-ren frm_subrubro.prg frm_subrubro.prg
-ren frm_subrubro.sct frm_subrubro.sct
-ren frm_subrubro.scx frm_subrubro.scx
-ren subrubro.prg subrubro.prg
-ren subrubro_aud.prg subrubro_aud.prg
-ren repositorio_subrubro.prg repositorio_subrubro.prg
-ren validador_subrubro.prg validador_subrubro.prg
+cd rubros2
+ren com_rubros2.prg com_rubros2.prg
+ren dto_rubros2.prg dto_rubros2.prg
+ren repositorio_rubros2.prg repositorio_rubros2.prg
+ren rubros2.prg rubros2.prg
+ren validador_rubros2.prg validador_rubros2.prg
+cd..
+cd sifen
+ren sifen_ciudades.prg sifen_ciudades.prg
 cd..
 cd..
 
@@ -172,6 +155,9 @@ ren com_interop.pjx com_interop.pjx
 cd..
 
 cd prueba
+ren test_ciudades.prg test_ciudades.prg
+ren test_com_barrios.prg test_com_barrios.prg
+ren test_com_ciudades.prg test_com_ciudades.prg
 ren test_com_depar.prg test_com_depar.prg
 ren test_com_familias.prg test_com_familias.prg
 ren test_com_maquinas.prg test_com_maquinas.prg
@@ -183,8 +169,10 @@ ren test_com_rubros1.prg test_com_rubros1.prg
 ren test_com_rubros2.prg test_com_rubros2.prg
 cd..
 
+ren .gitignore .gitignore
 ren construir.prg construir.prg
 ren establecer_ruta.prg establecer_ruta.prg
+ren LICENSE LICENSE
 ren limpiar.bat limpiar.bat
 ren README.md README.md
 ren test.prg test.prg
