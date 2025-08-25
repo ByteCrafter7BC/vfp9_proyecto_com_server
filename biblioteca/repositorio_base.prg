@@ -165,6 +165,12 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_cobrador
+        LPARAMETERS tnCobrador
+        RETURN THIS.obtener_nombre_referencial('cobrador', tnCobrador)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     FUNCTION obtener_nombre_departamen
         LPARAMETERS tnDepartamen
         RETURN THIS.obtener_nombre_referencial('depar', tnDepartamen)
@@ -349,7 +355,7 @@ DEFINE CLASS repositorio_base AS Custom
         lnMaximo = 9999
 
         DO CASE
-        CASE INLIST(tcModelo, 'depar', 'maquinas', 'vendedor')
+        CASE INLIST(tcModelo, 'cobrador', 'depar', 'maquinas', 'vendedor')
             lnMaximo = 999
         CASE INLIST(tcModelo, 'barrios', 'ciudades', 'sifen')
             lnMaximo = 99999

@@ -57,6 +57,13 @@ ren dto_ciudades.prg dto_ciudades.prg
 ren repositorio_ciudades.prg repositorio_ciudades.prg
 ren validador_ciudades.prg validador_ciudades.prg
 cd..
+cd cobrador
+ren cobrador.prg cobrador.prg
+ren com_cobrador.prg com_cobrador.prg
+ren dto_cobrador.prg dto_cobrador.prg
+ren repositorio_cobrador.prg repositorio_cobrador.prg
+ren validador_cobrador.prg validador_cobrador.prg
+cd..
 cd depar
 ren com_depar.prg com_depar.prg
 ren depar.prg depar.prg
@@ -165,6 +172,7 @@ cd prueba
 ren test_ciudades.prg test_ciudades.prg
 ren test_com_barrios.prg test_com_barrios.prg
 ren test_com_ciudades.prg test_com_ciudades.prg
+ren test_com_cobrador.prg test_com_cobrador.prg
 ren test_com_depar.prg test_com_depar.prg
 ren test_com_familias.prg test_com_familias.prg
 ren test_com_maquinas.prg test_com_maquinas.prg

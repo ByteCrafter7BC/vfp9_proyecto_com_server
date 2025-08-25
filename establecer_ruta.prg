@@ -38,6 +38,7 @@ FUNCTION establecer_ruta
                 binario, ;
                 modulo\barrios, ;
                 modulo\ciudades, ;
+                modulo\cobrador, ;
                 modulo\depar, ;
                 modulo\familias, ;
                 modulo\maquinas, ;
