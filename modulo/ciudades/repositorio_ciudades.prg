@@ -22,13 +22,13 @@
 
 DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
-    FUNCTION nombre_existe
+    FUNCTION existe_nombre
         LPARAMETERS tcNombre, tnDepartamen
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_nombre_existe(tcNombre, tnDepartamen)
+            RETURN THIS.odbc_existe_nombre(tcNombre, tnDepartamen)
         ELSE
-            RETURN THIS.dbf_nombre_existe(tcNombre, tnDepartamen)
+            RETURN THIS.dbf_existe_nombre(tcNombre, tnDepartamen)
         ENDIF
     ENDFUNC
 
@@ -127,7 +127,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
     */
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_nombre_existe
+    PROTECTED FUNCTION dbf_existe_nombre
         LPARAMETERS tcNombre, tnDepartamen
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -170,7 +170,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_nombre_existe
+    PROTECTED FUNCTION odbc_existe_nombre
         LPARAMETERS tcNombre, tnDepartamen
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -444,13 +444,13 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.departamen) THEN
+        IF THIS.existe_nombre(m.nombre, m.departamen) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -462,7 +462,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        IF !repositorio_codigo_existe('depar', m.departamen) THEN
+        IF !repositorio_existe_codigo('depar', m.departamen) THEN
             THIS.cUltimoError = "El código de departamento '" + ;
                 ALLTRIM(STR(m.departamen)) + "' no existe."
             RETURN .F.
@@ -513,13 +513,13 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             m.vigente = IIF(.esta_vigente(), 1, 0)
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.departamen) THEN
+        IF THIS.existe_nombre(m.nombre, m.departamen) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -531,7 +531,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             RETURN .F.
         ENDIF
 
-        IF !repositorio_codigo_existe('depar', m.departamen) THEN
+        IF !repositorio_existe_codigo('depar', m.departamen) THEN
             THIS.cUltimoError = "El código de departamento '" + ;
                 ALLTRIM(STR(m.departamen)) + "' no existe."
             RETURN .F.
@@ -585,7 +585,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -611,7 +611,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             ENDIF
         ENDIF
 
-        IF !repositorio_codigo_existe('depar', m.departamen) THEN
+        IF !repositorio_existe_codigo('depar', m.departamen) THEN
             THIS.cUltimoError = "El código de departamento '" + ;
                 ALLTRIM(STR(m.departamen)) + "' no existe."
             RETURN .F.
@@ -683,7 +683,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -709,7 +709,7 @@ DEFINE CLASS repositorio_ciudades AS repositorio_base OF repositorio_base.prg
             ENDIF
         ENDIF
 
-        IF !repositorio_codigo_existe('depar', m.departamen) THEN
+        IF !repositorio_existe_codigo('depar', m.departamen) THEN
             THIS.cUltimoError = "El código de departamento '" + ;
                 ALLTRIM(STR(m.departamen)) + "' no existe."
             RETURN .F.

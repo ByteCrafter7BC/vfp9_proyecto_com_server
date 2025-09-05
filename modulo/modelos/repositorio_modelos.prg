@@ -1,14 +1,34 @@
+**/
+* repositorio_modelos.prg
+*
+* Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
+*
+* Este programa es software libre: puede redistribuirlo y/o modificarlo
+* bajo los términos de la Licencia Pública General GNU publicada por
+* la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+* (a su elección) cualquier versión posterior.
+*
+* Este programa se distribuye con la esperanza de que sea útil,
+* pero SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de
+* COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulte la
+* Licencia Pública General de GNU para obtener más detalles.
+*
+* Debería haber recibido una copia de la Licencia Pública General de GNU
+* junto con este programa. Si no es así, consulte
+* <https://www.gnu.org/licenses/>.
+*/
+
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
-    FUNCTION nombre_existe
+    FUNCTION existe_nombre
         LPARAMETERS tcNombre, tnMaquina, tnMarca
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_nombre_existe(tcNombre, tnMaquina, tnMarca)
+            RETURN THIS.odbc_existe_nombre(tcNombre, tnMaquina, tnMarca)
         ELSE
-            RETURN THIS.dbf_nombre_existe(tcNombre, tnMaquina, tnMarca)
+            RETURN THIS.dbf_existe_nombre(tcNombre, tnMaquina, tnMarca)
         ENDIF
     ENDFUNC
 
@@ -75,7 +95,7 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
     */
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_nombre_existe
+    PROTECTED FUNCTION dbf_existe_nombre
         LPARAMETERS tcNombre, tnMaquina, tnMarca
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -123,7 +143,7 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_nombre_existe
+    PROTECTED FUNCTION odbc_existe_nombre
         LPARAMETERS tcNombre, tnMaquina, tnMarca
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -390,26 +410,26 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.maquina, m.marca) THEN
+        IF THIS.existe_nombre(m.nombre, m.maquina, m.marca) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
         IF m.maquina > 0 ;
-                AND !repositorio_codigo_existe('maquinas', m.maquina) THEN
+                AND !repositorio_existe_codigo('maquinas', m.maquina) THEN
             THIS.cUltimoError = "El código de máquina '" + ;
                 ALLTRIM(STR(m.maquina)) + "' no existe."
             RETURN .F.
         ENDIF
 
-        IF m.marca > 0 AND !repositorio_codigo_existe('marcas2', m.marca) THEN
+        IF m.marca > 0 AND !repositorio_existe_codigo('marcas2', m.marca) THEN
             THIS.cUltimoError = "El código de marca '" + ;
                 ALLTRIM(STR(m.marca)) + "' no existe."
             RETURN .F.
@@ -448,26 +468,26 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
             m.vigente = IIF(.esta_vigente(), 1, 0)
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre, m.maquina, m.marca) THEN
+        IF THIS.existe_nombre(m.nombre, m.maquina, m.marca) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
         IF m.maquina > 0 ;
-                AND !repositorio_codigo_existe('maquinas', m.maquina) THEN
+                AND !repositorio_existe_codigo('maquinas', m.maquina) THEN
             THIS.cUltimoError = "El código de máquina '" + ;
                 ALLTRIM(STR(m.maquina)) + "' no existe."
             RETURN .F.
         ENDIF
 
-        IF m.marca > 0 AND !repositorio_codigo_existe('marcas2', m.marca) THEN
+        IF m.marca > 0 AND !repositorio_existe_codigo('marcas2', m.marca) THEN
             THIS.cUltimoError = "El código de marca '" + ;
                 ALLTRIM(STR(m.marca)) + "' no existe."
             RETURN .F.
@@ -514,7 +534,7 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -531,13 +551,13 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
         ENDIF
 
         IF m.maquina > 0 ;
-                AND !repositorio_codigo_existe('maquinas', m.maquina) THEN
+                AND !repositorio_existe_codigo('maquinas', m.maquina) THEN
             THIS.cUltimoError = "El código de máquina '" + ;
                 ALLTRIM(STR(m.maquina)) + "' no existe."
             RETURN .F.
         ENDIF
 
-        IF m.marca > 0 AND !repositorio_codigo_existe('marcas2', m.marca) THEN
+        IF m.marca > 0 AND !repositorio_existe_codigo('marcas2', m.marca) THEN
             THIS.cUltimoError = "El código de marca '" + ;
                 ALLTRIM(STR(m.marca)) + "' no existe."
             RETURN .F.
@@ -600,7 +620,7 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -617,13 +637,13 @@ DEFINE CLASS repositorio_modelos AS repositorio_base OF repositorio_base.prg
         ENDIF
 
         IF m.maquina > 0 ;
-                AND !repositorio_codigo_existe('maquinas', m.maquina) THEN
+                AND !repositorio_existe_codigo('maquinas', m.maquina) THEN
             THIS.cUltimoError = "El código de máquina '" + ;
                 ALLTRIM(STR(m.maquina)) + "' no existe."
             RETURN .F.
         ENDIF
 
-        IF m.marca > 0 AND !repositorio_codigo_existe('marcas2', m.marca) THEN
+        IF m.marca > 0 AND !repositorio_existe_codigo('marcas2', m.marca) THEN
             THIS.cUltimoError = "El código de marca '" + ;
                 ALLTRIM(STR(m.marca)) + "' no existe."
             RETURN .F.

@@ -1,5 +1,5 @@
 **/
-* repositorio_codigo_existe.prg
+* validador_mecanico.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,13 +18,5 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-FUNCTION repositorio_codigo_existe
-    LPARAMETERS tcModelo, tnCodigo
-
-    LOCAL loModelo
-    loModelo = repositorio_obtener_por_codigo(tcModelo, tnCodigo)
-
-    IF VARTYPE(loModelo) != 'O' THEN
-        RETURN .F.
-    ENDIF
-ENDFUNC
+DEFINE CLASS validador_mecanico AS validador_base OF validador_base.prg
+ENDDEFINE

@@ -23,7 +23,7 @@ ren dto_base.prg dto_base.prg
 ren modelo_base.prg modelo_base.prg
 ren repositorio.prg repositorio.prg
 ren repositorio_base.prg repositorio_base.prg
-ren repositorio_codigo_existe.prg repositorio_codigo_existe.prg
+ren repositorio_existe_codigo.prg repositorio_existe_codigo.prg
 ren repositorio_existe_referencia.prg repositorio_existe_referencia.prg
 ren repositorio_obtener_nombre.prg repositorio_obtener_nombre.prg
 ren repositorio_obtener_por_codigo.prg repositorio_obtener_por_codigo.prg
@@ -98,6 +98,13 @@ ren dto_marcas2.prg dto_marcas2.prg
 ren marcas2.prg marcas2.prg
 ren repositorio_marcas2.prg repositorio_marcas2.prg
 ren validador_marcas2.prg validador_marcas2.prg
+cd..
+cd mecanico
+ren com_mecanico.prg com_mecanico.prg
+ren dto_mecanico.prg dto_mecanico.prg
+ren mecanico.prg mecanico.prg
+ren repositorio_mecanico.prg repositorio_mecanico.prg
+ren validador_mecanico.prg validador_mecanico.prg
 cd..
 cd modelos
 ren com_modelos.prg com_modelos.prg

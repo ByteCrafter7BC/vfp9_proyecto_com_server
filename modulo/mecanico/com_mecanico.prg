@@ -1,5 +1,5 @@
 **/
-* com_maquinas.prg
+* com_mecanico.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,6 +18,6 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS com_maquinas AS com_base OF com_base.prg OLEPUBLIC
-    cModelo = 'maquinas'
+DEFINE CLASS com_mecanico AS com_base OF com_base.prg OLEPUBLIC
+    cModelo = 'mecanico'
 ENDDEFINE

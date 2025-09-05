@@ -1,5 +1,5 @@
 **/
-* validador_rubros2.prg
+* repositorio_existe_codigo.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -18,5 +18,13 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-DEFINE CLASS validador_rubros2 AS validador_base OF validador_base.prg
-ENDDEFINE
+FUNCTION repositorio_existe_codigo
+    LPARAMETERS tcModelo, tnCodigo
+
+    LOCAL loModelo
+    loModelo = repositorio_obtener_por_codigo(tcModelo, tnCodigo)
+
+    IF VARTYPE(loModelo) != 'O' THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC

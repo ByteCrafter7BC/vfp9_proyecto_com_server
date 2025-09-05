@@ -1,5 +1,5 @@
 PRIVATE poRepositorio, poModelo, pcXml, pcDto
-poRepositorio = NEWOBJECT('com_vendedor', 'com_vendedor.prg')
+poRepositorio = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
 
 IF VARTYPE(poRepositorio) != 'O' THEN
     ? "ERROR: El objeto 'poRepositorio' no existe."
@@ -27,11 +27,11 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 3 | Método: 'existe_nombre' | Valor: 'alvarez, felipe'"
+? "Prueba: 3 | Método: 'existe_nombre' | Valor: 'husqvarna'"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.existe_nombre('alvarez, felipe'), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_nombre('husqvarna'), 'Sí', 'No')
 
-IF !poRepositorio.existe_nombre('alvarez, felipe') THEN
+IF !poRepositorio.existe_nombre('husqvarna') THEN
     RETURN .F.
 ENDIF
 
@@ -76,9 +76,9 @@ IF !poRepositorio.esta_relacionado(3) THEN
 ENDIF
 
 separador()
-? "Prueba: 8 | Método: 'esta_relacionado' | Valor: 888"
+? "Prueba: 8 | Método: 'esta_relacionado' | Valor: 0"
 ? 'Resultado esperado: pasar'
-? 'Relacionado: ' + IIF(poRepositorio.esta_relacionado(888), 'Sí', 'No')
+? 'Relacionado: ' + IIF(poRepositorio.esta_relacionado(0), 'Sí', 'No')
 
 IF !poRepositorio.esta_relacionado(888) THEN
     RETURN .F.
@@ -136,9 +136,9 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'tienda web'"
+? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'briggs & stratton'"
 ? 'Resultado esperado: pasar'
-poModelo = poRepositorio.obtener_por_nombre('tienda web')
+poModelo = poRepositorio.obtener_por_nombre('briggs & stratton')
 IF !imprimir() THEN
     RETURN .F.
 ENDIF

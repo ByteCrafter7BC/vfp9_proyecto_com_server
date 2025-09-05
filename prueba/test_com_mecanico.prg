@@ -1,5 +1,5 @@
 PRIVATE poRepositorio, poModelo, pcXml, pcDto
-poRepositorio = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
+poRepositorio = NEWOBJECT('com_mecanico', 'com_mecanico.prg')
 
 IF VARTYPE(poRepositorio) != 'O' THEN
     ? "ERROR: El objeto 'poRepositorio' no existe."
@@ -7,51 +7,51 @@ IF VARTYPE(poRepositorio) != 'O' THEN
 ENDIF
 
 separador()
-? "Prueba: 1 | Método: 'codigo_existe' | Valor: 3"
+? "Prueba: 1 | Método: 'existe_codigo' | Valor: 66"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.codigo_existe(3), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_codigo(66), 'Sí', 'No')
 
-IF !poRepositorio.codigo_existe(3) THEN
+IF !poRepositorio.existe_codigo(66) THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 2 | Método: 'codigo_existe' | Valor: 888"
+? "Prueba: 2 | Método: 'existe_codigo' | Valor: 888"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.codigo_existe(888), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_codigo(888), 'Sí', 'No')
 
-IF poRepositorio.codigo_existe(888) THEN
+IF poRepositorio.existe_codigo(888) THEN
     RETURN .F.
 ENDIF
 
 esperar()
 
 separador()
-? "Prueba: 3 | Método: 'nombre_existe' | Valor: 'husqvarna'"
+? "Prueba: 3 | Método: 'existe_nombre' | Valor: 'godoy candia, florio alcides'"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('husqvarna'), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_nombre('godoy candia, florio alcides'), 'Sí', 'No')
 
-IF !poRepositorio.nombre_existe('husqvarna') THEN
+IF !poRepositorio.existe_nombre('godoy candia, florio alcides') THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 4 | Método: 'nombre_existe' | Valor: 'monark'"
+? "Prueba: 4 | Método: 'existe_nombre' | Valor: 'monark'"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('monark'), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_nombre('monark'), 'Sí', 'No')
 
-IF poRepositorio.nombre_existe('monark') THEN
+IF poRepositorio.existe_nombre('monark') THEN
     RETURN .F.
 ENDIF
 
 esperar()
 
 separador()
-? "Prueba: 5 | Método: 'esta_vigente' | Valor: 3"
+? "Prueba: 5 | Método: 'esta_vigente' | Valor: 71"
 ? 'Resultado esperado: pasar'
-? 'Vigente: ' + IIF(poRepositorio.esta_vigente(3), 'Sí', 'No')
+? 'Vigente: ' + IIF(poRepositorio.esta_vigente(71), 'Sí', 'No')
 
-IF !poRepositorio.esta_vigente(3) THEN
+IF !poRepositorio.esta_vigente(71) THEN
     RETURN .F.
 ENDIF
 
@@ -107,20 +107,20 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 11 | Método: 'nuevo_codigo'"
+? "Prueba: 11 | Método: 'obtener_nuevo_codigo'"
 ? 'Resultado esperado: pasar'
-? 'Nuevo código: ' + ALLTRIM(STR(poRepositorio.nuevo_codigo()))
+? 'Nuevo código: ' + ALLTRIM(STR(poRepositorio.obtener_nuevo_codigo()))
 
-IF poRepositorio.nuevo_codigo() <= 0 THEN
+IF poRepositorio.obtener_nuevo_codigo() <= 0 THEN
     RETURN .F.
 ENDIF
 
 esperar()
 
 separador()
-? "Prueba: 12 | Método: 'obtener_por_codigo' | Valor: 3"
+? "Prueba: 12 | Método: 'obtener_por_codigo' | Valor: 66"
 ? 'Resultado esperado: pasar'
-poModelo = poRepositorio.obtener_por_codigo(3)
+poModelo = poRepositorio.obtener_por_codigo(66)
 IF !imprimir() THEN
     RETURN .F.
 ENDIF
@@ -136,9 +136,9 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'briggs & stratton'"
+? "Prueba: 14 | Método: 'obtener_por_nombre' | Valor: 'recalde, juan carlos'"
 ? 'Resultado esperado: pasar'
-poModelo = poRepositorio.obtener_por_nombre('briggs & stratton')
+poModelo = poRepositorio.obtener_por_nombre('recalde, juan carlos')
 IF !imprimir() THEN
     RETURN .F.
 ENDIF
@@ -196,7 +196,7 @@ IF VARTYPE(pcDto) != 'O' THEN
 ENDIF
 
 WITH pcDto
-    .establecer_codigo(poRepositorio.nuevo_codigo())
+    .establecer_codigo(poRepositorio.obtener_nuevo_codigo())
     .establecer_nombre('Nombre ' + ALLTRIM(STR(.obtener_codigo())))
     .establecer_vigente(.T.)
 ENDWITH
@@ -240,7 +240,7 @@ esperar()
 ? 'Resultado esperado: fallar'
 ? 'Borrado: ' + IIF(poRepositorio.borrar(3), 'Sí', 'No')
 
-IF !poRepositorio.codigo_existe(3) THEN
+IF !poRepositorio.existe_codigo(3) THEN
     RETURN .F.
 ENDIF
 

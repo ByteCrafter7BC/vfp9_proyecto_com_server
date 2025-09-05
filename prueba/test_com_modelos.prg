@@ -7,40 +7,40 @@ IF VARTYPE(poRepositorio) != 'O' THEN
 ENDIF
 
 separador()
-? "Prueba: 1 | Método: 'codigo_existe' | Valor: 3"
+? "Prueba: 1 | Método: 'existe_codigo' | Valor: 3"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.codigo_existe(3), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_codigo(3), 'Sí', 'No')
 
-IF !poRepositorio.codigo_existe(3) THEN
+IF !poRepositorio.existe_codigo(3) THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 2 | Método: 'codigo_existe' | Valor: 1999"
+? "Prueba: 2 | Método: 'existe_codigo' | Valor: 1999"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.codigo_existe(1999), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_codigo(1999), 'Sí', 'No')
 
-IF poRepositorio.codigo_existe(1999) THEN
+IF poRepositorio.existe_codigo(1999) THEN
     RETURN .F.
 ENDIF
 
 esperar()
 
 separador()
-? "Prueba: 3 | Método: 'nombre_existe' | Valor: 'FS 280', 3, 2"
+? "Prueba: 3 | Método: 'existe_nombre' | Valor: 'FS 280', 3, 2"
 ? 'Resultado esperado: pasar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('FS 280', 3, 2), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_nombre('FS 280', 3, 2), 'Sí', 'No')
 
-IF !poRepositorio.nombre_existe('FS 280', 3, 2) THEN
+IF !poRepositorio.existe_nombre('FS 280', 3, 2) THEN
     RETURN .F.
 ENDIF
 
 separador()
-? "Prueba: 4 | Método: 'nombre_existe' | Valor: 'monark', 0, 0"
+? "Prueba: 4 | Método: 'existe_nombre' | Valor: 'monark', 0, 0"
 ? 'Resultado esperado: fallar'
-? 'Existe: ' + IIF(poRepositorio.nombre_existe('monark', 0, 0), 'Sí', 'No')
+? 'Existe: ' + IIF(poRepositorio.existe_nombre('monark', 0, 0), 'Sí', 'No')
 
-IF poRepositorio.nombre_existe('monark', 0, 0) THEN
+IF poRepositorio.existe_nombre('monark', 0, 0) THEN
     RETURN .F.
 ENDIF
 
@@ -107,11 +107,11 @@ ENDIF
 esperar()
 
 separador()
-? "Prueba: 11 | Método: 'nuevo_codigo'"
+? "Prueba: 11 | Método: 'obtener_nuevo_codigo'"
 ? 'Resultado esperado: pasar'
-? 'Nuevo código: ' + ALLTRIM(STR(poRepositorio.nuevo_codigo()))
+? 'Nuevo código: ' + ALLTRIM(STR(poRepositorio.obtener_nuevo_codigo()))
 
-IF poRepositorio.nuevo_codigo() <= 0 THEN
+IF poRepositorio.obtener_nuevo_codigo() <= 0 THEN
     RETURN .F.
 ENDIF
 
@@ -196,7 +196,7 @@ IF VARTYPE(pcDto) != 'O' THEN
 ENDIF
 
 WITH pcDto
-    .establecer_codigo(poRepositorio.nuevo_codigo())
+    .establecer_codigo(poRepositorio.obtener_nuevo_codigo())
     .establecer_nombre('Nombre ' + ALLTRIM(STR(.obtener_codigo())))
     .establecer_vigente(.T.)
 ENDWITH
@@ -246,7 +246,7 @@ esperar()
 ? 'Resultado esperado: fallar'
 ? 'Borrado: ' + IIF(poRepositorio.borrar(3), 'Sí', 'No')
 
-IF !poRepositorio.codigo_existe(3) THEN
+IF !poRepositorio.existe_codigo(3) THEN
     RETURN .F.
 ENDIF
 

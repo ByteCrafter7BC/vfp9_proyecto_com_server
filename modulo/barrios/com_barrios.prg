@@ -22,16 +22,16 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     cModelo = 'barrios'
 
     **--------------------------------------------------------------------------
-    FUNCTION nombre_existe(tcNombre AS String, tnDepartamen AS Integer, ;
+    FUNCTION existe_nombre(tcNombre AS String, tnDepartamen AS Integer, ;
             tnCiudad AS Integer) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el nombre existe u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.nombre_existe(tcNombre, tnDepartamen, tnCiudad)
+        HELPSTRING 'Devuelve verdadero (.T.) si existe el nombre u ocurre un error; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.existe_nombre(tcNombre, tnDepartamen, tnCiudad)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_nombre(tcNombre AS String, tnDepartamen AS Integer, ;
             tnCiudad AS Integer) AS Object ;
-        HELPSTRING 'Devuelve un objeto (Object) si el nombre existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.obtener_por_nombre(tcNombre, tnDepartamen, ;
             tnCiudad)
     ENDFUNC

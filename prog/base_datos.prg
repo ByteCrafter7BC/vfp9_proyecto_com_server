@@ -53,6 +53,16 @@ INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
 INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
 
 **------------------------------------------------------------------------------
+CREATE TABLE cobrador (;
+    codigo N(3), ;
+    nombre C(30), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
 CREATE TABLE familias (;
     codigo N(4), ;
     nombre C(30), ;
@@ -98,6 +108,16 @@ INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
 INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
 
 **------------------------------------------------------------------------------
+CREATE TABLE mecanico (;
+    codigo N(3), ;
+    nombre C(30), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
 CREATE TABLE modelos (;
     codigo N(4), ;
     nombre C(30), ;
@@ -132,6 +152,16 @@ INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
 **------------------------------------------------------------------------------
 CREATE TABLE rubros2 (;
     codigo N(4), ;
+    nombre C(30), ;
+    vigente L(1) ;
+)
+
+INDEX ON codigo TAG 'indice1' FOR !DELETED() &&CANDIDATE
+INDEX ON UPPER(nombre) TAG 'indice2' FOR !DELETED() &&CANDIDATE
+
+**------------------------------------------------------------------------------
+CREATE TABLE vendedor (;
+    codigo N(3), ;
     nombre C(30), ;
     vigente L(1) ;
 )

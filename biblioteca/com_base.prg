@@ -28,26 +28,26 @@ DEFINE CLASS com_base AS Session
     DataSession = 2    && 2 – Private data session.
 
     **--------------------------------------------------------------------------
-    FUNCTION codigo_existe(tnCodigo AS Integer) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el código existe u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.codigo_existe(tnCodigo)
+    FUNCTION existe_codigo(tnCodigo AS Integer) AS Logical ;
+        HELPSTRING 'Devuelve verdadero (.T.) si existe el código u ocurre un error; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.existe_codigo(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION nombre_existe(tcNombre AS String) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el nombre existe u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oRepositorio.nombre_existe(tcNombre)
+    FUNCTION existe_nombre(tcNombre AS String) AS Logical ;
+        HELPSTRING 'Devuelve verdadero (.T.) si existe el nombre u ocurre un error; de lo contrario, devuelve falso (.F.).'
+        RETURN THIS.oRepositorio.existe_nombre(tcNombre)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION esta_vigente(tnCodigo AS Integer) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el código está vigente; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve verdadero (.T.) si está vigente el código; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.esta_vigente(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado(tnCodigo AS Integer) AS Logical ;
-        HELPSTRING 'Devuelve verdadero (.T.) si el registro está relacionado u ocurre un error; de lo contrario, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve verdadero (.T.) si está relacionado el registro u ocurre un error; de lo contrario, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.esta_relacionado(tnCodigo)
     ENDFUNC
 
@@ -58,20 +58,20 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION nuevo_codigo() AS Integer ;
+    FUNCTION obtener_nuevo_codigo() AS Integer ;
         HELPSTRING 'Devuelve un número que se utiliza como código para un nuevo registro. En caso de error, devuelve -1.'
-        RETURN THIS.oRepositorio.nuevo_codigo()
+        RETURN THIS.oRepositorio.obtener_nuevo_codigo()
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_codigo(tnCodigo AS Integer) AS Object ;
-        HELPSTRING 'Devuelve un objeto (Object) si el código existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve un objeto (Object) si existe el código; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.obtener_por_codigo(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_nombre(tcNombre AS String) AS Object ;
-        HELPSTRING 'Devuelve un objeto (Object) si el nombre existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oRepositorio.obtener_por_nombre(tcNombre)
     ENDFUNC
 
@@ -111,7 +111,8 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_ultimo_error
+    FUNCTION obtener_ultimo_error AS String ;
+        HELPSTRING 'Devuelve una cadena con la descripción del último error. Si no hay ningún error, devuelve una cadena vacía.'
         RETURN IIF(VARTYPE(THIS.cUltimoError) == 'C', THIS.cUltimoError, '')
     ENDFUNC
 

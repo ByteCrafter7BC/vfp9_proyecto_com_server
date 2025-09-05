@@ -1,5 +1,5 @@
 **/
-* repositorio_rubros2.prg
+* repositorio_mecanico.prg
 *
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
@@ -20,7 +20,7 @@
 
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS repositorio_rubros2 AS repositorio_base OF repositorio_base.prg
+DEFINE CLASS repositorio_mecanico AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
@@ -32,7 +32,7 @@ DEFINE CLASS repositorio_rubros2 AS repositorio_base OF repositorio_base.prg
 
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
-        lcCondicionFiltro = 'subrubro == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'mecanico == ' + ALLTRIM(STR(tnCodigo))
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
             lcCondicionFiltro = STRTRAN(lcCondicionFiltro, '==', '=')
@@ -40,7 +40,17 @@ DEFINE CLASS repositorio_rubros2 AS repositorio_base OF repositorio_base.prg
 
         IF !llRelacionado THEN
             llRelacionado = ;
-                repositorio_existe_referencia('maesprod', lcCondicionFiltro)
+                repositorio_existe_referencia('detapedc', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('detavent', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN
+            llRelacionado = ;
+                repositorio_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

@@ -31,24 +31,24 @@ DEFINE CLASS repositorio_base AS Custom
     PROTECTED cUltimoError
 
     **--------------------------------------------------------------------------
-    FUNCTION codigo_existe
+    FUNCTION existe_codigo
         LPARAMETERS tnCodigo
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_codigo_existe(tnCodigo)
+            RETURN THIS.odbc_existe_codigo(tnCodigo)
         ELSE
-            RETURN THIS.dbf_codigo_existe(tnCodigo)
+            RETURN THIS.dbf_existe_codigo(tnCodigo)
         ENDIF
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION nombre_existe
+    FUNCTION existe_nombre
         LPARAMETERS tcNombre
 
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_nombre_existe(tcNombre)
+            RETURN THIS.odbc_existe_nombre(tcNombre)
         ELSE
-            RETURN THIS.dbf_nombre_existe(tcNombre)
+            RETURN THIS.dbf_existe_nombre(tcNombre)
         ENDIF
     ENDFUNC
 
@@ -97,11 +97,11 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION nuevo_codigo
+    FUNCTION obtener_nuevo_codigo
         IF VARTYPE(_oSCREEN.oConexion) == 'O' THEN
-            RETURN THIS.odbc_nuevo_codigo()
+            RETURN THIS.odbc_obtener_nuevo_codigo()
         ELSE
-            RETURN THIS.dbf_nuevo_codigo()
+            RETURN THIS.dbf_obtener_nuevo_codigo()
         ENDIF
     ENDFUNC
 
@@ -177,21 +177,33 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_familia
+        LPARAMETERS tnFamilia
+        RETURN THIS.obtener_nombre_referencial('familias', tnFamilia)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     FUNCTION obtener_nombre_maquina
         LPARAMETERS tnMaquina
         RETURN THIS.obtener_nombre_referencial('maquinas', tnMaquina)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_marcas1
+    FUNCTION obtener_nombre_marca1
         LPARAMETERS tnMarca
         RETURN THIS.obtener_nombre_referencial('marcas1', tnMarca)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_marcas2
+    FUNCTION obtener_nombre_marca2
         LPARAMETERS tnMarca
         RETURN THIS.obtener_nombre_referencial('marcas2', tnMarca)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    FUNCTION obtener_nombre_mecanico
+        LPARAMETERS tnMecanico
+        RETURN THIS.obtener_nombre_referencial('mecanico', tnMecanico)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -201,13 +213,13 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_rubros1
+    FUNCTION obtener_nombre_rubro1
         LPARAMETERS tnRubro
         RETURN THIS.obtener_nombre_referencial('rubros1', tnRubro)
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    FUNCTION obtener_nombre_rubros2
+    FUNCTION obtener_nombre_rubro2
         LPARAMETERS tnSubRubro
         RETURN THIS.obtener_nombre_referencial('rubros2', tnSubRubro)
     ENDFUNC
@@ -251,9 +263,9 @@ DEFINE CLASS repositorio_base AS Custom
         ENDIF
     ENDFUNC
 
-    **/
-    * Métodos protegidos.
-    */
+    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
+    *                            PROTECTED METHODS                            *
+    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION Init
@@ -355,7 +367,8 @@ DEFINE CLASS repositorio_base AS Custom
         lnMaximo = 9999
 
         DO CASE
-        CASE INLIST(tcModelo, 'cobrador', 'depar', 'maquinas', 'vendedor')
+        CASE INLIST(tcModelo, 'cobrador', 'depar', 'maquinas', 'mecanico', ;
+                'vendedor')
             lnMaximo = 999
         CASE INLIST(tcModelo, 'barrios', 'ciudades', 'sifen')
             lnMaximo = 99999
@@ -426,15 +439,69 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnBarrio_Valid
+        LPARAMETERS tnBarrio
+        RETURN THIS.validar_codigo_referencial('barrios', tnBarrio)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnCiudad_Valid
         LPARAMETERS tnCiudad
-        RETURN THIS.validar_codigo_referencial('barrios', tnCiudad)
+        RETURN THIS.validar_codigo_referencial('ciudades', tnCiudad)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnCobrador_Valid
+        LPARAMETERS tnCobrador
+        RETURN THIS.validar_codigo_referencial('cobrador', tnCobrador)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnDepartamen_Valid
         LPARAMETERS tnDepartamen
         RETURN THIS.validar_codigo_referencial('depar', tnDepartamen)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnFamilia_Valid
+        LPARAMETERS tnFamilia
+        RETURN THIS.validar_codigo_referencial('familias', tnFamilia)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnMaquina_Valid
+        LPARAMETERS tnMaquina
+        RETURN THIS.validar_codigo_referencial('maquinas', tnMaquina)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnMarca1_Valid
+        LPARAMETERS tnMarca1
+        RETURN THIS.validar_codigo_referencial('marcas1', tnMarca1)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnMarca2_Valid
+        LPARAMETERS tnMarca2
+        RETURN THIS.validar_codigo_referencial('marcas2', tnMarca2)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnMecanico_Valid
+        LPARAMETERS tnMecanico
+        RETURN THIS.validar_codigo_referencial('mecanico', tnMecanico)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnModelo_Valid
+        LPARAMETERS tnModelo
+        RETURN THIS.validar_codigo_referencial('modelos', tnModelo)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnProcedenci_Valid
+        LPARAMETERS tnProcedenci
+        RETURN THIS.validar_codigo_referencial('proceden', tnProcedenci)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -450,27 +517,15 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION tnMaquina_Valid
-        LPARAMETERS tnMaquina
-        RETURN THIS.validar_codigo_referencial('maquinas', tnMaquina)
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION tnMarca1_Valid
-        LPARAMETERS tnMarca
-        RETURN THIS.validar_codigo_referencial('marcas1', tnMarca)
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION tnMarca2_Valid
-        LPARAMETERS tnMarca
-        RETURN THIS.validar_codigo_referencial('marcas2', tnMarca)
-    ENDFUNC
-
-    **--------------------------------------------------------------------------
     PROTECTED FUNCTION tnSifen_Valid    && ciudades
         LPARAMETERS tnSifen
         RETURN THIS.validar_codigo_referencial('sifen', tnSifen)
+    ENDFUNC
+
+    **--------------------------------------------------------------------------
+    PROTECTED FUNCTION tnVendedor_Valid
+        LPARAMETERS tnVendedor
+        RETURN THIS.validar_codigo_referencial('vendedor', tnVendedor)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -541,7 +596,7 @@ DEFINE CLASS repositorio_base AS Custom
     */
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_codigo_existe
+    PROTECTED FUNCTION dbf_existe_codigo
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
@@ -569,7 +624,7 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_codigo_existe
+    PROTECTED FUNCTION odbc_existe_codigo
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
@@ -602,7 +657,7 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_nombre_existe
+    PROTECTED FUNCTION dbf_existe_nombre
         LPARAMETERS tcNombre
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -633,7 +688,7 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_nombre_existe
+    PROTECTED FUNCTION odbc_existe_nombre
         LPARAMETERS tcNombre
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
@@ -793,7 +848,7 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION dbf_nuevo_codigo
+    PROTECTED FUNCTION dbf_obtener_nuevo_codigo
         IF !THIS.conectar() THEN
             THIS.cUltimoError = ERROR_CONEXION
             RETURN -1
@@ -819,7 +874,7 @@ DEFINE CLASS repositorio_base AS Custom
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION odbc_nuevo_codigo
+    PROTECTED FUNCTION odbc_obtener_nuevo_codigo
         IF !THIS.conectar() THEN
             THIS.cUltimoError = ERROR_CONEXION
             RETURN -1
@@ -1085,13 +1140,13 @@ DEFINE CLASS repositorio_base AS Custom
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre) THEN
+        IF THIS.existe_nombre(m.nombre) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -1131,13 +1186,13 @@ DEFINE CLASS repositorio_base AS Custom
             m.vigente = IIF(.esta_vigente(), 1, 0)
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre) THEN
+        IF THIS.existe_nombre(m.nombre) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -1180,7 +1235,7 @@ DEFINE CLASS repositorio_base AS Custom
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -1249,7 +1304,7 @@ DEFINE CLASS repositorio_base AS Custom
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.

@@ -18,6 +18,8 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+#INCLUDE 'constantes.h'
+
 DEFINE CLASS repositorio_marcas1 AS repositorio_base OF repositorio_base.prg
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado

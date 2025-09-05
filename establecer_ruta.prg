@@ -44,6 +44,7 @@ FUNCTION establecer_ruta
                 modulo\maquinas, ;
                 modulo\marcas1, ;
                 modulo\marcas2, ;
+                modulo\mecanico, ;
                 modulo\modelos, ;
                 modulo\proceden, ;
                 modulo\rubros1, ;

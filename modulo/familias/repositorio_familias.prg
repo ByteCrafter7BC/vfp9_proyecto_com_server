@@ -1,3 +1,23 @@
+**/
+* repositorio_familias.prg
+*
+* Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
+*
+* Este programa es software libre: puede redistribuirlo y/o modificarlo
+* bajo los términos de la Licencia Pública General GNU publicada por
+* la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+* (a su elección) cualquier versión posterior.
+*
+* Este programa se distribuye con la esperanza de que sea útil,
+* pero SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de
+* COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulte la
+* Licencia Pública General de GNU para obtener más detalles.
+*
+* Debería haber recibido una copia de la Licencia Pública General de GNU
+* junto con este programa. Si no es así, consulte
+* <https://www.gnu.org/licenses/>.
+*/
+
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS repositorio_familias AS repositorio_base OF repositorio_base.prg
@@ -85,13 +105,13 @@ DEFINE CLASS repositorio_familias AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre) THEN
+        IF THIS.existe_nombre(m.nombre) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -133,13 +153,13 @@ DEFINE CLASS repositorio_familias AS repositorio_base OF repositorio_base.prg
             m.vigente = IIF(.esta_vigente(), 1, 0)
         ENDWITH
 
-        IF THIS.codigo_existe(m.codigo) THEN
+        IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' ya existe."
             RETURN .F.
         ENDIF
 
-        IF THIS.nombre_existe(m.nombre) THEN
+        IF THIS.existe_nombre(m.nombre) THEN
             THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                 "' ya existe."
             RETURN .F.
@@ -188,7 +208,7 @@ DEFINE CLASS repositorio_familias AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -267,7 +287,7 @@ DEFINE CLASS repositorio_familias AS repositorio_base OF repositorio_base.prg
             m.vigente = .esta_vigente()
         ENDWITH
 
-        IF !THIS.codigo_existe(m.codigo) THEN
+        IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
