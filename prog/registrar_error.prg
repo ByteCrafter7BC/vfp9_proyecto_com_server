@@ -18,6 +18,26 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* Registra un error en la tabla de errores del sistema.
+*
+* Valida que los parámetros sean cadenas no vacías. Si la tabla regerror.dbf
+* no existe, intenta crearla mediante crear_tabla(). Luego abre la conexión,
+* inserta el registro con la fecha actual y los datos del error, y finalmente
+* cierra la conexión.
+*
+* @param Character tcClase    Nombre de la clase donde ocurrió el error.
+* @param Character tcMetodo   Nombre del método donde ocurrió el error.
+* @param Character tcMensaje  Descripción del mensaje de error.
+*
+* @return Logical  .T. si el error fue registrado correctamente.
+*                  .F. si los parámetros son inválidos o no se pudo abrir la
+*                  conexión.
+*
+* @example
+*     registrar_error('cliente', 'guardar', ;
+*         'No se pudo conectar a la base de datos.')
+*/
 FUNCTION registrar_error
     LPARAMETERS tcClase, tcMetodo, tcMensaje
 
@@ -41,7 +61,18 @@ FUNCTION registrar_error
     cerrar_conexion()
 ENDFUNC
 
-**------------------------------------------------------------------------------
+**/
+* Abre la tabla regerror.dbf en modo compartido.
+*
+* Si el archivo no existe, intenta crearlo mediante crear_tabla().
+* Luego abre la tabla en el entorno de trabajo.
+*
+* @return Logical  .T. si la tabla fue abierta correctamente.
+*                  .F. si no se pudo crear o abrir la tabla.
+*
+* @example
+*     abrir_conexion() && Prepara la tabla regerror.dbf para escritura.
+*/
 FUNCTION abrir_conexion
     IF !FILE('regerror.dbf') THEN
         IF !crear_tabla() THEN
@@ -52,14 +83,34 @@ FUNCTION abrir_conexion
     USE regerror IN 0 SHARED
 ENDFUNC
 
-**------------------------------------------------------------------------------
+**/
+* Cierra la tabla regerror.dbf si está abierta.
+*
+* Verifica si la tabla está en uso y la cierra del entorno de trabajo.
+*
+* @return Logical  .T. siempre que se ejecute correctamente.
+*
+* @example
+*     cerrar_conexion() && Libera la tabla regerror.dbf del entorno.
+*/
 FUNCTION cerrar_conexion
     IF USED('regerror') THEN
         USE IN regerror
     ENDIF
 ENDFUNC
 
-**------------------------------------------------------------------------------
+**/
+* Crea la tabla regerror.dbf con los campos necesarios para registrar errores.
+*
+* Si el archivo ya existe, no realiza ninguna acción. Si no existe, lo crea
+* con los campos fecha, clase, metodo y mensaje.
+*
+* @return Logical  .T. si la tabla fue creada correctamente.
+*                  .F. si el archivo ya existe o hubo un error en la creación.
+*
+* @example
+*     crear_tabla() && Crea la tabla regerror.dbf si no existe.
+*/
 FUNCTION crear_tabla
     IF FILE('regerror.dbf') THEN
         RETURN .F.

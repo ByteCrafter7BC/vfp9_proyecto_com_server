@@ -18,6 +18,22 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* Genera un token único basado en la fecha/hora actual y un identificador
+* único del sistema.
+*
+* La función combina la representación textual de la fecha y hora actual
+* en formato compacto con el valor retornado por SYS(2015), que representa un
+* identificador único de sesión.
+* El resultado es una cadena que puede utilizarse como token para propósitos
+* de autenticación, trazabilidad o identificación temporal.
+*
+* @return Character  Cadena que representa el token generado, compuesta por
+*                    fecha/hora y un identificador único del sistema.
+*
+* @example
+*     generar_token() && Retorna algo como '20250917084730_7a30iudic'.
+*/
 FUNCTION generar_token
     LOCAL lcDateTime, lcSys2015
     lcDateTime = TTOC(DATETIME(), 1)

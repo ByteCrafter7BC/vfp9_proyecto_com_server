@@ -19,18 +19,26 @@
 */
 
 **/
-* Determina si los caracteres de la expresión de caracteres especificada
-* son letras (de la A a la Z).
+* Verifica si una expresión contiene únicamente caracteres alfabéticos (sin
+* espacios, dígitos ni símbolos).
 *
-* @param string tcExpresion
-* Especifica la expresión de caracteres que es_alfa() prueba.
+* La función valida que el parámetro sea una cadena no vacía y sin espacios.
+* Luego recorre cada carácter de la expresión y clasifica si es letra, número
+* o símbolo. Retorna .T. únicamente si todos los caracteres son letras y no
+* hay ningún número ni símbolo.
 *
-* @return boolean
-* es_alfa() devuelve verdadero (.T.) si los caracteres de la expresión
-* de caracteres especificada son letras (de la A a la Z); de lo contrario,
-* es_alfa() devuelve falso (.F.).
+* @param Character tcExpresion  Cadena a evaluar. Debe estar compuesta solo
+*                               por letras sin espacios.
+*
+* @return Logical  .T. si la expresión contiene exclusivamente letras.
+*                  .F. si contiene espacios, números, símbolos o si el
+*                  parámetro es inválido.
+*
+* @example
+*     es_alfa('VisualFox') && Retorna .T.
+*     es_alfa('Fox123')    && Retorna .F.
+*     es_alfa('Fox Pro')   && Retorna .F. (por el espacio).
 */
-
 FUNCTION es_alfa
     PARAMETERS tcExpresion
 

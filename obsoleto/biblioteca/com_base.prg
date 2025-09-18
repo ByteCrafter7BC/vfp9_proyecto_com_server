@@ -22,7 +22,7 @@
 
 DEFINE CLASS com_base AS Session
     PROTECTED cModelo
-    PROTECTED oDao
+    PROTECTED oRepositorio
     PROTECTED cUltimoError
 
     DataSession = 2    && 2 – Private data session.
@@ -30,49 +30,49 @@ DEFINE CLASS com_base AS Session
     **--------------------------------------------------------------------------
     FUNCTION existe_codigo(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si existe el código u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oDao.existe_codigo(tnCodigo)
+        RETURN THIS.oRepositorio.existe_codigo(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION existe_nombre(tcNombre AS String) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si existe el nombre u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oDao.existe_nombre(tcNombre)
+        RETURN THIS.oRepositorio.existe_nombre(tcNombre)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION esta_vigente(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si está vigente el código; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
-        RETURN THIS.oDao.esta_vigente(tnCodigo)
+        RETURN THIS.oRepositorio.esta_vigente(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION esta_relacionado(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si está relacionado el registro u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oDao.esta_relacionado(tnCodigo)
+        RETURN THIS.oRepositorio.esta_relacionado(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION contar(tcCondicionFiltro AS String) AS Integer ;
         HELPSTRING 'Devuelve el número de registros en el repositorio actual.'
-        RETURN THIS.oDao.contar(tcCondicionFiltro)
+        RETURN THIS.oRepositorio.contar(tcCondicionFiltro)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_nuevo_codigo() AS Integer ;
         HELPSTRING 'Devuelve un número que se utiliza como código para un nuevo registro. En caso de error, devuelve -1.'
-        RETURN THIS.oDao.obtener_nuevo_codigo()
+        RETURN THIS.oRepositorio.obtener_nuevo_codigo()
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_codigo(tnCodigo AS Integer) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el código; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
-        RETURN THIS.oDao.obtener_por_codigo(tnCodigo)
+        RETURN THIS.oRepositorio.obtener_por_codigo(tnCodigo)
     ENDFUNC
 
     **--------------------------------------------------------------------------
     FUNCTION obtener_por_nombre(tcNombre AS String) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
-        RETURN THIS.oDao.obtener_por_nombre(tcNombre)
+        RETURN THIS.oRepositorio.obtener_por_nombre(tcNombre)
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -84,7 +84,7 @@ DEFINE CLASS com_base AS Session
         lcCursor = 'tm_' + THIS.cModelo
         lcXml = ''
 
-        IF THIS.oDao.obtener_todos(tcCondicionFiltro, tcOrden) THEN
+        IF THIS.oRepositorio.obtener_todos(tcCondicionFiltro, tcOrden) THEN
             IF USED(lcCursor) THEN
                 CURSORTOXML(lcCursor, 'lcXml', 1, 0, 0, '1')
                 USE IN (lcCursor)
@@ -120,8 +120,8 @@ DEFINE CLASS com_base AS Session
     FUNCTION agregar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede agregar el registro; de lo contrario, devuelve falso (.F.).'
 
-        IF !THIS.oDao.agregar(THIS.convertir_dto_a_modelo(toDto)) THEN
-            THIS.cUltimoError = THIS.oDao.obtener_ultimo_error()
+        IF !THIS.oRepositorio.agregar(THIS.convertir_dto_a_modelo(toDto)) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -130,8 +130,8 @@ DEFINE CLASS com_base AS Session
     FUNCTION modificar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede modificar el registro; de lo contrario, devuelve falso (.F.).'
 
-        IF !THIS.oDao.modificar(THIS.convertir_dto_a_modelo(toDto)) THEN
-            THIS.cUltimoError = THIS.oDao.obtener_ultimo_error()
+        IF !THIS.oRepositorio.modificar(THIS.convertir_dto_a_modelo(toDto)) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -140,8 +140,8 @@ DEFINE CLASS com_base AS Session
     FUNCTION borrar(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede borrar el registro; de lo contrario, devuelve falso (.F.).'
 
-        IF !THIS.oDao.borrar(tnCodigo) THEN
-            THIS.cUltimoError = THIS.oDao.obtener_ultimo_error()
+        IF !THIS.oRepositorio.borrar(tnCodigo) THEN
+            THIS.cUltimoError = THIS.oRepositorio.obtener_ultimo_error()
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -168,7 +168,7 @@ DEFINE CLASS com_base AS Session
             _oSCREEN = CREATEOBJECT('Empty')
         ENDIF
 
-        RETURN THIS.establecer_dao()
+        RETURN THIS.establecer_repositorio()
     ENDFUNC
 
     **--------------------------------------------------------------------------
@@ -183,12 +183,12 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **--------------------------------------------------------------------------
-    PROTECTED FUNCTION establecer_dao
-        THIS.oDao = crear_dao(THIS.cModelo)
+    PROTECTED FUNCTION establecer_repositorio
+        THIS.oRepositorio = crear_repositorio(THIS.cModelo)
 
-        IF VARTYPE(THIS.oDao) != 'O' THEN
+        IF VARTYPE(THIS.oRepositorio) != 'O' THEN
             registrar_error('com_' + LOWER(THIS.cModelo), ;
-                'establecer_dao', ;
+                'establecer_repositorio', ;
                 STRTRAN(ERROR_INSTANCIA_CLASE, '{}', THIS.cModelo))
             RETURN .F.
         ENDIF

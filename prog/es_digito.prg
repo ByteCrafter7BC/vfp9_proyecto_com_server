@@ -19,18 +19,28 @@
 */
 
 **/
-* Determina si los caracteres de la expresión de caracteres especificada
-* son dígitos (del 0 al 9).
+* Verifica si una expresión contiene únicamente caracteres numéricos.
 *
-* @param string tcExpresion
-* Especifica la expresión de caracteres que es_digito() prueba.
+* La función acepta una cadena o un valor numérico. Si el parámetro es de tipo
+* numérico, se considera válido automáticamente. Si es una cadena, se valida
+* que no esté vacía ni contenga espacios, y luego se analiza carácter por
+* carácter para asegurarse de que todos sean dígitos.
+* Retorna .T. si la expresión está compuesta exclusivamente por dígitos.
 *
-* @return boolean
-* es_digito() devuelve verdadero (.T.) si los caracteres de la expresión
-* de caracteres especificada son dígitos (del 0 al 9); de lo contrario,
-* es_digito() devuelve falso (.F.).
+* @param Character|Numeric tcExpresion  Cadena o número a evaluar. Las cadenas
+*                                       no deben contener espacios ni símbolos.
+*
+* @return Logical  .T. si la expresión es numérica válida (todos los caracteres
+*                  son dígitos o el tipo es numérico).
+*                  .F. si contiene letras, espacios, símbolos o si el parámetro
+*                  es inválido.
+*
+* @example
+*     es_digito('12345')   && Retorna .T.
+*     es_digito('12a45')   && Retorna .F.
+*     es_digito(67890)     && Retorna .T.
+*     es_digito('12 45')   && Retorna .F. (por el espacio).
 */
-
 FUNCTION es_digito
     PARAMETERS tcExpresion
 

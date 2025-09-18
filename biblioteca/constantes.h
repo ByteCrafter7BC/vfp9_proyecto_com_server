@@ -67,6 +67,13 @@
 */ Configuración.
 #DEFINE CARPETA_EXPORTAR 'c:\exportar\'
 
+*/ DAO (Data Access Object).
+#DEFINE BD_DBF             1
+#DEFINE BD_FIREBIRD        2
+#DEFINE BD_MYSQL           3
+#DEFINE BD_POSTGRES        4
+#DEFINE BD_CUAL_FABRICA    BD_DBF
+
 */ SQL.
 #DEFINE SQL_EXITO    1
 #DEFINE SQL_ERROR    -1
