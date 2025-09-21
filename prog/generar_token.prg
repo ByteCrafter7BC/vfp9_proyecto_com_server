@@ -28,8 +28,8 @@
 * El resultado es una cadena que puede utilizarse como token para propósitos
 * de autenticación, trazabilidad o identificación temporal.
 *
-* @return Character  Cadena que representa el token generado, compuesta por
-*                    fecha/hora y un identificador único del sistema.
+* @return string  Cadena que representa el token generado, compuesta por
+*                 fecha/hora y un identificador único del sistema.
 *
 * @example
 *     generar_token() && Retorna algo como '20250917084730_7a30iudic'.

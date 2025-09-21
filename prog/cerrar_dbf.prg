@@ -25,13 +25,13 @@
 * abierta, se cierra utilizando el comando USE IN. Si la tabla no está abierta
 * o el parámetro es inválido, no se realiza ninguna acción.
 *
-* @param Character tcTabla  Nombre de la tabla (sin extensión .dbf) o alias
-*                           que se desea cerrar.
+* @param string tcTabla  Nombre de la tabla (sin extensión .dbf) o alias que se
+*                        desea cerrar.
 *
-* @return Logical  .T. si el parámetro es válido (independientemente de si la
-*                  tabla estaba abierta).
-*                  .F. si el parámetro es inválido (tipo incorrecto o cadena
-*                  vacía).
+* @return bool  .T. si el parámetro es válido (independientemente de si la
+*               tabla estaba abierta).
+*               .F. si el parámetro es inválido (tipo incorrecto o cadena
+*               vacía).
 *
 * @example
 *     cerrar_dbf('clientes') && Cierra la tabla clientes.dbf si está abierta.

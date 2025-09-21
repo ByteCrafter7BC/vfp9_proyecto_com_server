@@ -27,21 +27,19 @@
 * Si el archivo no existe, se registra un error mediante la función
 * registrar_error().
 *
-* @param Character tcTabla  Nombre de la tabla (sin extensión .dbf) que se
-*                           desea abrir.
+* @param string tcTabla  Nombre de la tabla (sin extensión .dbf) que se desea
+*                        abrir.
 *
-* @param Logical   tlModoEscritura  [opcional]
-*                                   Indica si se abre en modo escritura (.T.)
-*                                   o solo lectura (.F.).
-*                                   Si no se especifica correctamente, se
-*                                   asume .F.
+* @param bool tlModoEscritura  [opcional]
+*                              Indica si se abre en modo escritura (.T.) o solo
+*                              lectura (.F.).
+*                              Si no se especifica correctamente, se asume .F.
 *
-* @return Logical  .T. si el archivo fue abierto correctamente o ya estaba
-*                  abierto.
-*                  .F. si hubo error en los parámetros o el archivo no existe.
+* @return bool  .T. si el archivo fue abierto correctamente o ya estaba abierto.
+*               .F. si hubo error en los parámetros o el archivo no existe.
 *
-* @throws Error    Se invoca registrar_error() si el archivo no existe en la
-*                  ruta especificada.
+* @throws error  Se invoca registrar_error() si el archivo no existe en la ruta
+*                especificada.
 *
 * @example
 *     abrir_dbf('clientes', .T.) && Abre clientes.dbf en modo escritura.

@@ -21,19 +21,19 @@
 **/
 * Verifica si una expresión contiene únicamente caracteres numéricos.
 *
-* La función acepta una cadena o un valor numérico. Si el parámetro es de tipo
-* numérico, se considera válido automáticamente. Si es una cadena, se valida
-* que no esté vacía ni contenga espacios, y luego se analiza carácter por
-* carácter para asegurarse de que todos sean dígitos.
+* La función acepta una cadena o un valor numérico. Si el parámetro es de
+* tipo numérico, se considera válido automáticamente. Si es una cadena, se
+* valida que no esté vacía ni contenga espacios, y luego se analiza carácter
+* por carácter para asegurarse de que todos sean dígitos.
 * Retorna .T. si la expresión está compuesta exclusivamente por dígitos.
 *
-* @param Character|Numeric tcExpresion  Cadena o número a evaluar. Las cadenas
-*                                       no deben contener espacios ni símbolos.
+* @param string|int tcExpresion  Cadena o número a evaluar. Las cadenas no
+*                                deben contener espacios ni símbolos.
 *
-* @return Logical  .T. si la expresión es numérica válida (todos los caracteres
-*                  son dígitos o el tipo es numérico).
-*                  .F. si contiene letras, espacios, símbolos o si el parámetro
-*                  es inválido.
+* @return bool  .T. si la expresión es numérica válida (todos los caracteres
+*               son dígitos o el tipo es numérico).
+*               .F. si contiene letras, espacios, símbolos o si el parámetro
+*               es inválido.
 *
 * @example
 *     es_digito('12345')   && Retorna .T.

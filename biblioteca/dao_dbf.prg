@@ -1,6 +1,4 @@
 **/
-* dao_dbf.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,29 +17,52 @@
 */
 
 **/
-* Clase derivada de la clase abstracta.
+* Clase de acceso a datos (DAO) para tablas DBF; deriva de una clase abstracta.
+*
+* Implementa el patrón de diseño Data Access Object para proporcionar una
+* interfaz genérica y reutilizable para las operaciones CRUD (Crear, Leer,
+* Actualizar, Borrar) en tablas nativas de Visual FoxPro (.DBF).
+*
+* Esta clase está diseñada para ser heredada por clases DAO específicas de cada
+* tabla o ser instanciada directamente, configurando la propiedad 'cModelo' con
+* el alias de la tabla a gestionar.
+*
+* @file        dao_dbf.prg
+* @package     biblioteca
+* @author      ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version     1.0.0
+* @since       1.0.0
+* @class       dao_dbf
+* @extends     dao
+* @implements  interfaz_dao
+* @method bool existe_codigo(int tnCodigo)
+* @method bool existe_nombre(string tcNombre)
+* @method bool esta_vigente(int tnCodigo)
+* @method bool esta_relacionado(int tnCodigo)
+* @method int contar()
+* @method int obtener_nuevo_codigo()
+* @method mixed obtener_por_codigo()
+* @method mixed obtener_por_nombre()
+* @method bool obtener_todos([[string tcCondicionFiltro], [string tcOrden]])
+* @method string obtener_ultimo_error()
+* @method bool agregar(object toModelo)
+* @method bool modificar(object toModelo)
+* @method bool borrar(int tnCodigo)
+* @see         interfaz_dao, dao
+* @uses        constantes.h
 */
-
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
-    * @method existe_codigo
+    * Verifica si un código ya existe en la tabla.
     *
-    * @purpose Verifica si un código específico existe en la tabla/modelo.
+    * Realiza una búsqueda rápida utilizando el índice principal ('indice1').
     *
+    * @param int tnCodigo Código numérico a verificar.
+    * @return bool .T. si el código existe u ocurre un error.
+    *              .F. únicamente si el código no existe.
     * @access public
-    *
-    * @param tnCodigo {Numeric} Código a buscar en la base de datos.
-    *
-    * @return {Logical} .T. si el código existe, .F. si no existe.
-    *                   .T. también en caso de error (con mensaje en
-    *                       cUltimoError).
-    *
-    * @description Esta función realiza una búsqueda rápida utilizando el índice
-    *              'indice1' para determinar si el código proporcionado existe
-    *              en la tabla/modelo actual. Maneja validación de parámetros
-    *              y conexión a la base de datos.
     */
     FUNCTION existe_codigo
         LPARAMETERS tnCodigo
@@ -70,7 +91,17 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN llExiste
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Verifica si un nombre ya existe en la tabla.
+    *
+    * Realiza una búsqueda no sensible a mayúsculas/minúsculas utilizando el
+    * índice secundario ('indice2').
+    *
+    * @param string tcNombre Nombre a verificar.
+    * @return bool .T. si el nombre existe u ocurre un error.
+    *              .F. únicamente si el nombre no existe.
+    * @access public
+    */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre
 
@@ -101,7 +132,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN llExiste
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Verifica si un registro está vigente.
+    *
+    * @param int tnCodigo Código numérico a verificar.
+    * @return bool .T. si el registro existe y está vigente.
+    *              .F. si no existe, no está vigente u ocurre un error.
+    * @access public
+    */
     FUNCTION esta_vigente
         LPARAMETERS tnCodigo
 
@@ -131,7 +169,16 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN llVigente
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Cuenta la cantidad de registros que cumplen con la condición de filtrado.
+    *
+    * @param string tcCondicionFiltro (Opcional) Condición de filtrado válida.
+    *                                            Si se omite, cuenta todos los
+    *                                            registros no borrados.
+    * @return int Número mayor o igual que cero si la operación es exitosa.
+    *             -1 si ocurre un error.
+    * @access public
+    */
     FUNCTION contar
         LPARAMETERS tcCondicionFiltro
 
@@ -159,7 +206,15 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN lnCantidad
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Obtiene el siguiente código numérico secuencial disponible.
+    *
+    * Busca el primer hueco en la secuencia de códigos a partir de 1.
+    *
+    * @return int Número positivo si la operación es exitosa.
+    *             -1 si ocurre un error.
+    * @access public
+    */
     FUNCTION obtener_nuevo_codigo
         IF !THIS.conectar() THEN
             THIS.cUltimoError = ERROR_CONEXION
@@ -185,7 +240,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN lnCodigo
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Obtiene un registro, buscándolo por código.
+    *
+    * @param int tnCodigo Código del registro a obtener.
+    * @return mixed Object modelo si encuentra el registro.
+    *               .F. si no lo encuentra u ocurre un error.
+    * @access public
+    */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
 
@@ -215,7 +277,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN loModelo
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Obtiene un registro, buscándolo por nombre.
+    *
+    * @param string tcNombre Nombre del registro a obtener.
+    * @return mixed Object modelo si encuentra el registro,
+    *               .F. si no lo encuentra u ocurre un error.
+    * @access public
+    */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre
 
@@ -248,7 +317,19 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN loModelo
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Obtiene una colección de registros en un cursor temporal.
+    *
+    * Ejecuta una consulta SELECT sobre la tabla y deja el resultado en un
+    * cursor llamado 'tm_' + THIS.cModelo
+    *
+    * @param string tcCondicionFiltro (Opcional) La cláusula WHERE de la
+    *                                            consulta.
+    * @param string tcOrden (Opcional) La cláusula ORDER BY de la consulta.
+    * @return bool .T. si la operación fue exitosa.
+    *              .F. si ocurre un error.
+    * @access public
+    */
     FUNCTION obtener_todos
         LPARAMETERS tcCondicionFiltro, tcOrden
 
@@ -283,7 +364,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDWITH
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Agrega un nuevo registro a la tabla.
+    *
+    * @param object toModelo Modelo con los datos a agregar.
+    * @return bool .T. si el agregado fue exitoso.
+    *              .F. si ocurre un error.
+    * @access public
+    */
     FUNCTION agregar
         LPARAMETERS toModelo
 
@@ -328,7 +416,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDWITH
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Modifica un registro existente en la tabla.
+    *
+    * @param object toModelo Modelo con los datos a modificar.
+    * @return bool .T. si la modificación fue exitosa.
+    *              .F. si ocurre un error.
+    * @access public
+    */
     FUNCTION modificar
         LPARAMETERS toModelo
 
@@ -397,7 +492,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN EMPTY(THIS.cUltimoError)
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Borra un registro de la tabla.
+    *
+    * @param int tnCodigo Código del registro a borrar.
+    * @return bool .T. si el borrado fue exitoso.
+    *              .F. si ocurre un error.
+    * @access public
+    */
     FUNCTION borrar
         LPARAMETERS tnCodigo
 
@@ -434,29 +536,22 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
 
     **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
     *                            PROTECTED METHODS                            *
+    *                            ~~~~~~~~~~~~~~~~~                            *
+    * @method bool configurar()                                               *
+    * @method mixed obtener_modelo()                                          *
+    * @method bool conectar([bool tlModoEscritura])                           *
+    * @method bool desconectar()                                              *
     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     **/
-    * @method configurar
+    * Configura las propiedades por defecto del DAO.
     *
-    * @purpose Configurar propiedades por defecto del objeto DAO (Data Access
-    *          Object) basado en el nombre del modelo y establecer valores
-    *          predeterminados para consultas SQL y propiedades de formato.
+    * Infiere el nombre del modelo y establece valores predeterminados para las
+    * cláusulas SQL si no se han especificado.
     *
+    * @return bool .T. si la configuración fue exitosa.
+    *              .F. si ocurre un error.
     * @access protected
-    *
-    * @return {Logical} .T. si la configuración fue exitosa.
-    *                   .F. si el modelo no es válido.
-    *
-    * @description Método protegido de inicialización que establece valores por
-    *              defecto para:
-    *              - Nombre del modelo (THIS.cModelo).
-    *              - Anchos de campos (THIS.nAnchoCodigo, THIS.nAnchoNombre).
-    *              - Ordenamiento SQL (THIS.cSqlOrder).
-    *              - Consultas SELECT personalizadas (THIS.cSqlSelect).
-    *
-    * @note Este método se ejecuta automáticamente durante la inicialización
-    *       del objeto para asegurar configuración consistente.
     */
     PROTECTED FUNCTION configurar
         IF VARTYPE(THIS.cModelo) != 'C' OR EMPTY(THIS.cModelo) THEN
@@ -505,25 +600,11 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     ENDFUNC
 
     **/
-    * @method obtener_modelo
+    * Crea un objeto a partir del registro actual de la tabla.
     *
-    * @purpose Crear y retornar una nueva instancia del modelo de datos con las
-    *          propiedades básicas inicializadas.
-    *
+    * @return mixed Object Instancia de la clase modelo (ej: 'ciudades.prg').
+    *              .F. si ocurre un error.
     * @access protected
-    *
-    * @param Ninguno (utiliza las propiedades actuales del objeto).
-    *
-    * @return {Object} Nueva instancia del modelo especificado en THIS.cModelo.
-    *
-    * @description Factory method que instancia dinámicamente un objeto del
-    *              modelo de datos utilizando el nombre almacenado en
-    *              THIS.cModelo.
-    *              Inicializa el objeto con los valores actuales de código,
-    *              nombre y estado vigente del objeto actual.
-    *
-    * @use Se utiliza para crear instancias consistentes del modelo manteniendo
-    *      la cohesión con los datos actuales.
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
@@ -531,28 +612,16 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     ENDFUNC
 
     **/
-    * @method conectar
+    * Establece conexión con la base de datos.
     *
-    * @purpose Conectar/abrir la tabla o modelo de datos para su uso.
-    *
+    * @param bool tlModoEscritura (Opcional) .T. para abrir en modo escritura.
+    *                                        .F. para abrir en modo solo
+    *                                        lectura.
+    *                                        Si no se especifica,
+    *                                        predeterminado .F.
+    * @return bool .T. si la conexión fue exitosa.
+    *              .F. si ocurre un error.
     * @access protected
-    *
-    * @param tlModoEscritura {Logical} [Opcional] .T. para abrir en modo
-    *                                                 escritura.
-    *                                             .F. para abrir en modo solo
-    *                                                 lectura.
-    *                                             Si no se especifica,
-    *                                             predeterminado .F.
-    *
-    * @return {Logical} .T. si la conexión fue exitosa, .F. si falló.
-    *
-    * @description Método protegido que abre la tabla de datos referenciada por
-    *              THIS.cModelo utilizando la función global abrir_dbf().
-    *              Maneja parámetros opcionales y asegura el modo de apertura.
-    *              Si falla la apertura, asegura la desconexión limpia.
-    *
-    * @use Se llama internamente antes de operaciones que requieran acceso a la
-    *      tabla de datos.
     */
     PROTECTED FUNCTION conectar
         LPARAMETERS tlModoEscritura
@@ -568,21 +637,10 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     ENDFUNC
 
     **/
-    * @method desconectar
+    * Cierra la conexión con la base de datos.
     *
-    * @purpose Desconectar/cerrar la tabla o modelo de datos actual.
-    *
+    * @return bool .T. (valor por defecto).
     * @access protected
-    *
-    * @return {Logical} .T. (valor por defecto).
-    *
-    * @description Método protegido que cierra la tabla de datos referenciada
-    *              por THIS.cModelo utilizando la función global cerrar_dbf().
-    *              Al ser protegido, solo puede ser accedido internamente por
-    *              la clase y sus subclases.
-    *
-    * @use Se llama internamente después de completar operaciones de BD para
-    *      liberar recursos y cerrar conexiones.
     */
     PROTECTED FUNCTION desconectar
         cerrar_dbf(THIS.cModelo)

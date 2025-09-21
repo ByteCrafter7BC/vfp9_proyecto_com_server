@@ -27,12 +27,12 @@
 * o símbolo. Retorna .T. únicamente si todos los caracteres son letras y no
 * hay ningún número ni símbolo.
 *
-* @param Character tcExpresion  Cadena a evaluar. Debe estar compuesta solo
-*                               por letras sin espacios.
+* @param string tcExpresion  Cadena a evaluar. Debe estar compuesta solo por
+*                            letras sin espacios.
 *
-* @return Logical  .T. si la expresión contiene exclusivamente letras.
-*                  .F. si contiene espacios, números, símbolos o si el
-*                  parámetro es inválido.
+* @return bool  .T. si la expresión contiene exclusivamente letras.
+*               .F. si contiene espacios, números, símbolos o si el parámetro
+*               es inválido.
 *
 * @example
 *     es_alfa('VisualFox') && Retorna .T.
