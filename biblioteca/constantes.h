@@ -1,6 +1,4 @@
 **/
-* constantes.h
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,12 +16,19 @@
 * <https://www.gnu.org/licenses/>.
 */
 
-* https://github.com/harbour/core/blob/master/include/inkey.ch
+**/
+* Archivo de cabecera que contiene constantes para la aplicación.
+*
+* @file constantes.h
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @see https://github.com/harbour/core/blob/master/include/inkey.ch
+*/
 
 */ Misc. keys.
 #DEFINE K_ENTER     13          && Enter, Ctrl-M
 #DEFINE K_INTRO     CHR(13)
-#DEFINE K_RETURN    CHR(13)     && Return, Ctrl-M
+#DEFINE K_RETURN    K_INTRO     && Return, Ctrl-M
 #DEFINE K_SPACE     CHR(32)     && Space bar
 #DEFINE K_ESC       27          && Esc, Ctrl-[
 
@@ -64,37 +69,35 @@
 #DEFINE LONG_MAX     9223372036854775807
 #DEFINE ULONG_MAX    18446744073709551615
 
-*/ Configuración.
+*/ constantes_config.h
 #DEFINE CARPETA_EXPORTAR 'c:\exportar\'
 
-*/ DAO (Data Access Object).
-#DEFINE BD_DBF             1
-#DEFINE BD_FIREBIRD        2
-#DEFINE BD_MYSQL           3
-#DEFINE BD_POSTGRES        4
-#DEFINE BD_CUAL_FABRICA    BD_DBF
+#DEFINE BD_DBF         1
+#DEFINE BD_FIREBIRD    2
+#DEFINE BD_MYSQL       3
+#DEFINE BD_POSTGRES    4
+#DEFINE BD_ACTUAL      BD_DBF
 
-*/ SQL.
 #DEFINE SQL_EXITO    1
 #DEFINE SQL_ERROR    -1
 
-*/ Mensajes.
-#DEFINE ARCHIVO_VACIO                    'El archivo está vacío.'
-#DEFINE CODIGO_MAYOR_QUE_CERO            'El código debe ser mayor que cero.'
-#DEFINE ERROR_CONEXION                   'No hay conexión con la base de datos.'
-#DEFINE ERROR_INSTANCIA_CLASE            "No se pudo instanciar la clase '{}'. "
-#DEFINE LONGITUD_MAXIMA                  'Longitud máxima {} caracteres.'
-#DEFINE LONGITUD_MINIMA                  'Longitud mínima {} caracteres.'
-#DEFINE MAYOR_O_IGUAL_A_CERO             'Debe ser mayor o igual a cero.'
-#DEFINE MAYOR_QUE_CERO                   'Debe ser mayor que cero.'
-#DEFINE MENOR_QUE                        'Debe ser menor que {}.'
-#DEFINE NO_BLANCO                        'No puede quedar en blanco.'
-#DEFINE NO_BORRA_REGISTRO_RELACIONADO    'No se puede borrar el registro porque figura en otros archivos.'
-#DEFINE NO_EXISTE                        'No existe.'
-#DEFINE NO_VIGENTE                       "'{}' no está vigente."
-#DEFINE PARAM_INVALIDO                   "El parámetro '{}' no es válido."
-#DEFINE REFERENCIA_NO_EXISTE             "'{}' no existe."
-#DEFINE TIPO_CARACTER                    'Debe ser de tipo caracter.'
-#DEFINE TIPO_LOGICO                      'Debe ser de tipo lógico.'
-#DEFINE TIPO_NUMERICO                    'Debe ser de tipo numérico.'
-#DEFINE YA_EXISTE                        'Ya existe.'
+*/ constantes_mensajes.h
+#DEFINE MSG_ARCHIVO_VACIO                    'El archivo está vacío.'
+#DEFINE MSG_CODIGO_MAYOR_QUE_CERO            'El código debe ser mayor que cero.'
+#DEFINE MSG_ERROR_CONEXION                   'No hay conexión con la base de datos.'
+#DEFINE MSG_ERROR_INSTANCIA_CLASE            "No se pudo instanciar la clase '{}'. "
+#DEFINE MSG_LONGITUD_MAXIMA                  'Longitud máxima {} caracteres.'
+#DEFINE MSG_LONGITUD_MINIMA                  'Longitud mínima {} caracteres.'
+#DEFINE MSG_MAYOR_O_IGUAL_A_CERO             'Debe ser mayor o igual a cero.'
+#DEFINE MSG_MAYOR_QUE_CERO                   'Debe ser mayor que cero.'
+#DEFINE MSG_MENOR_QUE                        'Debe ser menor que {}.'
+#DEFINE MSG_NO_BLANCO                        'No puede quedar en blanco.'
+#DEFINE MSG_NO_BORRA_REGISTRO_RELACIONADO    'No se puede borrar el registro porque figura en otros archivos.'
+#DEFINE MSG_NO_EXISTE                        'No existe.'
+#DEFINE MSG_NO_VIGENTE                       "'{}' no está vigente."
+#DEFINE MSG_PARAM_INVALIDO                   "El parámetro '{}' no es válido."
+#DEFINE MSG_REFERENCIA_NO_EXISTE             "'{}' no existe."
+#DEFINE MSG_TIPO_CARACTER                    'Debe ser de tipo caracter.'
+#DEFINE MSG_TIPO_LOGICO                      'Debe ser de tipo lógico.'
+#DEFINE MSG_TIPO_NUMERICO                    'Debe ser de tipo numérico.'
+#DEFINE MSG_YA_EXISTE                        'Ya existe.'

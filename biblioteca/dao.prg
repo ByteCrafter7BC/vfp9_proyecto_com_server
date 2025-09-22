@@ -26,30 +26,17 @@
 * Esta clase está diseñada para ser implementada por clases DAO específicas de
 * cada tabla a gestionar.
 *
-* @file        dao.prg
-* @package     biblioteca
-* @author      ByteCrafter7BC <bytecrafter7bc@gmail.com>
-* @version     1.0.0
-* @since       1.0.0
+* @file dao.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
 * @abstract
-* @class       dao
-* @extends     interfaz_dao
-* @implements  interfaz_dao
-* @method bool existe_codigo(int tnCodigo)
-* @method bool existe_nombre(string tcNombre)
-* @method bool esta_vigente(int tnCodigo)
-* @method bool esta_relacionado(int tnCodigo)
-* @method int contar()
-* @method int obtener_nuevo_codigo()
-* @method mixed obtener_por_codigo()
-* @method mixed obtener_por_nombre()
-* @method bool obtener_todos([[string tcCondicionFiltro], [string tcOrden]])
-* @method string obtener_ultimo_error() !!
-* @method bool agregar(object toModelo)
-* @method bool modificar(object toModelo)
-* @method bool borrar(int tnCodigo)
-* @see         interfaz_dao
-* @uses        constantes.h
+* @class dao
+* @extends interfaz_dao
+* @implements interfaz_dao
+* @see interfaz_dao
+* @uses constantes.h
 */
 #INCLUDE 'constantes.h'
 
@@ -85,33 +72,47 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     PROTECTED cUltimoError
 
     **/
+    * @section MÉTODOS PÚBLICOS
+    * @method bool existe_codigo(int tnCodigo)
+    * @method bool existe_nombre(string tcNombre)
+    * @method bool esta_vigente(int tnCodigo)
+    * @method bool esta_relacionado(int tnCodigo)
+    * @method int contar()
+    * @method int obtener_nuevo_codigo()
+    * @method mixed obtener_por_codigo()
+    * @method mixed obtener_por_nombre()
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method string obtener_ultimo_error() !!
+    * @method bool agregar(object toModelo)
+    * @method bool modificar(object toModelo)
+    * @method bool borrar(int tnCodigo)
+    */
+
+    **/
     * Obtiene el último mensaje de error registrado.
     *
     * @return string Descripción del mensaje de error.
-    * @access public
     */
     FUNCTION obtener_ultimo_error
         RETURN IIF(VARTYPE(THIS.cUltimoError) == 'C', THIS.cUltimoError, '')
     ENDFUNC
 
-    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
-    *                            PROTECTED METHODS                            *
-    *                            ~~~~~~~~~~~~~~~~~                            *
-    * @method bool configurar()                                               *
-    * @method mixed obtener_modelo()                                          *
-    * @method bool conectar([bool tlModoEscritura])                           *
-    * @method bool desconectar()                                              *
-    * @method bool Init() !                                                   *
-    * @method string obtener_nombre_referencial(string tcModelo,              *
-    *                                           int tnCodigo) !               *
-    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo) !*
-    * @method bool tnCodigo_Valid(int tnCodigo) !                             *
-    * @method bool tcNombre_Valid(string tcNombre) !                          *
-    * @method bool tlVigente_Valid(bool tlVigente) !                          *
-    * @method bool toModelo_Valid(object toModelo) !                          *
-    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro) !        *
-    * @method bool tcOrden_Valid(string tcOrden) !                            *
-    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool configurar()
+    * @method mixed obtener_modelo()
+    * @method bool conectar([bool tlModoEscritura])
+    * @method bool desconectar()
+    * @method bool Init() !
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo) !
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo) !
+    * @method bool tnCodigo_Valid(int tnCodigo) !
+    * @method bool tcNombre_Valid(string tcNombre) !
+    * @method bool tlVigente_Valid(bool tlVigente) !
+    * @method bool toModelo_Valid(object toModelo) !
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro) !
+    * @method bool tcOrden_Valid(string tcOrden) !
+    */
 
     **/
     * Constructor de la clase DAO.
@@ -119,9 +120,7 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * Este método se llama automáticamente al crear una instancia de la clase.
     * Delega la lógica de configuración al método 'configurar()'.
     *
-    * @return bool .T. si la inicialización fue exitosa.
-    *              .F. si ocurre un error.
-    * @access protected
+    * @return bool .T. si la inicialización fue completada correctamente.
     */
     PROTECTED FUNCTION Init
         RETURN THIS.configurar()
@@ -133,10 +132,10 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * @param string tcModelo Nombre del modelo o tabla de la que se desea
     *                        obtener el nombre.
     * @param int tnCodigo Código del registro a buscar.
+    *
     * @return string Nombre del registro, mensaje de error si el parámetro es
     *                inválido, o un mensaje de 'No existe' si el código no
     *                existe.
-    * @access protected
     */
     PROTECTED FUNCTION obtener_nombre_referencial
         LPARAMETERS tcModelo, tnCodigo
@@ -172,9 +171,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * @param string tcModelo Nombre del modelo o tabla a la que pertenece el
     *                        código.
     * @param int tnCodigo Código a validar.
+    *
     * @return bool .T. si el código es válido para el modelo especificado.
-    *              .F. si el código no es válido.
-    * @access protected
     */
     PROTECTED FUNCTION validar_codigo_referencial
         LPARAMETERS tcModelo, tnCodigo
@@ -211,9 +209,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * tabla.
     *
     * @param int tnCodigo Código a validar.
+    *
     * @return bool .T. si el código es un número válido y está dentro del rango.
-    *              .F. si el código no es válido.
-    * @access protected
     */
     PROTECTED FUNCTION tnCodigo_Valid
         LPARAMETERS tnCodigo
@@ -231,10 +228,9 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * los campos de nombre.
     *
     * @param string tcNombre Nombre a validar.
+    *
     * @return bool .T. si el nombre es una cadena no vacía y no excede la
     *              longitud máxima.
-    *              .F. si el nombre no es válido.
-    * @access protected
     */
     PROTECTED FUNCTION tcNombre_Valid
         LPARAMETERS tcNombre
@@ -249,9 +245,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * Valida si un valor es de tipo lógico.
     *
     * @param bool tlVigente Valor a validar.
+    *
     * @return bool .T. si el valor es de tipo lógico
-    *              .F. si el valor no es de tipo lógico.
-    * @access protected
     */
     PROTECTED FUNCTION tlVigente_Valid
         LPARAMETERS tlVigente
@@ -266,10 +261,9 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * son válidas según los métodos de validación individuales.
     *
     * @param object toModelo Modelo a validar.
+    *
     * @return bool .T. si el objeto es válido y cumple con las reglas de
     *              validación de sus propiedades.
-    *              .F. si el objeto no es válido.
-    * @access protected
     */
     PROTECTED FUNCTION toModelo_Valid
         LPARAMETERS toModelo
@@ -298,10 +292,9 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * Se utiliza para evitar inyecciones de código.
     *
     * @param string tcCondicionFiltro Cadena a validar.
+    *
     * @return bool .T. si la cadena no está vacía y no excede la longitud
     *              máxima.
-    *              .F. si la cadena no es válida.
-    * @access protected
     */
     PROTECTED FUNCTION tcCondicionFiltro_Valid
         LPARAMETERS tcCondicionFiltro
@@ -319,9 +312,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * permitidos para la clase DAO.
     *
     * @param string tcOrden Cadena a validar ('codigo' o 'nombre').
+    *
     * @return bool .T. si la cadena es 'codigo' o 'nombre'
-    *              .F. si la cadena no es válida.
-    * @access protected
     */
     PROTECTED FUNCTION tcOrden_Valid
         LPARAMETERS tcOrden

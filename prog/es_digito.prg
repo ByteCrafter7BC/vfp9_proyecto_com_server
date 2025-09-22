@@ -27,13 +27,13 @@
 * por carácter para asegurarse de que todos sean dígitos.
 * Retorna .T. si la expresión está compuesta exclusivamente por dígitos.
 *
-* @param string|int tcExpresion  Cadena o número a evaluar. Las cadenas no
-*                                deben contener espacios ni símbolos.
+* @param string|int tcExpresion Cadena o número a evaluar. Las cadenas no
+*                               deben contener espacios ni símbolos.
 *
-* @return bool  .T. si la expresión es numérica válida (todos los caracteres
-*               son dígitos o el tipo es numérico).
-*               .F. si contiene letras, espacios, símbolos o si el parámetro
-*               es inválido.
+* @return bool .T. si la expresión es numérica válida (todos los caracteres
+*              son dígitos o el tipo es numérico).
+*              .F. si contiene letras, espacios, símbolos o si el parámetro
+*              es inválido.
 *
 * @example
 *     es_digito('12345')   && Retorna .T.

@@ -27,42 +27,46 @@
 * tabla o ser instanciada directamente, configurando la propiedad 'cModelo' con
 * el alias de la tabla a gestionar.
 *
-* @file        dao_dbf.prg
-* @package     biblioteca
-* @author      ByteCrafter7BC <bytecrafter7bc@gmail.com>
-* @version     1.0.0
-* @since       1.0.0
-* @class       dao_dbf
-* @extends     dao
-* @implements  interfaz_dao
-* @method bool existe_codigo(int tnCodigo)
-* @method bool existe_nombre(string tcNombre)
-* @method bool esta_vigente(int tnCodigo)
-* @method bool esta_relacionado(int tnCodigo)
-* @method int contar()
-* @method int obtener_nuevo_codigo()
-* @method mixed obtener_por_codigo()
-* @method mixed obtener_por_nombre()
-* @method bool obtener_todos([[string tcCondicionFiltro], [string tcOrden]])
-* @method string obtener_ultimo_error()
-* @method bool agregar(object toModelo)
-* @method bool modificar(object toModelo)
-* @method bool borrar(int tnCodigo)
-* @see         interfaz_dao, dao
-* @uses        constantes.h
+* @file dao_dbf.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class dao_dbf
+* @extends dao
+* @implements interfaz_dao
+* @see interfaz_dao, dao
+* @uses constantes.h
 */
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS dao_dbf AS dao OF dao.prg
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method bool existe_codigo(int tnCodigo) !!
+    * @method bool existe_nombre(string tcNombre) !!
+    * @method bool esta_vigente(int tnCodigo) !!
+    * @method bool esta_relacionado(int tnCodigo)
+    * @method int contar() !!
+    * @method int obtener_nuevo_codigo() !!
+    * @method mixed obtener_por_codigo() !!
+    * @method mixed obtener_por_nombre() !!
+    * @method bool obtener_todos([string tcCondicionFiltro],
+    *                            [string tcOrden]) !!
+    * @method string obtener_ultimo_error()
+    * @method bool agregar(object toModelo) !!
+    * @method bool modificar(object toModelo) !!
+    * @method bool borrar(int tnCodigo) !!
+    */
+
     **/
     * Verifica si un código ya existe en la tabla.
     *
     * Realiza una búsqueda rápida utilizando el índice principal ('indice1').
     *
     * @param int tnCodigo Código numérico a verificar.
-    * @return bool .T. si el código existe u ocurre un error.
-    *              .F. únicamente si el código no existe.
-    * @access public
+    *
+    * @return bool .T. si el código existe o si ocurre un error.
     */
     FUNCTION existe_codigo
         LPARAMETERS tnCodigo
@@ -98,9 +102,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * índice secundario ('indice2').
     *
     * @param string tcNombre Nombre a verificar.
-    * @return bool .T. si el nombre existe u ocurre un error.
-    *              .F. únicamente si el nombre no existe.
-    * @access public
+    *
+    * @return bool .T. si el nombre existe o si ocurre un error.
     */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre
@@ -136,9 +139,10 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Verifica si un registro está vigente.
     *
     * @param int tnCodigo Código numérico a verificar.
-    * @return bool .T. si el registro existe y está vigente.
-    *              .F. si no existe, no está vigente u ocurre un error.
-    * @access public
+    *
+    * @return bool .T. si el registro existe y su estado es vigente.
+    *              .F. si el registro no existe, no está vigente o si ocurre un
+    *              error.
     */
     FUNCTION esta_vigente
         LPARAMETERS tnCodigo
@@ -170,14 +174,12 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     ENDFUNC
 
     **/
-    * Cuenta la cantidad de registros que cumplen con la condición de filtrado.
+    * Cuenta el número de registros que cumplen con una condición de filtro.
     *
-    * @param string tcCondicionFiltro (Opcional) Condición de filtrado válida.
-    *                                            Si se omite, cuenta todos los
-    *                                            registros no borrados.
-    * @return int Número mayor o igual que cero si la operación es exitosa.
-    *             -1 si ocurre un error.
-    * @access public
+    * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta, sin
+    *                                   la palabra "WHERE".
+    *
+    * @return int Número de registros contados. Devuelve -1 si ocurre un error.
     */
     FUNCTION contar
         LPARAMETERS tcCondicionFiltro
@@ -211,9 +213,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *
     * Busca el primer hueco en la secuencia de códigos a partir de 1.
     *
-    * @return int Número positivo si la operación es exitosa.
-    *             -1 si ocurre un error.
-    * @access public
+    * @return int Número entero positivo que representa el siguiente código
+    *             disponible. Devuelve -1 si ocurre un error.
     */
     FUNCTION obtener_nuevo_codigo
         IF !THIS.conectar() THEN
@@ -244,9 +245,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Obtiene un registro, buscándolo por código.
     *
     * @param int tnCodigo Código del registro a obtener.
-    * @return mixed Object modelo si encuentra el registro.
-    *               .F. si no lo encuentra u ocurre un error.
-    * @access public
+    *
+    * @return mixed Object modelo si el registro fue encontrado.
+    *               .F. si no fue encuentrado el registro o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
@@ -281,9 +282,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Obtiene un registro, buscándolo por nombre.
     *
     * @param string tcNombre Nombre del registro a obtener.
-    * @return mixed Object modelo si encuentra el registro,
-    *               .F. si no lo encuentra u ocurre un error.
-    * @access public
+    *
+    * @return mixed Object modelo si el registro fue encontrado.
+    *               .F. si no fue encuentrado el registro o si ocurre un error.
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre
@@ -323,12 +324,10 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Ejecuta una consulta SELECT sobre la tabla y deja el resultado en un
     * cursor llamado 'tm_' + THIS.cModelo
     *
-    * @param string tcCondicionFiltro (Opcional) La cláusula WHERE de la
-    *                                            consulta.
-    * @param string tcOrden (Opcional) La cláusula ORDER BY de la consulta.
-    * @return bool .T. si la operación fue exitosa.
-    *              .F. si ocurre un error.
-    * @access public
+    * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta.
+    * @param string [tcOrden] La cláusula ORDER BY de la consulta.
+    *
+    * @return bool .T. si la consulta fue ejecutada correctamente.
     */
     FUNCTION obtener_todos
         LPARAMETERS tcCondicionFiltro, tcOrden
@@ -367,10 +366,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Agrega un nuevo registro a la tabla.
     *
-    * @param object toModelo Modelo con los datos a agregar.
-    * @return bool .T. si el agregado fue exitoso.
-    *              .F. si ocurre un error.
-    * @access public
+    * @param object toModelo Modelo que contiene los datos del registro.
+    *
+    * @return bool .T. si el registro fue agregado correctamente.
     */
     FUNCTION agregar
         LPARAMETERS toModelo
@@ -419,10 +417,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Modifica un registro existente en la tabla.
     *
-    * @param object toModelo Modelo con los datos a modificar.
-    * @return bool .T. si la modificación fue exitosa.
-    *              .F. si ocurre un error.
-    * @access public
+    * @param object toModelo Modelo con los datos actualizados del registro.
+    *
+    * @return bool .T. si el registro fue modificado correctamente.
     */
     FUNCTION modificar
         LPARAMETERS toModelo
@@ -495,10 +492,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Borra un registro de la tabla.
     *
-    * @param int tnCodigo Código del registro a borrar.
-    * @return bool .T. si el borrado fue exitoso.
-    *              .F. si ocurre un error.
-    * @access public
+    * @param int tnCodigo Código numérico del registro a borrar.
+    *
+    * @return bool .T. si el registro fue borrado correctamente.
     */
     FUNCTION borrar
         LPARAMETERS tnCodigo
@@ -534,14 +530,22 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         RETURN EMPTY(THIS.cUltimoError)
     ENDFUNC
 
-    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
-    *                            PROTECTED METHODS                            *
-    *                            ~~~~~~~~~~~~~~~~~                            *
-    * @method bool configurar()                                               *
-    * @method mixed obtener_modelo()                                          *
-    * @method bool conectar([bool tlModoEscritura])                           *
-    * @method bool desconectar()                                              *
-    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool configurar() !!
+    * @method mixed obtener_modelo() !!
+    * @method bool conectar([bool tlModoEscritura]) !!
+    * @method bool desconectar() !!
+    * @method bool Init()
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
+    * @method bool tnCodigo_Valid(int tnCodigo)
+    * @method bool tcNombre_Valid(string tcNombre)
+    * @method bool tlVigente_Valid(bool tlVigente)
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
+    */
 
     **/
     * Configura las propiedades por defecto del DAO.
@@ -549,9 +553,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Infiere el nombre del modelo y establece valores predeterminados para las
     * cláusulas SQL si no se han especificado.
     *
-    * @return bool .T. si la configuración fue exitosa.
-    *              .F. si ocurre un error.
-    * @access protected
+    * @return bool .T. si la configuración fue completada correctamente.
     */
     PROTECTED FUNCTION configurar
         IF VARTYPE(THIS.cModelo) != 'C' OR EMPTY(THIS.cModelo) THEN
@@ -602,9 +604,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Crea un objeto a partir del registro actual de la tabla.
     *
-    * @return mixed Object Instancia de la clase modelo (ej: 'ciudades.prg').
+    * @return mixed Object Instancia de la clase modelo si la operación
+    *               completada correctamente.
     *              .F. si ocurre un error.
-    * @access protected
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
@@ -614,14 +616,11 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Establece conexión con la base de datos.
     *
-    * @param bool tlModoEscritura (Opcional) .T. para abrir en modo escritura.
-    *                                        .F. para abrir en modo solo
-    *                                        lectura.
-    *                                        Si no se especifica,
-    *                                        predeterminado .F.
-    * @return bool .T. si la conexión fue exitosa.
-    *              .F. si ocurre un error.
-    * @access protected
+    * @param bool [tlModoEscritura] .T. para abrir en modo escritura.
+    *                               .F. para abrir en modo solo lectura.
+    *                               Si no se especifica, predeterminado .F.
+    *
+    * @return bool .T. si la conexión fue establecida correctamente.
     */
     PROTECTED FUNCTION conectar
         LPARAMETERS tlModoEscritura
@@ -639,8 +638,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Cierra la conexión con la base de datos.
     *
-    * @return bool .T. (valor por defecto).
-    * @access protected
+    * @return bool .T. si la conexión fue cerrada exitosamente.
     */
     PROTECTED FUNCTION desconectar
         cerrar_dbf(THIS.cModelo)

@@ -18,6 +18,21 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* Crea una instancia de un DAO (Data Access Object) y lo almacena como una
+* propiedad del objeto (_oSCREEN).
+*
+* Esta función aplica el patrón de diseño 'Singleton' para garantizar que solo
+* exista una instancia del DAO en la aplicación.
+*
+* @param string tcModelo Nombre del modelo (entidad) para el cual se obtendrá
+*                        el objeto DAO.
+*
+* @return mixed Object Instancia del objeto DAO si la operación fue completada
+*               correctamente.
+*               .F. si el parámetro es inválido o si ocurre un error al
+*               instanciar el objeto.
+*/
 #INCLUDE 'constantes.h'
 
 FUNCTION crear_dao
@@ -35,11 +50,11 @@ FUNCTION crear_dao
 
         IF VARTYPE(loFabricaDao) != 'O' THEN
             registrar_error('crear_dao', 'crear_dao', ;
-                STRTRAN(ERROR_INSTANCIA_CLASE, '{}', 'fabrica_dao'))
+                STRTRAN(MSG_ERROR_INSTANCIA_CLASE, '{}', 'fabrica_dao'))
             RETURN .F.
         ENDIF
 
-        loDao = loFabricaDao.obtener_fabrica_dao(BD_CUAL_FABRICA)
+        loDao = loFabricaDao.obtener_fabrica_dao(BD_ACTUAL)
 
         IF VARTYPE(loDao) != 'O' THEN
             registrar_error('crear_dao', 'crear_dao', ;
@@ -54,7 +69,13 @@ FUNCTION crear_dao
     RETURN _oSCREEN.oDao.obtener(tcModelo)
 ENDFUNC
 
-**------------------------------------------------------------------------------
+**/
+* Devuelve el nombre del archivo de la clase de fábrica DAO según la constante
+* de la base de datos seleccionada.
+*
+* @return string Nombre de la clase de fábrica DAO (ejemplo: 'fabrica_dao_dbf').
+*                Devuelve 'fabrica_dao_desconocida' si la constante es inválida.
+*/
 FUNCTION obtener_cual_fabrica
     LOCAL lcFabricaDao
 

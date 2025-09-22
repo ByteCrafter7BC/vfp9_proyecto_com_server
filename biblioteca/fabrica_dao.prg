@@ -1,6 +1,4 @@
 **/
-* fabrica_dao.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,53 +17,54 @@
 */
 
 **/
-* @abstract_class
-* Fábrica para crear y gestionar objetos de acceso a datos (DAO).
-* Implementa el patrón Factory Method para diferentes motores de base de datos.
+* Clase principal que actúa como una Fábrica (Factory) para crear objetos DAO
+* (Data Access Object) específicos.
+*
+* Utiliza un patrón Singleton para gestionar la creación y el acceso a las
+* implementaciones de los objetos DAO, asegurando que solo se instancie
+* una vez cada tipo de objeto.
+*
+* @file fabrica_dao.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @abstract
+* @class fabrica_dao
+* @extends Custom
+* @uses constantes.h
 */
-
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS fabrica_dao AS Custom
     **/
-    * Prefijo para los nombres de clases DAO.
-    * Ejemplos: 'dao_dbf_', 'dao_firebird_', 'dao_mysql_', 'dao_postgres_', etc.
-    * @protected
-    * @var Character
+    * @var string Prefijo para los nombres de las clases DAO.
+    * @example 'dao_dbf_', 'dao_firebird_', 'dao_mysql_', 'dao_postgres_', etc.
     */
     PROTECTED cPrefijoDao
 
     **/
-    * Matriz que almacena los objetos DAO creados.
-    * Estructura: [n, 1] = nombre del modelo, [n, 2] = objeto DAO.
-    * @protected
-    * @var Array
+    * @var array Arreglo bidimensional que almacena la lista de modelos y las
+    *            instancias de sus respectivos objetos DAO.
+    * @structure [n, 1] = nombre del modelo, [n, 2] = objeto DAO.
     */
     PROTECTED aDao[1, 2]
 
+
     **/
-    * @method obtener_fabrica_dao
+    * Obtiene la instancia de la fábrica DAO específica para un tipo de base de
+    * datos.
     *
-    * @purpose Obtener una fábrica de DAO específica según el tipo de base de
-    *          datos.
+    * @param int tnCualFabrica Constante que identifica el tipo de base de
+    *                          datos, ejemplos:
+    *                          BD_DBF       = 1 (Base de datos DBF nativa).
+    *                          BD_FIREBIRD  = 2 (Base de datos Firebird).
+    *                          BD_MYSQL     = 3 (Base de datos MySQL).
+    *                          BD_POSTGRES  = 4 (Base de datos PostgreSQL).
     *
-    * @access public
-    *
-    * @param tnCualFabrica {Numeric} Representa el tipo de base de datos:
-    *                                BD_DBF       = 1 (Base de datos DBF nativa)
-    *                                BD_FIREBIRD  = 2 (Base de datos Firebird)
-    *                                BD_MYSQL     = 3 (Base de datos MySQL)
-    *                                BD_POSTGRES  = 4 (Base de datos PostgreSQL)
-    *
-    * @return {Object|Logical} Object instancia de la fábrica de DAO solicitada.
-    *                          .F. si el parámetro es inválido o no se puede
-    *                              crear la fábrica.
-    *
-    * @description Esta función actúa como Factory Method para crear instancias
-    *              de fábricas de DAO específicas según el motor de base de
-    *              datos.
-    *              Utiliza el patrón de diseño Factory para desacoplar la
-    *              creación de objetos del código cliente.
+    * @return mixed Object Instancia de la clase fábrica DAO específica.
+    *               .F. si el parámetro es inválido o si la instancia no se
+    *               pudo crear.
     */
     FUNCTION obtener_fabrica_dao
         LPARAMETERS tnCualFabrica
@@ -100,17 +99,18 @@ DEFINE CLASS fabrica_dao AS Custom
     ENDFUNC
 
     **/
-    * @method obtener
+    * Obtiene la instancia del objeto DAO para un modelo específico.
     *
-    * @purpose Obtiene el objeto DAO para un modelo específico (patrón
-    *          Singleton).
+    * Si la instancia del DAO para el modelo ya existe, la devuelve. De lo
+    * contrario, la crea, la almacena en el arreglo 'aDao' y luego la devuelve.
     *
-    * @access public
+    * @param string tcModelo Nombre del modelo (entidad) para el cual se
+    *                        requiere el objeto DAO (ejemplos: 'ciudades',
+    *                        'clientes', 'proveedores', etc.).
     *
-    * @param tcModelo {Character} Nombre del modelo/tabla solicitado.
-    *
-    * @return {Object|Logical} Object instancia del DAO solicitado.
-    *                          .F. si no existe o error.
+    * @return mixed Object Instancia del objeto DAO del modelo solicitado.
+    *               .F. si el modelo es inválido o si el objeto DAO no pudo ser
+    *               creado.
     */
     FUNCTION obtener
         LPARAMETERS tcModelo
@@ -139,23 +139,19 @@ DEFINE CLASS fabrica_dao AS Custom
         RETURN THIS.aDao[lnFila, 2]
     ENDFUNC
 
-    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
-    *                            PROTECTED METHODS                            *
-    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    **/
+    * @section PROTECTED METHODS
+    * @method bool Init()
+    * @method mixed crear(string tcModelo)
+    */
 
     **/
-    * @constructor
+    * Constructor de la clase.
     *
-    * @method Init
+    * Inicializa el arreglo bidimensional 'aDao' con una lista de modelos
+    * predefinidos y sus respectivas implementaciones de DAO.
     *
-    * @purpose Constructor de la clase.
-    *
-    * @access protected
-    *
-    * @return {Logical} .T. si éxito, .F. si falla.
-    *
-    * @description Inicializa la matriz de DAOs.
-    *
+    * @return bool .T. si la inicialización fue completada correctamente.
     */
     PROTECTED FUNCTION Init
         DIMENSION THIS.aDao[14, 2]
@@ -179,16 +175,14 @@ DEFINE CLASS fabrica_dao AS Custom
     ENDFUNC
 
     **/
-    * @method crear
+    * Crea una instancia del objeto DAO para un modelo específico.
     *
-    * @purpose Crea una nueva instancia del DAO para el modelo especificado.
+    * @param string tcModelo Nombre del modelo (entidad) para el que se creará
+    *                        la instancia del DAO.
     *
-    * @access protected
-    *
-    * @param tcModelo {Character} Nombre del modelo/tabla a instanciar.
-    *
-    * @return {Object|Logical} Object instancia del DAO.
-    *                          .F. si falla.
+    * @return mixed Object Instancia del objeto DAO creado.
+    *               .F. si el modelo es inválido o si la instancia no pudo ser
+    *               creada.
     *
     * @throws Exception Si no puede crear la instancia del DAO.
     */

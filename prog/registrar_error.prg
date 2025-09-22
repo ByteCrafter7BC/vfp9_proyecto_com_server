@@ -26,13 +26,13 @@
 * inserta el registro con la fecha actual y los datos del error, y finalmente
 * cierra la conexión.
 *
-* @param string tcClase    Nombre de la clase donde ocurrió el error.
-* @param string tcMetodo   Nombre del método donde ocurrió el error.
-* @param string tcMensaje  Descripción del mensaje de error.
+* @param string tcClase Nombre de la clase donde ocurrió el error.
+* @param string tcMetodo Nombre del método donde ocurrió el error.
+* @param string tcMensaje Descripción del mensaje de error.
 *
-* @return bool  .T. si el error fue registrado correctamente.
-*               .F. si los parámetros son inválidos o no se pudo abrir la
-*               conexión.
+* @return bool .T. si el error fue registrado correctamente.
+*              .F. si los parámetros son inválidos o no se pudo abrir la
+*              conexión.
 *
 * @example
 *     registrar_error('cliente', 'guardar', ;
