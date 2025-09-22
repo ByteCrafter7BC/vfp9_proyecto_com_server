@@ -50,7 +50,7 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
 

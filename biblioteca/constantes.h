@@ -17,12 +17,16 @@
 */
 
 **/
-* Archivo de cabecera que contiene constantes para la aplicación.
-*
 * @file constantes.h
+* @package biblioteca
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
+* @since 1.0.0
 * @see https://github.com/harbour/core/blob/master/include/inkey.ch
+*/
+
+**/
+* Archivo de cabecera que contiene constantes para la aplicación.
 */
 
 */ Misc. keys.

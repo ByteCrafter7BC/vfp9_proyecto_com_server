@@ -17,16 +17,6 @@
 */
 
 **/
-* Clase de acceso a datos (DAO) para tablas DBF; deriva de una clase abstracta.
-*
-* Implementa el patrón de diseño Data Access Object para proporcionar una
-* interfaz genérica y reutilizable para las operaciones CRUD (Crear, Leer,
-* Actualizar, Borrar) en tablas nativas de Visual FoxPro (.DBF).
-*
-* Esta clase está diseñada para ser heredada por clases DAO específicas de cada
-* tabla o ser instanciada directamente, configurando la propiedad 'cModelo' con
-* el alias de la tabla a gestionar.
-*
 * @file dao_dbf.prg
 * @package biblioteca
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
@@ -37,6 +27,18 @@
 * @implements interfaz_dao
 * @see interfaz_dao, dao
 * @uses constantes.h
+*/
+
+**/
+* Clase de acceso a datos (DAO) para tablas DBF; deriva de una clase abstracta.
+*
+* Implementa el patrón de diseño Data Access Object para proporcionar una
+* interfaz genérica y reutilizable para las operaciones CRUD (Crear, Leer,
+* Actualizar, Borrar) en tablas nativas de Visual FoxPro (.DBF).
+*
+* Esta clase está diseñada para ser heredada por clases DAO específicas de cada
+* tabla o ser instanciada directamente, configurando la propiedad 'cModelo' con
+* el alias de la tabla a gestionar.
 */
 #INCLUDE 'constantes.h'
 
@@ -72,12 +74,12 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .T.
         ENDIF
 
@@ -109,7 +111,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS tcNombre
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .T.
         ENDIF
 
@@ -117,7 +119,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .T.
         ENDIF
 
@@ -148,12 +150,12 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .F.
         ENDIF
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -191,7 +193,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN -1
         ENDIF
 
@@ -218,7 +220,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     */
     FUNCTION obtener_nuevo_codigo
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN -1
         ENDIF
 
@@ -247,18 +249,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param int tnCodigo Código del registro a obtener.
     *
     * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si no fue encuentrado el registro o si ocurre un error.
+    *               .F. si el registro no fue encuentrado o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .F.
         ENDIF
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -284,13 +286,13 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param string tcNombre Nombre del registro a obtener.
     *
     * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si no fue encuentrado el registro o si ocurre un error.
+    *               .F. si el registro no fue encuentrado o si ocurre un error.
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre
 
         IF !THIS.tcNombre_Valid(tcNombre) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tcNombre')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .F.
         ENDIF
 
@@ -298,7 +300,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -341,7 +343,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF !THIS.conectar() THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -374,7 +376,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS toModelo
 
         IF !THIS.toModelo_Valid(toModelo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'toModelo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
 
@@ -399,7 +401,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -425,7 +427,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS toModelo
 
         IF !THIS.toModelo_Valid(toModelo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'toModelo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
 
@@ -469,7 +471,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 
@@ -500,7 +502,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LPARAMETERS tnCodigo
 
         IF !THIS.tnCodigo_Valid(tnCodigo) THEN
-            THIS.cUltimoError = STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .F.
         ENDIF
 
@@ -511,7 +513,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = ERROR_CONEXION
+            THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
 

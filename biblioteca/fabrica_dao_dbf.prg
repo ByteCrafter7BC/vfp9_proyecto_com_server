@@ -17,12 +17,6 @@
 */
 
 **/
-* Clase que implementa la Fábrica (Factory) para crear objetos DAO (Data Access
-* Object) específicos para bases de datos de tipo DBF.
-*
-* Extiende de la clase abstracta 'fabrica_dao' y se especializa en la creación
-* de objetos DAO que interactúan con archivos DBF.
-*
 * @file fabrica_dao_dbf.prg
 * @package biblioteca
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
@@ -30,8 +24,51 @@
 * @since 1.0.0
 * @class fabrica_dao_dbf
 * @extends fabrica_dao
+* @see fabrica_dao
+*/
+
+**/
+* Clase que implementa la Fábrica (Factory) para crear objetos DAO (Data Access
+* Object) específicos para bases de datos de tipo DBF.
+*
+* Extiende de la clase abstracta 'fabrica_dao' y se especializa en la creación
+* de objetos DAO que interactúan con archivos DBF.
 */
 DEFINE CLASS fabrica_dao_dbf AS fabrica_dao OF fabrica_dao.prg
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method mixed obtener_fabrica_dao(int tnCualFabrica) !!
+    * @method mixed obtener(string tcModelo)
+    */
+
+    **/
+    * Obtiene la instancia de la fábrica DAO específica para un tipo de base de
+    * datos.
+    *
+    * @param int tnCualFabrica Constante que identifica el tipo de base de
+    *                          datos, ejemplos:
+    *                          BD_DBF       = 1 (Base de datos DBF nativa).
+    *                          BD_FIREBIRD  = 2 (Base de datos Firebird).
+    *                          BD_MYSQL     = 3 (Base de datos MySQL).
+    *                          BD_POSTGRES  = 4 (Base de datos PostgreSQL).
+    *
+    * @return mixed Object Instancia de la clase fábrica DAO específica.
+    *               .F. si el parámetro es inválido o si la instancia no se
+    *               pudo crear.
+    *
+    * @override
+    */
+    FUNCTION obtener_fabrica_dao
+        LPARAMETERS tnCualFabrica
+        RETURN .F.
+    ENDFUNC
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool Init() !!
+    * @method mixed crear(string tcModelo)
+    */
+
     **/
     * Constructor de la clase.
     *
@@ -42,6 +79,8 @@ DEFINE CLASS fabrica_dao_dbf AS fabrica_dao OF fabrica_dao.prg
     *              correctamente.
     *              .F. si la inicialización de la clase padre falla o si el
     *              prefijo 'cPrefijoDao' es inválido.
+    *
+    * @override
     */
     PROTECTED FUNCTION Init
         IF !fabrica_dao::Init() THEN

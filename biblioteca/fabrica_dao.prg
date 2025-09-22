@@ -17,13 +17,6 @@
 */
 
 **/
-* Clase principal que actúa como una Fábrica (Factory) para crear objetos DAO
-* (Data Access Object) específicos.
-*
-* Utiliza un patrón Singleton para gestionar la creación y el acceso a las
-* implementaciones de los objetos DAO, asegurando que solo se instancie
-* una vez cada tipo de objeto.
-*
 * @file fabrica_dao.prg
 * @package biblioteca
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
@@ -32,7 +25,16 @@
 * @abstract
 * @class fabrica_dao
 * @extends Custom
-* @uses constantes.h
+* @uses constantes.h, fabrica_dao_dbf
+*/
+
+**/
+* Clase principal que actúa como una Fábrica (Factory) para crear objetos DAO
+* (Data Access Object) específicos.
+*
+* Utiliza un patrón Singleton para gestionar la creación y el acceso a las
+* implementaciones de los objetos DAO, asegurando que solo se instancie
+* una vez cada tipo de objeto.
 */
 #INCLUDE 'constantes.h'
 
@@ -50,6 +52,11 @@ DEFINE CLASS fabrica_dao AS Custom
     */
     PROTECTED aDao[1, 2]
 
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method mixed obtener_fabrica_dao(int tnCualFabrica)
+    * @method mixed obtener(string tcModelo)
+    */
 
     **/
     * Obtiene la instancia de la fábrica DAO específica para un tipo de base de
@@ -140,7 +147,7 @@ DEFINE CLASS fabrica_dao AS Custom
     ENDFUNC
 
     **/
-    * @section PROTECTED METHODS
+    * @section MÉTODOS PROTEGIDOS
     * @method bool Init()
     * @method mixed crear(string tcModelo)
     */

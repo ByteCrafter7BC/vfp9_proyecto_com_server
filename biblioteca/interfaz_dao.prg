@@ -17,6 +17,16 @@
 */
 
 **/
+* @file interfaz_dao.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class interfaz_dao
+* @extends Custom
+*/
+
+**/
 * Interfaz de acceso a datos (DAO).
 *
 * Implementa el patrón de diseño Data Access Object para proporcionar una
@@ -25,14 +35,6 @@
 *
 * Esta clase está diseñada para ser implementada por clases DAO específicas de
 * cada tabla a gestionar.
-*
-* @file interfaz_dao.prg
-* @package biblioteca
-* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
-* @version 1.0.0
-* @since 1.0.0
-* @class interfaz_dao
-* @extends Custom
 */
 DEFINE CLASS interfaz_dao AS Custom
     **/
@@ -133,7 +135,7 @@ DEFINE CLASS interfaz_dao AS Custom
     * @param int tnCodigo Código del registro a obtener.
     *
     * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si no fue encuentrado el registro o si ocurre un error.
+    *               .F. si el registro no fue encuentrado o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
@@ -146,7 +148,7 @@ DEFINE CLASS interfaz_dao AS Custom
     * @param string tcNombre Nombre del registro a obtener.
     *
     * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si no fue encuentrado el registro o si ocurre un error.
+    *               .F. si el registro no fue encuentrado o si ocurre un error.
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre

@@ -17,15 +17,6 @@
 */
 
 **/
-* Clase abstracta que implementa la interfaz de acceso a datos (DAO).
-*
-* Implementa el patrón de diseño Data Access Object para proporcionar una
-* interfaz genérica y reutilizable para las operaciones CRUD (Crear, Leer,
-* Actualizar, Borrar) en tablas de base de datos relacionales.
-*
-* Esta clase está diseñada para ser implementada por clases DAO específicas de
-* cada tabla a gestionar.
-*
 * @file dao.prg
 * @package biblioteca
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
@@ -37,6 +28,17 @@
 * @implements interfaz_dao
 * @see interfaz_dao
 * @uses constantes.h
+*/
+
+**/
+* Clase abstracta que implementa la interfaz de acceso a datos (DAO).
+*
+* Implementa el patrón de diseño Data Access Object para proporcionar una
+* interfaz genérica y reutilizable para las operaciones CRUD (Crear, Leer,
+* Actualizar, Borrar) en tablas de base de datos relacionales.
+*
+* Esta clase está diseñada para ser implementada por clases DAO específicas de
+* cada tabla a gestionar.
 */
 #INCLUDE 'constantes.h'
 
@@ -141,11 +143,11 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
         LPARAMETERS tcModelo, tnCodigo
 
         IF VARTYPE(tcModelo) != 'C' OR EMPTY(tcModelo) THEN
-            RETURN STRTRAN(PARAM_INVALIDO, '{}', 'tcModelo')
+            RETURN STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcModelo')
         ENDIF
 
         IF VARTYPE(tnCodigo) != 'N' OR !BETWEEN(tnCodigo, 0, 9999) THEN
-            RETURN STRTRAN(PARAM_INVALIDO, '{}', 'tnCodigo')
+            RETURN STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
         ENDIF
 
         IF tnCodigo == 0 THEN
@@ -156,7 +158,7 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
         lcNombre = dao_obtener_nombre(tcModelo, tnCodigo)
 
         IF EMPTY(lcNombre) THEN
-            RETURN NO_EXISTE
+            RETURN MSG_NO_EXISTE
         ENDIF
 
         RETURN lcNombre

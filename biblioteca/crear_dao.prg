@@ -1,6 +1,4 @@
 **/
-* crear_dao.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,8 +17,18 @@
 */
 
 **/
+* @file crea_dao.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @see fabrica_dao, fabrica_dao_dbf
+* @uses constantes.h
+*/
+
+**/
 * Crea una instancia de un DAO (Data Access Object) y lo almacena como una
-* propiedad del objeto (_oSCREEN).
+* propiedad del objeto '_oSCREEN'.
 *
 * Esta función aplica el patrón de diseño 'Singleton' para garantizar que solo
 * exista una instancia del DAO en la aplicación.
