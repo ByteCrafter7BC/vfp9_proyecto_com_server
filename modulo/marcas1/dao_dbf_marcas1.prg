@@ -38,7 +38,7 @@
 *
 * Sobrescribe el método 'esta_relacionado' para verificar si un registro de
 * marca está siendo utilizado en la tabla de productos ('maesprod'), impidiendo
-* su borrado si existen referencias.
+* su eliminación si existen referencias.
 */
 #INCLUDE 'constantes.h'
 

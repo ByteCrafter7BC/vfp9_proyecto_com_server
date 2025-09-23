@@ -1,0 +1,156 @@
+FUNCTION assert_equal(tcDescripcion, tuEsperado, tuObtenido)
+    LOCAL llResultado
+    llResultado = tuEsperado == tuObtenido
+
+    ? "Test: " + tcDescripcion
+    ? "Esperado: " + TRANSFORM(tuEsperado)
+    ? "Obtenido: " + TRANSFORM(tuObtenido)
+    ? "Resultado: " + IIF(llResultado, "✅ PASÓ", "❌ FALLÓ")
+    separador()
+
+    RETURN llResultado
+ENDFUNC
+
+
+FUNCTION test_01_existe_codigo_valido
+    RETURN assert_equal("existe_codigo(3)", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').existe_codigo(3))
+ENDFUNC
+
+FUNCTION test_02_existe_codigo_invalido
+    RETURN assert_equal("existe_codigo(888)", .F., NEWOBJECT('com_marcas2', 'com_marcas2.prg').existe_codigo(888))
+ENDFUNC
+
+FUNCTION test_03_existe_nombre_valido
+    RETURN assert_equal("existe_nombre('husqvarna')", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').existe_nombre('husqvarna'))
+ENDFUNC
+
+FUNCTION test_04_existe_nombre_invalido
+    RETURN assert_equal("existe_nombre('monark')", .F., NEWOBJECT('com_marcas2', 'com_marcas2.prg').existe_nombre('monark'))
+ENDFUNC
+
+FUNCTION test_05_esta_vigente_valido
+    RETURN assert_equal("esta_vigente(3)", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').esta_vigente(3))
+ENDFUNC
+
+FUNCTION test_06_esta_vigente_invalido
+    RETURN assert_equal("esta_vigente(888)", .F., NEWOBJECT('com_marcas2', 'com_marcas2.prg').esta_vigente(888))
+ENDFUNC
+
+FUNCTION test_07_esta_relacionado_valido
+    RETURN assert_equal("esta_relacionado(3)", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').esta_relacionado(3))
+ENDFUNC
+
+FUNCTION test_08_esta_relacionado_invalido
+    RETURN assert_equal("esta_relacionado(888)", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').esta_relacionado(888))
+ENDFUNC
+
+FUNCTION test_09_contar_general
+    RETURN assert_equal("contar()", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').contar() > 0)
+ENDFUNC
+
+FUNCTION test_10_contar_filtrado
+    RETURN assert_equal("contar('nombre == [CALOI]')", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').contar('nombre == [CALOI                         ]') > 0)
+ENDFUNC
+
+FUNCTION test_11_obtener_nuevo_codigo
+    RETURN assert_equal("obtener_nuevo_codigo()", .T., NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_nuevo_codigo() > 0)
+ENDFUNC
+
+FUNCTION test_12_obtener_por_codigo_valido
+    RETURN assert_equal("obtener_por_codigo(3)", .T., VARTYPE(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_por_codigo(3)) == 'O')
+ENDFUNC
+
+FUNCTION test_13_obtener_por_codigo_invalido
+    RETURN assert_equal("obtener_por_codigo(888)", .F., VARTYPE(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_por_codigo(888)) == 'O')
+ENDFUNC
+
+FUNCTION test_14_obtener_por_nombre_valido
+    RETURN assert_equal("obtener_por_nombre('briggs & stratton')", .T., VARTYPE(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_por_nombre('briggs & stratton')) == 'O')
+ENDFUNC
+
+FUNCTION test_15_obtener_por_nombre_invalido
+    RETURN assert_equal("obtener_por_nombre('monark')", .F., VARTYPE(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_por_nombre('monark')) == 'O')
+ENDFUNC
+
+FUNCTION test_16_obtener_todos_general
+    RETURN assert_equal("obtener_todos()", .T., !EMPTY(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_todos()))
+ENDFUNC
+
+FUNCTION test_17_obtener_todos_filtrado
+    RETURN assert_equal("obtener_todos('nombre LIKE [C%]')", .T., !EMPTY(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_todos('nombre LIKE [C%]')))
+ENDFUNC
+
+FUNCTION test_18_obtener_todos_filtrado_ordenado
+    RETURN assert_equal("obtener_todos('nombre LIKE [C%]', 'codigo')", .T., !EMPTY(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_todos('nombre LIKE [C%]', 'codigo')))
+ENDFUNC
+
+FUNCTION test_19_obtener_dto
+    RETURN assert_equal("obtener_dto()", .T., VARTYPE(NEWOBJECT('com_marcas2', 'com_marcas2.prg').obtener_dto()) == 'O')
+ENDFUNC
+
+FUNCTION test_20_agregar_dto
+    LOCAL poDao, poDto
+    poDao = NEWOBJECT('com_marcas2', 'com_marcas2.prg')
+    poDto = poDao.obtener_dto()
+
+    WITH poDto
+        .establecer_codigo(poDao.obtener_nuevo_codigo())
+        .establecer_nombre('Nombre ' + ALLTRIM(STR(.obtener_codigo())))
+        .establecer_vigente(.T.)
+    ENDWITH
+
+    RETURN assert_equal("agregar(dto)", .T., poDao.agregar(poDto))
+ENDFUNC
+
+FUNCTION test_21_modificar_dto
+    LOCAL poDao, poDto
+    poDao = NEWOBJECT('com_marcas2', 'com_marcas2.prg')
+    poDto = poDao.obtener_dto()
+
+    WITH poDto
+        .establecer_codigo(poDao.obtener_nuevo_codigo())
+        .establecer_nombre('Nombre ' + ALLTRIM(STR(.obtener_codigo())))
+        .establecer_vigente(.T.)
+    ENDWITH
+
+    IF !poDao.agregar(poDto)
+        RETURN .F.
+    ENDIF
+
+    WITH poDto
+        .establecer_nombre('Modificado')
+        .establecer_vigente(.F.)
+    ENDWITH
+
+    RETURN assert_equal("modificar(dto)", .T., poDao.modificar(poDto))
+ENDFUNC
+
+FUNCTION test_22_borrar_codigo_protegido
+    LOCAL poDao
+    poDao = NEWOBJECT('com_marcas2', 'com_marcas2.prg')
+    RETURN assert_equal("borrar(3)", .F., poDao.borrar(3))
+ENDFUNC
+
+
+FUNCTION ejecutar_tests
+    LOCAL lnFallos
+    lnFallos = 0
+
+    lnFallos = lnFallos + !test_01_existe_codigo_valido()
+    lnFallos = lnFallos + !test_02_existe_codigo_invalido()
+    lnFallos = lnFallos + !test_03_existe_nombre_valido()
+    lnFallos = lnFallos + !test_04_existe_nombre_invalido()
+    lnFallos = lnFallos + !test_05_esta_vigente_valido()
+    lnFallos = lnFallos + !test_06_esta_vigente_invalido()
+    lnFallos = lnFallos + !test_07_esta_relacionado_valido()
+    lnFallos = lnFallos + !test_08_esta_relacionado_invalido()
+    lnFallos = lnFallos + !test_09_contar_general()
+    lnFallos = lnFallos + !test_10_contar_filtrado()
+    lnFallos = lnFallos + !test_11_obtener_nuevo_codigo()
+    lnFallos = lnFallos + !test_12_obtener_por_codigo_valido()
+    lnFallos = lnFallos + !test_13_obtener_por_codigo_invalido()
+    lnFallos = lnFallos + !test_14_obtener_por_nombre_valido()
+    lnFallos = lnFallos + !test_15_obtener_por_nombre_invalido()
+    lnFallos = lnFallos + !test_16_obtener_todos_general()
+    lnFallos = lnFallos + !test_17_obtener_todos_filtrado()
+    lnFallos = lnFallos + !test_18_obtener_t
