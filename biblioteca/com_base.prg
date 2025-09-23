@@ -292,7 +292,11 @@ DEFINE CLASS com_base AS Session
     **/
     * @section MÉTODOS PROTEGIDOS
     * @method bool Init()
-    * @method bool existe_nombre(string tcNombre)
+    * @method bool configurar()
+    * @method bool establecer_entorno()
+    * @method bool establecer_dao()
+    * @method mixed convertir_dto_a_modelo(object toDto)
+    */
 
     **/
     * Constructor de la clase DAO.
@@ -356,7 +360,7 @@ DEFINE CLASS com_base AS Session
         IF VARTYPE(THIS.oDao) != 'O' THEN
             registrar_error('com_' + LOWER(THIS.cModelo), ;
                 'establecer_dao', ;
-                STRTRAN(ERROR_INSTANCIA_CLASE, '{}', THIS.cModelo))
+                STRTRAN(MSG_ERROR_INSTANCIA_CLASE, '{}', THIS.cModelo))
             RETURN .F.
         ENDIF
     ENDFUNC

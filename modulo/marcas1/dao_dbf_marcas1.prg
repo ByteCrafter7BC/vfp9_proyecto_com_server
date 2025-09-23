@@ -1,6 +1,4 @@
 **/
-* dao_dbf_marcas1.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,33 +16,60 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* @file dao_dbf_marcas1.prg
+* @package biblioteca
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class dao_dbf_marcas1
+* @extends dao_dbf
+* @uses constantes.h
+*/
+
+**/
+* Clase de objeto de acceso a datos (DAO) para la tabla de marcas en formato
+* DBF.
+*
+* Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
+* especializa para la tabla 'marcas1'. Su propósito es manejar las operaciones
+* de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
+* de esta tabla.
+*
+* Sobrescribe el método 'esta_relacionado' para verificar si un registro de
+* marca está siendo utilizado en la tabla de productos ('maesprod'), impidiendo
+* su borrado si existen referencias.
+*/
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
     **/
-    * @method esta_relacionado
+    * @section MÉTODOS PÚBLICOS
+    * @method bool existe_codigo(int tnCodigo)
+    * @method bool existe_nombre(string tcNombre)
+    * @method bool esta_vigente(int tnCodigo)
+    * @method bool esta_relacionado(int tnCodigo) !!
+    * @method int contar()
+    * @method int obtener_nuevo_codigo()
+    * @method mixed obtener_por_codigo()
+    * @method mixed obtener_por_nombre()
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method string obtener_ultimo_error()
+    * @method bool agregar(object toModelo)
+    * @method bool modificar(object toModelo)
+    * @method bool borrar(int tnCodigo)
+    */
+
+    **
+    * Verifica si el código de una marca está relacionado con otros registros.
     *
-    * @purpose Verificar si un código está siendo referenciado/utilizado en
-    *          otras tablas del sistema antes de permitir su eliminación
-    *          o modificación.
+    * Este método sobrescribe la funcionalidad de la clase padre para comprobar
+    * específicamente si una marca se utiliza en la tabla de productos
+    * ('maesprod').
     *
-    * @access public
+    * @param int tnCodigo Código de la marca a verificar.
     *
-    * @param tnCodigo {Numeric} Código a verificar por dependencias/referencias.
-    *
-    * @return {Logical} .T. si el código está relacionado/referenciado
-    *                       (no se puede eliminar).
-    *                   .F. si el código no tiene referencias
-    *                       (se puede eliminar).
-    *                   .T. también en caso de error de parámetro.
-    *
-    * @description Esta función previene la eliminación de registros que están
-    *              siendo utilizados en otras partes del sistema (integridad
-    *              referencial).
-    *              Verifica referencias específicamente en la tabla 'maesprod'.
-    *
-    * @use Típicamente se usa antes de operaciones DELETE para prevenir
-    *      violaciones de integridad referencial.
+    * @return bool .T. si el registro está relacionado o si ocurre un error.
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
@@ -69,4 +94,21 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
 
         RETURN llRelacionado
     ENDFUNC
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool configurar()
+    * @method mixed obtener_modelo()
+    * @method bool conectar([bool tlModoEscritura])
+    * @method bool desconectar()
+    * @method bool Init()
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
+    * @method bool tnCodigo_Valid(int tnCodigo)
+    * @method bool tcNombre_Valid(string tcNombre)
+    * @method bool tlVigente_Valid(bool tlVigente)
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
+    */
 ENDDEFINE
