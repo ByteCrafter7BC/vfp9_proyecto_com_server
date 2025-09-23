@@ -1,7 +1,7 @@
-/**
- * Clase base para la suite de pruebas unitarias.
- * Proporciona métodos de afirmación y un reporte de resultados.
- */
+**/
+* Clase base para la suite de pruebas unitarias.
+* Proporciona métodos de afirmación y un reporte de resultados.
+*/
 DEFINE CLASS test_suite AS Custom
     PROTECTED nTestsRun
     PROTECTED nTestsPassed
@@ -18,10 +18,10 @@ DEFINE CLASS test_suite AS Custom
         ? 'Prueba: ' + ALLTRIM(STR(THIS.nTestsRun)) + ' | ' + tcTestName
         IF tlResult THEN
             THIS.nTestsPassed = THIS.nTestsPassed + 1
-            ? 'Resultado: PASÓ ?'
+            ? 'Resultado: PASÓ'
         ELSE
             THIS.nTestsFailed = THIS.nTestsFailed + 1
-            ? 'Resultado: FALLÓ ?'
+            ? 'Resultado: FALLÓ'
         ENDIF
     ENDFUNC
 
@@ -43,4 +43,17 @@ DEFINE CLASS test_suite AS Custom
     FUNCTION AssertFalse(tlValue, tcMessage)
         RETURN THIS.AssertEqual(.F., tlValue, tcMessage)
     ENDFUNC
-ENDFUNC
+
+    FUNCTION obtener_total_pruebas
+        RETURN THIS.nTestsRun
+    ENDFUNC
+
+    FUNCTION obtener_pruebas_exitosas
+        RETURN THIS.nTestsPassed
+    ENDFUNC
+
+    FUNCTION obtener_pruebas_fallidas
+        RETURN THIS.nTestsFailed
+    ENDFUNC
+    
+ENDDEFINE

@@ -1,7 +1,7 @@
-/**
- * Suite de pruebas para la clase de negocio 'com_marcas2'.
- */
-DEFINE CLASS test_com_marcas2 AS test_suite OF test_suite.prg
+**
+* Suite de pruebas para la clase de negocio 'com_marcas2'.
+*/
+DEFINE CLASS test_com_marcas2_ AS test_suite OF test_suite.prg
     PROTECTED oCom
     
     FUNCTION Init
@@ -10,7 +10,7 @@ DEFINE CLASS test_com_marcas2 AS test_suite OF test_suite.prg
     ENDFUNC
     
     FUNCTION TearDown
-        RELEASE THIS.oCom
+        THIS.oCom = NULL
     ENDFUNC
 
     FUNCTION TestExistencia()
@@ -45,4 +45,4 @@ DEFINE CLASS test_com_marcas2 AS test_suite OF test_suite.prg
         lcMsg = 'Método: esta_relacionado | Valor: 888'
         THIS.RunTest(lcMsg, THIS.AssertFalse(THIS.oCom.esta_relacionado(888), 'El código 888 no debe estar relacionado'))
     ENDFUNC
-ENDFUNC
+ENDDEFINE
