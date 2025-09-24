@@ -17,29 +17,29 @@
 */
 
 **/
-* @file prueba_com_marcas1.prg
+* @file prueba_com_marcas2.prg
 * @package prueba
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @description Programa principal para ejecutar las pruebas de 'com_marcas1'.
+* @description Programa principal para ejecutar las pruebas de 'com_marcas2'.
 */
 
 **/
 * Programa principal que crea un conjunto de pruebas y ejecuta todas las pruebas
-* definidas en la clase 'prueba_com_marcas1'.
+* definidas en la clase 'prueba_com_marcas2'.
 */
 CLEAR
 
 LOCAL loConjuntoPrueba
-loConjuntoPrueba = CREATEOBJECT('prueba_com_marcas1')
+loConjuntoPrueba = CREATEOBJECT('prueba_com_marcas2')
 
 IF VARTYPE(loConjuntoPrueba) != 'O' THEN
     ? 'ERROR: No se pudo crear el conjunto de pruebas.'
     RETURN .F.
 ENDIF
 
-? "Iniciando pruebas de 'com_marcas1'..."
+? "Iniciando pruebas de 'com_marcas2'..."
 ? REPLICATE('=', 40)
 
 WITH loConjuntoPrueba
@@ -58,11 +58,11 @@ STORE NULL TO loConjuntoPrueba, _oSCREEN
 RELEASE loConjuntoPrueba, _oSCREEN
 
 **/
-* Clase de pruebas para 'com_marcas1'.
+* Clase de pruebas para 'com_marcas2'.
 */
-DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
+DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
     **/
-    * @var object Objeto de la capa de negocio 'com_marcas1'.
+    * @var object Objeto de la capa de negocio 'com_marcas2'.
     */
     PROTECTED oCom
 
@@ -282,14 +282,14 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero y el objeto de la capa de
-    * negocio 'com_marcas1'.
+    * negocio 'com_marcas2'.
     *
     * @return .T. si la inicialización se realizó correctamente
     */
     PROTECTED FUNCTION Init
         DODEFAULT()    && Llama al Init de la clase padre.
 
-        THIS.oCom = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
+        THIS.oCom = NEWOBJECT('com_marcas2', 'com_marcas2.prg')
 
         IF VARTYPE(THIS.oCom) != 'O' THEN
             RETURN .F.
