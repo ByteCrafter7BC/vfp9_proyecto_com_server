@@ -17,32 +17,32 @@
 */
 
 **/
-* @file dao_dbf_marcas2.prg
-* @package modulo\marcas2
+* @file dao_dbf_rubros2.prg
+* @package modulo\rubros2
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @class dao_dbf_marcas2
+* @class dao_dbf_rubros2
 * @extends biblioteca\dao_dbf
 * @uses constantes.h
 */
 
 **/
-* Clase de objeto de acceso a datos (DAO) para la tabla de marcas en formato
+* Clase de objeto de acceso a datos (DAO) para la tabla de subrubros en formato
 * DBF.
 *
 * Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
-* especializa para la tabla 'marcas2'. Su propósito es manejar las operaciones
+* especializa para la tabla 'rubros2'. Su propósito es manejar las operaciones
 * de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
 * de esta tabla.
 *
 * Sobrescribe el método 'esta_relacionado' para verificar si un registro de
-* marca está siendo utilizado en las tablas de modelos ('modelos') y órdenes de
-* trabajo ('ot'), impidiendo su eliminación si existen referencias.
+* rubro está siendo utilizado en la tabla de productos ('maesprod'), impidiendo
+* su eliminación si existen referencias.
 */
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
+DEFINE CLASS dao_dbf_rubros2 AS dao_dbf OF dao_dbf.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
@@ -61,12 +61,13 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
     */
 
     **
-    * Verifica si el código de una marca está relacionado con otros registros.
+    * Verifica si el código de una rubro está relacionado con otros registros.
     *
     * Este método sobrescribe la funcionalidad de la clase padre para comprobar
-    * específicamente si una marca se utiliza en las tablas 'modelos' y 'ot'.
+    * específicamente si una rubro se utiliza en la tabla de productos
+    * ('maesprod').
     *
-    * @param int tnCodigo Código de la marca a verificar.
+    * @param int tnCodigo Código del subrubro a verificar.
     *
     * @return bool .T. si el registro está relacionado o si ocurre un error.
     * @override
@@ -81,16 +82,11 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
 
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
-        lcCondicionFiltro = 'marca == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'rubro == ' + ALLTRIM(STR(tnCodigo))
 
         IF !llRelacionado THEN
             llRelacionado = ;
-                dao_existe_referencia('modelos', lcCondicionFiltro)
-        ENDIF
-
-        IF !llRelacionado THEN
-            llRelacionado = ;
-                dao_existe_referencia('ot', lcCondicionFiltro)
+                dao_existe_referencia('maesprod', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

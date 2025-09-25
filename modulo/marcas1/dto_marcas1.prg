@@ -18,12 +18,12 @@
 
 **/
 * @file dto_marcas1.prg
-* @package biblioteca
+* @package modulo\marcas1
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
 * @class dto_marcas1
-* @extends dto_base
+* @extends biblioteca\dto_base
 */
 
 **/

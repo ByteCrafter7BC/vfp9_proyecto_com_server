@@ -18,12 +18,12 @@
 
 **/
 * @file validador_marcas1.prg
-* @package biblioteca
+* @package modulo\marcas1
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
 * @class validador_marcas1
-* @extends validador_base
+* @extends biblioteca\validador_base
 */
 
 **

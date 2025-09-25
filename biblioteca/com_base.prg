@@ -37,9 +37,7 @@
 * entre DTO (Data Transfer Objects) y modelos de datos.
 *
 * Cada clase COM específica debe heredar de esta clase para encapsular la
-* lógica de negocio de un modelo particular. La propiedad 'DataSession' se
-* establece en 2 (privada) para asegurar que cada instancia opere en un entorno
-* de datos aislado, lo que es crucial para la robustez en entornos multiusuario.
+* lógica de negocio de un modelo particular.
 */
 #INCLUDE 'constantes.h'
 
@@ -60,7 +58,16 @@ DEFINE CLASS com_base AS Session
     */
     PROTECTED cUltimoError
 
-    DataSession = 2    && 2 – Private data session.
+    **/
+    * No utilizar { DataSession = 2    && 2 – Private Data Session. }
+    * Problema: Al llamar a la función create_dao(string tcModel), se devuelve
+    * un objeto DAO. Este objeto, a su vez, tiene varios métodos, uno de los
+    * cuales es obtener_todos([string tcCondicionFiltro], [string tcOrden]));
+    * cuando se llama a este método sin argumentos, debería recuperar todos los
+    * registros del modelo, pero no lo hace.
+    * Solución: DataSession = 1    && 1 – Default Data Session.
+    */
+    DataSession = 1    && 1 – Default Data Session.
 
     **/
     * @section MÉTODOS PÚBLICOS
@@ -203,6 +210,7 @@ DEFINE CLASS com_base AS Session
         IF THIS.oDao.obtener_todos(tcCondicionFiltro, tcOrden) THEN
             IF USED(lcCursor) THEN
                 CURSORTOXML(lcCursor, 'lcXml', 1, 0, 0, '1')
+                ? 'obtener_todos ' + str(reccount(lcCursor))
                 USE IN (lcCursor)
             ENDIF
         ENDIF
@@ -293,7 +301,7 @@ DEFINE CLASS com_base AS Session
     * @section MÉTODOS PROTEGIDOS
     * @method bool Init()
     * @method bool configurar()
-    * @method bool establecer_entorno()
+    * @method void establecer_entorno()
     * @method bool establecer_dao()
     * @method mixed convertir_dto_a_modelo(object toDto)
     */
@@ -326,20 +334,13 @@ DEFINE CLASS com_base AS Session
             RETURN .F.
         ENDIF
 
-        IF VARTYPE(_oSCREEN) != 'O' THEN
-            PUBLIC _oSCREEN
-            _oSCREEN = CREATEOBJECT('Empty')
-        ENDIF
-
         RETURN THIS.establecer_dao()
     ENDFUNC
 
     **/
     * Establece las configuraciones de entorno de Visual FoxPro para la clase.
-    *
-    * @return bool .T. si la configuración fue completada correctamente.
     */
-    PROTECTED FUNCTION establecer_entorno
+    PROTECTED PROCEDURE establecer_entorno
         SET CPDIALOG OFF
         SET DELETED ON
         SET EXACT ON
@@ -347,7 +348,7 @@ DEFINE CLASS com_base AS Session
         SET REPROCESS TO 2 SECONDS
         SET RESOURCE OFF
         SET SAFETY OFF
-    ENDFUNC
+    ENDPROC
 
     **/
     * Crea una instancia del objeto DAO y la asigna a la propiedad 'oDao'.

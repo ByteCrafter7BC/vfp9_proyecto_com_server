@@ -54,8 +54,8 @@ WITH loConjuntoPrueba
     .obtener_informe()
 ENDWITH
 
-STORE NULL TO loConjuntoPrueba, _oSCREEN
-RELEASE loConjuntoPrueba, _oSCREEN
+loConjuntoPrueba = .F.
+RELEASE loConjuntoPrueba
 
 **/
 * Clase de pruebas para 'com_marcas2'.
@@ -72,9 +72,20 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
     PROTECTED oDto
 
     **/
+    * @section MÉTODOS PÚBLICOS
+    * @method void obtener_informe()
+    * @method void prueba_existe() !
+    * @method void prueba_vigente() !
+    * @method void prueba_relacionado() !
+    * @method void prueba_contar() !
+    * @method void prueba_obtener() !
+    * @method void prueba_agregar() !
+    * @method void prueba_modificar() !
+    * @method void prueba_borrar() !
+    */
+
+    **/
     * Ejecuta las pruebas sobre el método 'existe_codigo' y 'existe_nombre'.
-    *
-    * @return void
     */
     PROCEDURE prueba_existe
         THIS.ejecutar_prueba('Método: existe_codigo | tnCodigo: 3', ;
@@ -96,8 +107,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'esta_vigente'.
-    *
-    * @return void
     */
     PROCEDURE prueba_vigente
         THIS.ejecutar_prueba('Método: esta_vigente | tnCodigo: 3', ;
@@ -111,8 +120,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'esta_relacionado'.
-    *
-    * @return void
     */
     PROCEDURE prueba_relacionado
         THIS.ejecutar_prueba('Método: esta_relacionado | tnCodigo: 3', ;
@@ -126,8 +133,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'contar'.
-    *
-    * @return void
     */
     PROCEDURE prueba_contar
         LOCAL lcCondicionFiltro
@@ -145,8 +150,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre métodos de obtención de datos.
-    *
-    * @return void
     */
     PROCEDURE prueba_obtener
         LOCAL lcNombre, lcXml
@@ -220,8 +223,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'agregar'.
-    *
-    * @return void
     */
     PROCEDURE prueba_agregar
         LOCAL llAgregado
@@ -243,8 +244,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'modificar'.
-    *
-    * @return void
     */
     PROCEDURE prueba_modificar
         LOCAL llModificado
@@ -266,8 +265,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'borrar'.
-    *
-    * @return void
     */
     PROCEDURE prueba_borrar
         LOCAL llBorrado
@@ -279,12 +276,25 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
     ENDPROC
 
     **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method void Init() !!
+    * @method void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
+    * @method bool afirmar_igual(mixed tvEsperado, mixed tvObtenido, ;
+                                 string tcMensaje)
+    * @method bool afirmar_verdadero(bool tlValor, string tcMensaje)
+    * @method bool afirmar_falso(bool tlValor, string tcMensaje)
+    * @method void Destroy()
+    */
+
+    **/
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero y el objeto de la capa de
     * negocio 'com_marcas2'.
     *
     * @return .T. si la inicialización se realizó correctamente
+    *
+    * @override
     */
     PROTECTED FUNCTION Init
         DODEFAULT()    && Llama al Init de la clase padre.
@@ -301,8 +311,6 @@ DEFINE CLASS prueba_com_marcas2 AS conjunto_prueba OF conjunto_prueba.prg
     *
     * Libera los recursos utilizados por la instancia, en particular el objeto
     * de la capa de negocio 'oCom'.
-    *
-    * @return void
     */
     PROTECTED PROCEDURE Destroy
         THIS.oCom = NULL

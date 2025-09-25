@@ -18,12 +18,12 @@
 
 **/
 * @file marcas2.prg
-* @package biblioteca
+* @package modulo\marcas2
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
 * @class marcas2
-* @extends modelo_base
+* @extends biblioteca\modelo_base
 */
 
 **

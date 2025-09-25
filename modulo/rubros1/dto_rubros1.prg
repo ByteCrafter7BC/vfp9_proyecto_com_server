@@ -1,6 +1,4 @@
 **/
-* dto_rubros1.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,5 +16,38 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* @file dto_rubros1.prg
+* @package modulo\rubros1
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class dto_rubros1
+* @extends biblioteca\dto_base
+*/
+
+**/
+* Objeto de Transferencia de Datos (DTO) para la tabla de rubros.
+*
+* Esta clase hereda la estructura de la clase base 'dto_base', que proporciona
+* las propiedades y métodos para manejar datos de código, nombre y estado de
+* vigencia.
+*
+* Su propósito es servir como un DTO especializado para la entidad 'rubros1',
+* permitiendo una clara distinción y organización en la capa de transferencia
+* de datos sin la necesidad de añadir una lógica adicional. Actúa como un
+* contenedor de datos para la transferencia entre las diferentes capas de la
+* aplicación.
+*/
 DEFINE CLASS dto_rubros1 AS dto_base OF dto_base.prg
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method bool Init([int tnCodigo], [string tcNombre], [bool tlVigente])
+    * @method int obtener_codigo()
+    * @method string obtener_nombre()
+    * @method bool esta_vigente()
+    * @method bool establecer_codigo(int tnCodigo)
+    * @method bool establecer_nombre(string tcNombre)
+    * @method bool establecer_vigente(bool tlVigente)
+    */
 ENDDEFINE

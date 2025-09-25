@@ -17,29 +17,29 @@
 */
 
 **/
-* @file prueba_com_marcas1.prg
+* @file prueba_com_rubros1.prg
 * @package prueba
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @description Programa principal para ejecutar las pruebas de 'com_marcas1'.
+* @description Programa principal para ejecutar las pruebas de 'com_rubros1'.
 */
 
 **/
 * Programa principal que crea un conjunto de pruebas y ejecuta todas las pruebas
-* definidas en la clase 'prueba_com_marcas1'.
+* definidas en la clase 'prueba_com_rubros1'.
 */
 CLEAR
 
 LOCAL loConjuntoPrueba
-loConjuntoPrueba = CREATEOBJECT('prueba_com_marcas1')
+loConjuntoPrueba = CREATEOBJECT('prueba_com_rubros1')
 
 IF VARTYPE(loConjuntoPrueba) != 'O' THEN
     ? 'ERROR: No se pudo crear el conjunto de pruebas.'
     RETURN .F.
 ENDIF
 
-? "Iniciando pruebas de 'com_marcas1'..."
+? "Iniciando pruebas de 'com_rubros1'..."
 ? REPLICATE('=', 40)
 
 WITH loConjuntoPrueba
@@ -58,11 +58,11 @@ loConjuntoPrueba = .F.
 RELEASE loConjuntoPrueba
 
 **/
-* Clase de pruebas para 'com_marcas1'.
+* Clase de pruebas para 'com_rubros1'.
 */
-DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
+DEFINE CLASS prueba_com_rubros1 AS conjunto_prueba OF conjunto_prueba.prg
     **/
-    * @var object Objeto de la capa de negocio 'com_marcas1'.
+    * @var object Objeto de la capa de negocio 'com_rubros1'.
     */
     PROTECTED oCom
 
@@ -96,9 +96,9 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_falso(THIS.oCom.existe_codigo(888), ;
                 'No debe existir el código 888.'))
 
-        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Husqvarna'], ;
-            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Husqvarna'), ;
-                "Debe existir el nombre 'Husqvarna'."))
+        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Repuestos'], ;
+            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Repuestos'), ;
+                "Debe existir el nombre 'Repuestos'."))
 
         THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Monark' ], ;
             THIS.afirmar_falso(THIS.oCom.existe_nombre('Monark'), ;
@@ -141,7 +141,7 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_verdadero(THIS.oCom.contar() > 0, ;
                 'El resultado de contar() debe ser mayor que cero.'))
 
-        lcCondicionFiltro = 'nombre == [CALOI                         ]'
+        lcCondicionFiltro = 'nombre == [HERRAMIENTAS                  ]'
         THIS.ejecutar_prueba('Método: contar | tcCondicionFiltro: ' + ;
             "'" + lcCondicionFiltro + "'", ;
             THIS.afirmar_verdadero(THIS.oCom.contar(lcCondicionFiltro) == 1, ;
@@ -169,7 +169,7 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
                 VARTYPE(THIS.oCom.obtener_por_codigo(888)) == 'O', ;
                 'No debe existir el código 888.'))
 
-        lcNombre = 'Briggs & Stratton'
+        lcNombre = 'Repuestos'
         THIS.ejecutar_prueba( ;
             "Método: obtener_por_nombre | tcNombre: '" + lcNombre + "'", ;
             THIS.afirmar_verdadero( ;
@@ -290,7 +290,7 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero y el objeto de la capa de
-    * negocio 'com_marcas1'.
+    * negocio 'com_rubros1'.
     *
     * @return .T. si la inicialización se realizó correctamente
     *
@@ -299,7 +299,7 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
     PROTECTED FUNCTION Init
         DODEFAULT()    && Llama al Init de la clase padre.
 
-        THIS.oCom = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
+        THIS.oCom = NEWOBJECT('com_rubros1', 'com_rubros1.prg')
 
         IF VARTYPE(THIS.oCom) != 'O' THEN
             RETURN .F.

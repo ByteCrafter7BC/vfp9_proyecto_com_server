@@ -52,6 +52,11 @@ FUNCTION crear_dao
         RETURN .F.
     ENDIF
 
+    IF VARTYPE(_oSCREEN) != 'O' THEN
+        PUBLIC _oSCREEN
+        _oSCREEN = CREATEOBJECT('Empty')
+    ENDIF
+
     IF VARTYPE(_oSCREEN.oDao) != 'O' THEN
         LOCAL loFabricaDao, loDao
         loFabricaDao = NEWOBJECT('fabrica_dao', 'fabrica_dao.prg')

@@ -60,8 +60,6 @@ DEFINE CLASS conjunto_prueba AS Custom
     * Este método imprime el total de pruebas ejecutadas, aprobadas y fallidas,
     * y muestra un mensaje final indicando si todas las pruebas pasaron o si
     * se encontraron fallos.
-    *
-    * @return void
     */
     PROCEDURE obtener_informe
         ? REPLICATE('=', 40)
@@ -82,7 +80,7 @@ DEFINE CLASS conjunto_prueba AS Custom
     * @method void Init()
     * @method void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
     * @method bool afirmar_igual(mixed tvEsperado, mixed tvObtenido, ;
-    *                            string tcMensaje)
+                                 string tcMensaje)
     * @method bool afirmar_verdadero(bool tlValor, string tcMensaje)
     * @method bool afirmar_falso(bool tlValor, string tcMensaje)
     */
@@ -91,8 +89,6 @@ DEFINE CLASS conjunto_prueba AS Custom
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero al crear una nueva instancia.
-    *
-    * @return void
     */
     PROTECTED PROCEDURE Init
         STORE 0 TO THIS.nPruebasEjecutadas, ;
@@ -107,8 +103,6 @@ DEFINE CLASS conjunto_prueba AS Custom
     *
     * @param string tcNombrePrueba Nombre o descripción de la prueba.
     * @param bool tlResultado Resultado de la prueba (.T. = pasó, .F. = falló).
-    *
-    * @return void
     */
     PROTECTED PROCEDURE ejecutar_prueba
         LPARAMETERS tcNombrePrueba, tlResultado

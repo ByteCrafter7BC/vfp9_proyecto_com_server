@@ -1,6 +1,4 @@
 **/
-* validador_rubros2.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,5 +16,45 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* @file validador_rubros2.prg
+* @package modulo\rubros2
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class validador_rubros2
+* @extends biblioteca\validador_base
+*/
+
+**
+* Clase validadora para la entidad de subrubros.
+*
+* Esta clase hereda la funcionalidad genérica de validación de la clase base
+* 'validador_base'. Se especializa en la validación de un objeto de modelo
+* de tipo 'rubros2'.
+*
+* Su propósito es asegurar que los datos de los subrubros cumplan con las reglas
+* de negocio (por ejemplo, unicidad de código y nombre, longitud, etc.) antes
+* de ser persistidos en la base de datos. Al heredar de 'validador_base', se
+* beneficia de la lógica de validación predefinida sin necesidad de implementar
+* los métodos desde cero.
+*/
 DEFINE CLASS validador_rubros2 AS validador_base OF validador_base.prg
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method bool Init(int tnBandera, object toModelo, object toDao)
+    * @method bool es_valido()
+    * @method string obtener_error_codigo()
+    * @method string obtener_error_nombre()
+    * @method string obtener_error_vigente()
+    */
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool configurar()
+    * @method bool validar()
+    * @method string validar_codigo()
+    * @method string validar_nombre()
+    * @method string validar_vigente()
+    */
 ENDDEFINE

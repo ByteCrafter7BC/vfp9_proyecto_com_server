@@ -18,12 +18,12 @@
 
 **/
 * @file dao_dbf_marcas1.prg
-* @package biblioteca
+* @package modulo\marcas1
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
 * @class dao_dbf_marcas1
-* @extends dao_dbf
+* @extends biblioteca\dao_dbf
 * @uses constantes.h
 */
 
@@ -70,6 +70,7 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
     * @param int tnCodigo Código de la marca a verificar.
     *
     * @return bool .T. si el registro está relacionado o si ocurre un error.
+    * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
