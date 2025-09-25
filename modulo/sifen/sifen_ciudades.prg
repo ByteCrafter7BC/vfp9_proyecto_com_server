@@ -1,6 +1,4 @@
 **/
-* sifen_ciudades.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,13 +17,22 @@
 */
 
 **/
+* @file sifen_ciudades.prg
+* @package modulo\sifen
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class sifen_ciudades
+* @extends Custom
+*/
+
+**/
 * Esta lista contiene las ciudades oficiales según la DNIT, así como sus
 * descripciones.
 *
 * Enlace: https://www.dnit.gov.py/documents/20123/420592/CODIGO+DE+REFERENCIA+GEOGRAFICA.xlsx/c70aedc2-42c0-c846-16fa-46ac49d5524d?t=1687266715158
 * Archivo: CODIGO DE REFERENCIA GEOGRAFICA.xlsx
 */
-
 #DEFINE CRLF      CHR(13) + CHR(10)
 #DEFINE INDENT    SPACE(4)
 
@@ -25724,12 +25731,9 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Constructor.
     *
-    * @param integer tnCodigo (opcional)
-    * Código de ciudad a buscar.
+    * @param int [tnCodigo] Código de ciudad a buscar.
     *
-    * @return boolean
-    * Devuelve verdadero (.T.) si puede crear la instancia; de lo contrario,
-    * devuelve falso (.F.).
+    * @return bool .T. si puede crear la instancia.
     */
     FUNCTION Init
         LPARAMETERS tnCodigo
@@ -25746,12 +25750,10 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Realiza una búsqueda por código de ciudad.
     *
-    * @param integer tnCodigo
-    * Código de ciudad a buscar.
+    * @param int tnCodigo Código de ciudad a buscar.
     *
-    * @return object|boolean
-    * Devuelve un objeto (Object) si encuentra el registro; de lo contrario,
-    * devuelve falso (.F.).
+    * @return mixed Object si el registro existe.
+    *               .F. si el registro no existe o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
@@ -25782,7 +25784,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código de la ciudad.
     *
-    * @return integer
+    * @return int
     */
     FUNCTION obtener_codigo
         RETURN THIS.nCodigo
@@ -25800,7 +25802,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código del departamento.
     *
-    * @return integer
+    * @return int
     */
     FUNCTION obtener_departamento
         RETURN THIS.nDepartamento
@@ -25809,7 +25811,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código del distrito.
     *
-    * @return integer
+    * @return int
     */
     FUNCTION obtener_distrito
         RETURN THIS.nDistrito
@@ -25819,8 +25821,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     * Devuelve una cadena de caracteres con los datos del objeto.
     * https://docs.openstack.org/doc-contrib-guide/json-conv.html
     *
-    * @param string tcIndent (opcional)
-    * Especifica sangría adicional si es necesario.
+    * @param string [tcIndent] Especifica sangría adicional si es necesario.
     *
     * @return string
     */
