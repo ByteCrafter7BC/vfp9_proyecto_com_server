@@ -17,34 +17,32 @@
 */
 
 **/
-* @file dao_dbf_vendedor.prg
-* @package modulo\vendedor
+* @file dao_dbf_maquinas.prg
+* @package modulo\maquinas
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @class dao_dbf_vendedor
+* @class dao_dbf_maquinas
 * @extends biblioteca\dao_dbf
 * @uses constantes.h
 */
 
 **/
-* Clase de objeto de acceso a datos (DAO) para la tabla de vendedores en
-* formato DBF.
+* Clase de objeto de acceso a datos (DAO) para la tabla de máquinas en formato
+* DBF.
 *
 * Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
-* especializa para la tabla 'vendedor'. Su propósito es manejar las operaciones
+* especializa para la tabla 'maquinas'. Su propósito es manejar las operaciones
 * de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
 * de esta tabla.
 *
 * Sobrescribe el método 'esta_relacionado' para verificar si un registro de
-* vendedor está siendo utilizado en las tablas de movimientos de órdenes de
-* trabajo ('cabemot'), presupuestos de órdenes de trabajo ('cabemot2'), pedidos
-* de clientes ('cabepedc'), presupuestos a clientes ('cabepres') y ventas a
-* clientes ('cabevent'), impidiendo su eliminación si existen referencias.
+* máquina está siendo utilizado en la tabla de modelos ('modelos') y órdenes de
+*  trabajo ('ot'), impidiendo su eliminación si existen referencias.
 */
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS dao_dbf_vendedor AS dao_dbf OF dao_dbf.prg
+DEFINE CLASS dao_dbf_maquinas AS dao_dbf OF dao_dbf.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
@@ -63,13 +61,13 @@ DEFINE CLASS dao_dbf_vendedor AS dao_dbf OF dao_dbf.prg
     */
 
     **
-    * Verifica si el código de un vendedor está relacionado con otros registros.
+    * Verifica si el código de una máquina está relacionado con otros registros.
     *
     * Este método sobrescribe la funcionalidad de la clase padre para comprobar
-    * específicamente si un vendedor se utiliza en las tablas 'cabemot',
-    * 'cabemot2', 'cabepedc', 'cabepres' y 'cabevent'.
+    * específicamente si una máquina se utiliza en las tablas de 'modelos' y 
+    * 'ot'.
     *
-    * @param int tnCodigo Código de vendedor a verificar.
+    * @param int tnCodigo Código de la máquina a verificar.
     *
     * @return bool .T. si el registro está relacionado o si ocurre un error.
     * @override
@@ -84,26 +82,14 @@ DEFINE CLASS dao_dbf_vendedor AS dao_dbf OF dao_dbf.prg
 
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
-        lcCondicionFiltro = 'vendedor == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'maquina == ' + ALLTRIM(STR(tnCodigo))
 
         IF !llRelacionado THEN
-            llRelacionado = dao_existe_referencia('cabemot', lcCondicionFiltro)
+            llRelacionado = dao_existe_referencia('modelos', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN
-            llRelacionado = dao_existe_referencia('cabemot2', lcCondicionFiltro)
-        ENDIF
-
-        IF !llRelacionado THEN
-            llRelacionado = dao_existe_referencia('cabepedc', lcCondicionFiltro)
-        ENDIF
-
-        IF !llRelacionado THEN
-            llRelacionado = dao_existe_referencia('cabepres', lcCondicionFiltro)
-        ENDIF
-
-        IF !llRelacionado THEN
-            llRelacionado = dao_existe_referencia('cabevent', lcCondicionFiltro)
+            llRelacionado = dao_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

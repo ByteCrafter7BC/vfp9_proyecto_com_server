@@ -85,8 +85,7 @@ DEFINE CLASS dao_dbf_rubros1 AS dao_dbf OF dao_dbf.prg
         lcCondicionFiltro = 'rubro == ' + ALLTRIM(STR(tnCodigo))
 
         IF !llRelacionado THEN
-            llRelacionado = ;
-                dao_existe_referencia('maesprod', lcCondicionFiltro)
+            llRelacionado = dao_existe_referencia('maesprod', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

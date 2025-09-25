@@ -84,13 +84,11 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
         lcCondicionFiltro = 'marca == ' + ALLTRIM(STR(tnCodigo))
 
         IF !llRelacionado THEN
-            llRelacionado = ;
-                dao_existe_referencia('modelos', lcCondicionFiltro)
+            llRelacionado = dao_existe_referencia('modelos', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN
-            llRelacionado = ;
-                dao_existe_referencia('ot', lcCondicionFiltro)
+            llRelacionado = dao_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN

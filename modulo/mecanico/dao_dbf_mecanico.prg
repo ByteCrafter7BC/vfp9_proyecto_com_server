@@ -37,7 +37,7 @@
 * de esta tabla.
 *
 * Sobrescribe el método 'esta_relacionado' para verificar si un registro de
-* mecánico está siendo utilizado en las tablas de detalles de pedidos de 
+* mecánico está siendo utilizado en las tablas de detalles de pedidos de
 * clientes ('detapedc'), detalles de ventas a clientes ('detavent') y órdenes
 * de trabajo ('ot'), impidiendo su eliminación si existen referencias.
 */
@@ -84,7 +84,6 @@ DEFINE CLASS dao_dbf_mecanico AS dao_dbf OF dao_dbf.prg
         LOCAL llRelacionado, lcCondicionFiltro
         llRelacionado = .F.
         lcCondicionFiltro = 'mecanico == ' + ALLTRIM(STR(tnCodigo))
-
 
         IF !llRelacionado THEN
             llRelacionado = dao_existe_referencia('detapedc', lcCondicionFiltro)
