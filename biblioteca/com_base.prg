@@ -210,7 +210,6 @@ DEFINE CLASS com_base AS Session
         IF THIS.oDao.obtener_todos(tcCondicionFiltro, tcOrden) THEN
             IF USED(lcCursor) THEN
                 CURSORTOXML(lcCursor, 'lcXml', 1, 0, 0, '1')
-                ? 'obtener_todos ' + str(reccount(lcCursor))
                 USE IN (lcCursor)
             ENDIF
         ENDIF
@@ -367,12 +366,15 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Convierte un objeto DTO a su objeto modelo correspondiente.
+    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
+    * correspondiente.
     *
-    * @param object toDto DTO a convertir.
+    * Extrae los datos de un DTO para instanciar y devolver un nuevo objeto del
+    * modelo.
     *
-    * @return mixed Object modelo si la conversión fue completada correctamente.
-    *               .F. si el parámetro es inválido.
+    * @param object toDto DTO que se va a convertir.
+    * @return mixed Object si la conversión fue completada correctamente.
+    *               .F. si el parámetro de entrada no es un objeto válido.
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto

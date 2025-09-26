@@ -616,9 +616,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     ENDFUNC
 
     **/
-    * Crea un objeto a partir del registro actual de la tabla.
+    * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed Object Instancia de la clase modelo si la operación
+    * @return mixed Object Instancia de la clase modelo si la operación es
     *               completada correctamente.
     *              .F. si ocurre un error.
     * @override

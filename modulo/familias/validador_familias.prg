@@ -1,6 +1,4 @@
 **/
-* validador_familias.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,16 +16,80 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* @file validador_familias.prg
+* @package modulo\familias
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class validador_familias
+* @extends biblioteca\validador_base
+* @uses constantes.h
+*/
+
+**
+* Clase de validación para el modelo 'familias'.
+*
+* Hereda de la clase 'validador_base' y añade propiedades específicas para
+* cinco parámetros numéricos (P1 a P5). Estos parámetros representan los
+* porcentajes de incremento sobre el precio de costo para las diferentes
+* listas de precios de venta.
+*/
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
+    **/
+    * @var string Mensaje de error para el porcentaje de la lista 1.
+    */
     PROTECTED cErrorP1
+
+    **/
+    * @var string Mensaje de error para el porcentaje de la lista 2.
+    */
     PROTECTED cErrorP2
+
+    **/
+    * @var string Mensaje de error para el porcentaje de la lista 3.
+    */
     PROTECTED cErrorP3
+
+    **/
+    * @var string Mensaje de error para el porcentaje de la lista 4.
+    */
     PROTECTED cErrorP4
+
+    **/
+    * @var string Mensaje de error para el porcentaje de la lista 5.
+    */
     PROTECTED cErrorP5
 
-    **--------------------------------------------------------------------------
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method bool Init(int tnBandera, object toModelo, object toDao)
+    * @method string obtener_error_codigo()
+    * @method string obtener_error_nombre()
+    * @method string obtener_error_vigente()
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool es_valido()
+    * @method string obtener_error_p1()
+    * @method string obtener_error_p2()
+    * @method string obtener_error_p3()
+    * @method string obtener_error_p4()
+    * @method string obtener_error_p5()
+    */
+
+    **/
+    * Verifica si el modelo es válido según la operación (bandera).
+    *
+    * - Para banderas 1 y 2 (agregar/modificar), comprueba si existe algún
+    *   mensaje de error en las propiedades de la clase.
+    * - Para otras banderas (borrar), verifica que la familia no esté
+    *   relacionada con otros registros de la base de datos antes de permitir
+    *   la operación.
+    *
+    * @return bool .T. si el modelo es válido para la operación.
+    * @override
+    */
     FUNCTION es_valido
         IF BETWEEN(THIS.nBandera, 1, 2) THEN
             IF !EMPTY(THIS.cErrorCodigo) ;
@@ -41,38 +103,86 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
                 RETURN .F.
             ENDIF
         ELSE
-            RETURN !THIS.oRepositorio.esta_relacionado( ;
-                THIS.oModelo.obtener_codigo())
+            RETURN !THIS.oDao.esta_relacionado(THIS.oModelo.obtener_codigo())
         ENDIF
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **
+    * Obtiene el mensaje de error para el porcentaje de la lista 1, o una
+    * cadena vacía si no hay error.
+    *
+    * @return string
+    */
     FUNCTION obtener_error_p1
         RETURN IIF(VARTYPE(THIS.cErrorP1) == 'C', THIS.cErrorP1, '')
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **
+    * Obtiene el mensaje de error para el porcentaje de la lista 2, o una
+    * cadena vacía si no hay error.
+    *
+    * @return string
+    */
     FUNCTION obtener_error_p2
         RETURN IIF(VARTYPE(THIS.cErrorP2) == 'C', THIS.cErrorP2, '')
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **
+    * Obtiene el mensaje de error para el porcentaje de la lista 3, o una
+    * cadena vacía si no hay error.
+    *
+    * @return string
+    */
     FUNCTION obtener_error_p3
         RETURN IIF(VARTYPE(THIS.cErrorP3) == 'C', THIS.cErrorP3, '')
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **
+    * Obtiene el mensaje de error para el porcentaje de la lista 4, o una
+    * cadena vacía si no hay error.
+    *
+    * @return string
+    */
     FUNCTION obtener_error_p4
         RETURN IIF(VARTYPE(THIS.cErrorP4) == 'C', THIS.cErrorP4, '')
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **
+    * Obtiene el mensaje de error para el porcentaje de la lista 5, o una
+    * cadena vacía si no hay error.
+    *
+    * @return string
+    */
     FUNCTION obtener_error_p5
         RETURN IIF(VARTYPE(THIS.cErrorP5) == 'C', THIS.cErrorP5, '')
     ENDFUNC
 
-    **--------------------------------------------------------------------------
-    PROTECTED FUNCTION validar
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool configurar()
+    * @method string validar_codigo()
+    * @method string validar_nombre()
+    * @method string validar_vigente()
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method void validar()
+    * @method string validar_p(int tnLista)
+    */
+
+    **
+    * Ejecuta todas las reglas de validación para la familia.
+    *
+    * Llama al método de validación de la clase base y luego ejecuta las
+    * validaciones específicas para los parámetros P1 a P5.
+    *
+    * Este método es llamado por el constructor ('Init') para las operaciones
+    * de agregar (bandera 1) y modificar (bandera 2).
+    *
+    * Almacena los mensajes de error devueltos por los métodos de validación
+    * en las propiedades de error de la clase.
+    *
+    * @override
+    */
+    PROTECTED PROCEDURE validar
         validador_base::validar()
 
         WITH THIS
@@ -82,9 +192,18 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
             .cErrorP4 = THIS.validar_p(4)
             .cErrorP5 = THIS.validar_p(5)
         ENDWITH
-    ENDFUNC
+    ENDPROC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Valida un parámetro numérico específico (P1 a P5).
+    *
+    * Verifica que el valor del parámetro sea numérico, mayor o igual a cero
+    * y no exceda el límite de 999.99.
+    *
+    * @param int tnLista Número del parámetro a validar (de 1 a 5).
+    * @return string Una cadena vacía si la validación es exitosa, o el mensaje
+    *                de error correspondiente en caso de fallo.
+    */
     PROTECTED FUNCTION validar_p
         LPARAMETERS tnLista
 

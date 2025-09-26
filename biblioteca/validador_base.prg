@@ -133,13 +133,13 @@ DEFINE CLASS validador_base AS Custom
     ENDFUNC
 
     **/
-    * Determina si el modelo es válido según la operación.
+    * Verifica si el modelo es válido según la operación (bandera).
     *
-    * Para las operaciones de Agregar o Modificar (banderas 1 y 2), verifica si
-    * hay algún mensaje de error en las validaciones de código, nombre o
-    * vigencia.
-    * Para la operación de Borrar (bandera 3), verifica si el registro no está
-    * relacionado con otros registros en la base de datos.
+    * - Para banderas 1 y 2 (agregar/modificar), comprueba si existe algún
+    *   mensaje de error en las propiedades de la clase.
+    * - Para otras banderas (borrar), verifica que el registro no esté
+    *   relacionada con otros registros de la base de datos antes de permitir
+    *   la operación.
     *
     * @return bool .T. si el modelo es válido para la operación.
     */
@@ -151,8 +151,7 @@ DEFINE CLASS validador_base AS Custom
                 RETURN .F.
             ENDIF
         ELSE
-            RETURN !THIS.oDao.esta_relacionado( ;
-                THIS.oModelo.obtener_codigo())
+            RETURN !THIS.oDao.esta_relacionado(THIS.oModelo.obtener_codigo())
         ENDIF
     ENDFUNC
 
@@ -186,7 +185,7 @@ DEFINE CLASS validador_base AS Custom
     **/
     * @section MÉTODOS PROTEGIDOS
     * @method bool configurar()
-    * @method bool validar()
+    * @method void validar()
     * @method string validar_codigo()
     * @method string validar_nombre()
     * @method string validar_vigente()
@@ -224,18 +223,17 @@ DEFINE CLASS validador_base AS Custom
     *
     * Este método es llamado por el constructor ('Init') para las operaciones
     * de Agregar (bandera 1) y Modificar (bandera 2).
+    *
     * Almacena los mensajes de error devueltos por los métodos de validación
     * en las propiedades de error de la clase.
-    *
-    * @return bool .T. si la validación fue ejecutada exitosamente.
     */
-    PROTECTED FUNCTION validar
+    PROTECTED PROCEDURE validar
         WITH THIS
             .cErrorCodigo = .validar_codigo()
             .cErrorNombre = .validar_nombre()
             .cErrorVigente = .validar_vigente()
         ENDWITH
-    ENDFUNC
+    ENDPROC
 
     **/
     * Valida el código del modelo.
