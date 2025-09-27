@@ -1,0 +1,35 @@
+Conventional Commits
+--------------------
+Este estándar define un formato estructurado para los mensajes de commit. La idea es que cada mensaje siga esta forma:
+<tipo>[alcance opcional]: <descripción breve>
+
+Ejemplos:
+---------
+feat: agregar validación de correo electrónico
+fix(usuario): corregir error al actualizar perfil
+docs: actualizar README con instrucciones de instalación
+refactor: simplificar lógica de autenticación
+test: agregar pruebas unitarias para el servicio de pagos
+
+Tipos comunes
+-------------
+
+Tipo        Propósito
+--------    ----------
+feat	    Nueva funcionalidad
+fix	    Corrección de errores
+docs	    Cambios en documentación
+style	    Formato, espacios, comas, sin cambios en lógica
+refactor    Reestructuración sin cambio de comportamiento
+test	    Agregar o modificar pruebas
+chore	    Tareas menores (configuración, dependencias, etc.)
+perf	    Mejoras de rendimiento
+ci	    Cambios en integración continua
+build	    Cambios que afectan el sistema de construcción o dependencias
+
+Beneficios
+----------
+- Facilita la generación automática de changelogs.
+- Mejora la legibilidad del historial.
+- Permite automatizar versiones semánticas (con herramientas como semantic-release).
+- Ayuda a mantener consistencia en equipos grandes.
