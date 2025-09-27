@@ -61,8 +61,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * de la base de datos.
     *
     * @param int tnCodigo Código de familia a verificar.
-    * @return bool Devuelve .T. si el registro está relacionado o si ocurre un
-    *              error, o .F. si no está relacionado.
+    * @return bool .T. si el registro está relacionado o si ocurre un error, o
+    *              .F. si no está relacionado.
     * @override
     */
     FUNCTION esta_relacionado
@@ -92,8 +92,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool Devuelve .T. si el registro se agrega correctamente, o .F.
-    *              si ocurre un error.
+    * @return bool .T. si el registro se agrega correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION agregar
@@ -146,8 +146,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool Devuelve .T. si el registro se modifica correctamente, o .F.
-    *              si ocurre un error.
+    * @return bool .T. si el registro se modifica correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION modificar
@@ -250,9 +250,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     **/
     * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed object Devuelve una nueva instancia de clase modelo si la
-    *               operación se completa correctamente, o .F. si ocurre un
-    *               error.
+    * @return mixed object modelo si la operación se completa correctamente, o
+    *               .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION obtener_modelo
@@ -261,11 +260,11 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Valida el formato y rango de un porcentaje (P1 a P5).
+    * Valida el tipo de dato y el rango de un porcentaje (P1 a P5).
     *
     * @param float tnP Porcentaje a validar.
-    * @return bool Devuelve .T. si es un porcentaje válido (numérico entre 0 y
-    *              999.99), o .F. si no lo es.
+    * @return bool .T. si es un porcentaje válido (numérico entre 0 y 999.99), o
+    *              .F. si no lo es.
     */
     PROTECTED FUNCTION tnP_Valid
         LPARAMETERS tnP
@@ -280,7 +279,7 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * base e incluye la validación de los campos P1 a P5.
     *
     * @param object toModelo Modelo a validar.
-    * @return bool Devuelve .T. si el objeto es válido, o .F. si no lo es.
+    * @return bool .T. si el objeto es válido, o .F. si no lo es.
     * @override
     */
     PROTECTED FUNCTION toModelo_Valid

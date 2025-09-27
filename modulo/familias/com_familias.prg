@@ -68,14 +68,14 @@ DEFINE CLASS com_familias AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
+    * Convierte un DTO (Data Transfer Object) a su objeto modelo
     * correspondiente.
     *
     * Extrae los datos de un DTO de tipo 'dto_familias' para instanciar
     * y devolver un nuevo objeto del modelo 'familias'.
     *
     * @param object toDto DTO (dto_familias) que se va a convertir.
-    * @return mixed Object si la conversión fue completada correctamente.
+    * @return mixed object modelo si la conversión se completa correctamente, o
     *               .F. si el parámetro de entrada no es un objeto válido.
     * @override
     */

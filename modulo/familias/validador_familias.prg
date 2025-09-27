@@ -79,15 +79,14 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     */
 
     **/
-    * Verifica si el modelo es válido según la operación (bandera).
+    * Verifica si el modelo es válido según el contexto (bandera).
     *
     * - Para banderas 1 y 2 (agregar/modificar), comprueba si existe algún
     *   mensaje de error en las propiedades de la clase.
     * - Para otras banderas (borrar), verifica que la familia no esté
-    *   relacionada con otros registros de la base de datos antes de permitir
-    *   la operación.
+    *   relacionada con otros registros de la base de datos.
     *
-    * @return bool .T. si el modelo es válido para la operación.
+    * @return bool .T. si el modelo es válido, o .F. si no lo es.
     * @override
     */
     FUNCTION es_valido
@@ -195,14 +194,14 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDPROC
 
     **/
-    * Valida un parámetro numérico específico (P1 a P5).
+    * Valida un parámetro numérico.
     *
     * Verifica que el valor del parámetro sea numérico, mayor o igual a cero
     * y no exceda el límite de 999.99.
     *
-    * @param int tnLista Número del parámetro a validar (de 1 a 5).
-    * @return string Una cadena vacía si la validación es exitosa, o el mensaje
-    *                de error correspondiente en caso de fallo.
+    * @param int tnLista Parámetro numérico a validar (de 1 a 5).
+    * @return string Una cadena vacía si la validación se completa
+    *                correctamente, o un mensaje de error en caso contrario.
     */
     PROTECTED FUNCTION validar_p
         LPARAMETERS tnLista

@@ -93,8 +93,8 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     * @param float tnP4 Porcentaje para la lista de precios de venta 4.
     * @param float tnP5 Porcentaje para la lista de precios de venta 5.
     * @param bool tlVigente Indica si la familia está vigente.
-    *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION Init
@@ -174,8 +174,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     * (P1 a P5) de la clase 'familias'.
     *
     * @param object toModelo Objeto de tipo 'familias' con el que se comparará.
-    *
-    * @return bool .T. si los objetos son iguales.
+    * @return bool .T. si los objetos son iguales, o .F. si no lo son.
     */
     FUNCTION es_igual
         LPARAMETERS toModelo

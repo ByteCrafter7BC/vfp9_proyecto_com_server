@@ -27,7 +27,7 @@
 */
 
 **
-* Data Transfer Object (DTO) para la entidad 'familias'.
+* Clase de transferencia de datos (DTO) para la entidad 'familias'.
 *
 * Esta clase se utiliza para transportar datos de familias de artículos entre
 * diferentes capas de la aplicación. Hereda de 'dto_base' y añade propiedades
@@ -99,8 +99,8 @@ DEFINE CLASS dto_familias AS dto_base OF dto_base.prg
     * @param float [tnP4] Porcentaje para la lista de precios de venta 4.
     * @param float [tnP5] Porcentaje para la lista de precios de venta 5.
     * @param bool [tlVigente] Indica si la familia está vigente.
-    *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION Init
