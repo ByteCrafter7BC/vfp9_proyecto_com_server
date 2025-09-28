@@ -107,7 +107,7 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Obtiene el mensaje de error para el porcentaje de la lista 1, o una
+    * Devuelve el mensaje de error para el porcentaje de la lista 1, o una
     * cadena vacía si no hay error.
     *
     * @return string
@@ -117,7 +117,7 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Obtiene el mensaje de error para el porcentaje de la lista 2, o una
+    * Devuelve el mensaje de error para el porcentaje de la lista 2, o una
     * cadena vacía si no hay error.
     *
     * @return string
@@ -127,7 +127,7 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Obtiene el mensaje de error para el porcentaje de la lista 3, o una
+    * Devuelve el mensaje de error para el porcentaje de la lista 3, o una
     * cadena vacía si no hay error.
     *
     * @return string
@@ -137,7 +137,7 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Obtiene el mensaje de error para el porcentaje de la lista 4, o una
+    * Devuelve el mensaje de error para el porcentaje de la lista 4, o una
     * cadena vacía si no hay error.
     *
     * @return string
@@ -147,7 +147,7 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Obtiene el mensaje de error para el porcentaje de la lista 5, o una
+    * Devuelve el mensaje de error para el porcentaje de la lista 5, o una
     * cadena vacía si no hay error.
     *
     * @return string

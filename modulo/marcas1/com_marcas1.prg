@@ -27,19 +27,15 @@
 */
 
 **/
-* Clase de lógica de negocio para la gestión de marcas.
+* Componente COM para la gestión de marcas de artículos.
 *
-* Esta clase hereda la funcionalidad básica de la capa COM para la interacción
-* con los datos y la lógica de negocio.
-*
-* Su propósito principal es especializar la clase 'com_base' para manejar las
-* operaciones del modelo 'marcas1' sin necesidad de reescribir la lógica
-* genérica. Al establecer la propiedad 'cModelo', la clase padre 'com_base'
-* se encarga de instanciar el objeto DAO y DTO correspondientes.
+* Esta clase actúa como un controlador o una capa de servicio (business object)
+* para la entidad 'marcas1'. Se expone como un objeto COM para ser utilizado
+* por otras aplicaciones.
 */
 DEFINE CLASS com_marcas1 AS com_base OF com_base.prg OLEPUBLIC
     **/
-    * @var string Nombre del modelo de datos asociado a la clase.
+     * @var string Nombre de la clase modelo asociado a este componente.
     */
     cModelo = 'marcas1'
 
@@ -65,7 +61,7 @@ DEFINE CLASS com_marcas1 AS com_base OF com_base.prg OLEPUBLIC
     * @section MÉTODOS PROTEGIDOS
     * @method bool Init()
     * @method bool configurar()
-    * @method bool establecer_entorno()
+    * @method void establecer_entorno()
     * @method bool establecer_dao()
     * @method mixed convertir_dto_a_modelo(object toDto)
     */

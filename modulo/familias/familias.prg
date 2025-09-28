@@ -122,7 +122,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     ENDFUNC
 
     **/
-    * Obtiene el porcentaje para la lista de precios de venta 1.
+    * Devuelve el porcentaje para la lista de precios de venta 1.
     *
     * @return float
     */
@@ -131,7 +131,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     ENDFUNC
 
     **/
-    * Obtiene el porcentaje para la lista de precios de venta 2.
+    * Devuelve el porcentaje para la lista de precios de venta 2.
     *
     * @return float
     */
@@ -140,7 +140,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     ENDFUNC
 
     **/
-    * Obtiene el porcentaje para la lista de precios de venta 3.
+    * Devuelve el porcentaje para la lista de precios de venta 3.
     *
     * @return float
     */
@@ -149,7 +149,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     ENDFUNC
 
     **/
-    * Obtiene el porcentaje para la lista de precios de venta 4.
+    * Devuelve el porcentaje para la lista de precios de venta 4.
     *
     * @return float
     */
@@ -158,7 +158,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     ENDFUNC
 
     **/
-    * Obtiene el porcentaje para la lista de precios de venta 5.
+    * Devuelve el porcentaje para la lista de precios de venta 5.
     *
     * @return float
     */

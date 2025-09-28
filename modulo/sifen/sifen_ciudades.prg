@@ -37,7 +37,6 @@
 #DEFINE INDENT    SPACE(4)
 
 DEFINE CLASS sifen_ciudades AS Custom
-
     * Definición de propiedades.
     PROTECTED nCodigo
     PROTECTED cNombre
@@ -25729,11 +25728,10 @@ DEFINE CLASS sifen_ciudades AS Custom
     aCiudades[6419, 4] = 276
 
     **/
-    * Constructor.
+    * Constructor de la clase.
     *
     * @param int [tnCodigo] Código de ciudad a buscar.
-    *
-    * @return bool .T. si puede crear la instancia.
+    * @return bool .T. si puede crear la instancia, o .F. en caso contrario.
     */
     FUNCTION Init
         LPARAMETERS tnCodigo
@@ -25751,8 +25749,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     * Realiza una búsqueda por código de ciudad.
     *
     * @param int tnCodigo Código de ciudad a buscar.
-    *
-    * @return mixed Object si el registro existe.
+    * @return mixed object si el registro existe, o
     *               .F. si el registro no existe o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
@@ -25822,7 +25819,6 @@ DEFINE CLASS sifen_ciudades AS Custom
     * https://docs.openstack.org/doc-contrib-guide/json-conv.html
     *
     * @param string [tcIndent] Especifica sangría adicional si es necesario.
-    *
     * @return string
     */
     FUNCTION obtener_json
@@ -25850,5 +25846,4 @@ DEFINE CLASS sifen_ciudades AS Custom
                     CRLF + tcIndent + ;
             '}'
     ENDFUNC
-
 ENDDEFINE
