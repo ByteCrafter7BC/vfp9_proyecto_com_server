@@ -89,8 +89,7 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     FUNCTION obtener_por_nombre(tcNombre AS String, tnMaquina AS Integer, ;
             tnMarca AS Integer) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
-        RETURN THIS.oDao.obtener_por_nombre(tcNombre, tnMaquina, ;
-            tnMarca)
+        RETURN THIS.oDao.obtener_por_nombre(tcNombre, tnMaquina, tnMarca)
     ENDFUNC
 
     **/
