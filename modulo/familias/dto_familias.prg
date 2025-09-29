@@ -31,7 +31,7 @@
 *
 * Esta clase se utiliza para transportar datos de familias de artículos entre
 * diferentes capas de la aplicación. Hereda de 'dto_base' y añade propiedades
-* para cinco parámetros numéricos específicos (P1 a P5) con sus respectivos
+* para cinco parámetros numéricos específicos ('p1' a 'p5') con sus respectivos
 * getters y setters para validación.
 */
 DEFINE CLASS dto_familias AS dto_base OF dto_base.prg

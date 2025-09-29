@@ -60,7 +60,7 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * Verifica si el código de una familia está relacionado con otros registros
     * de la base de datos.
     *
-    * @param int tnCodigo Código de familia a verificar.
+    * @param int tnCodigo Código de la familia a verificar.
     * @return bool .T. si el registro está relacionado o si ocurre un error, o
     *              .F. si no está relacionado.
     * @override
@@ -73,11 +73,10 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
             RETURN .T.
         ENDIF
 
-        LOCAL llRelacionado, lcCondicionFiltro
-        llRelacionado = .F.
+        LOCAL lcCondicionFiltro, llRelacionado
         lcCondicionFiltro = 'familia == ' + ALLTRIM(STR(tnCodigo))
 
-        IF !llRelacionado THEN
+        IF !llRelacionado THEN    && Artículos.
             llRelacionado = dao_existe_referencia('maesprod', lcCondicionFiltro)
         ENDIF
 
@@ -243,8 +242,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     * @method bool tcOrden_Valid(string tcOrden)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method mixed obtener_modelo()
-    * @method bool tnP_Valid(float tnP)
     * @method bool toModelo_Valid(object toModelo)
+    * @method bool tnP_Valid(float tnP)
     */
 
     **/
@@ -260,23 +259,8 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Valida el tipo de dato y el rango de un porcentaje (P1 a P5).
-    *
-    * @param float tnP Porcentaje a validar.
-    * @return bool .T. si es un porcentaje válido (numérico entre 0 y 999.99), o
-    *              .F. si no lo es.
-    */
-    PROTECTED FUNCTION tnP_Valid
-        LPARAMETERS tnP
-
-        IF VARTYPE(tnP) != 'N' OR !BETWEEN(tnP, 0, 999.99) THEN
-            RETURN .F.
-        ENDIF
-    ENDFUNC
-
-    **/
     * Valida todas las propiedades del objeto modelo. Sobrescribe la validación
-    * base e incluye la validación de los campos P1 a P5.
+    * base e incluye la validación de los campos 'p1' a 'p5'.
     *
     * @param object toModelo Modelo a validar.
     * @return bool .T. si el objeto es válido, o .F. si no lo es.
@@ -298,5 +282,20 @@ DEFINE CLASS dao_dbf_familias AS dao_dbf OF dao_dbf.prg
                 RETURN .F.
             ENDIF
         ENDFOR
+    ENDFUNC
+
+    **/
+    * Valida el tipo de dato y el rango de un porcentaje ('p1' a 'p5').
+    *
+    * @param float tnP Porcentaje a validar.
+    * @return bool .T. si es un porcentaje válido (numérico entre 0 y 999.99), o
+    *              .F. si no lo es.
+    */
+    PROTECTED FUNCTION tnP_Valid
+        LPARAMETERS tnP
+
+        IF VARTYPE(tnP) != 'N' OR !BETWEEN(tnP, 0, 999.99) THEN
+            RETURN .F.
+        ENDIF
     ENDFUNC
 ENDDEFINE

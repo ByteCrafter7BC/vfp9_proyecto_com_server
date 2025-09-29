@@ -31,7 +31,7 @@
 * Clase de validación para el modelo 'familias'.
 *
 * Hereda de la clase 'validador_base' y añade propiedades específicas para
-* cinco parámetros numéricos (P1 a P5). Estos parámetros representan los
+* cinco parámetros numéricos ('p1' a 'p5'). Estos parámetros representan los
 * porcentajes de incremento sobre el precio de costo para las diferentes
 * listas de precios de venta.
 */

@@ -53,8 +53,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @method int obtener_nuevo_codigo() !!
     * @method mixed obtener_por_codigo() !!
     * @method mixed obtener_por_nombre() !!
-    * @method bool obtener_todos([string tcCondicionFiltro], ;
-                                 [string tcOrden]) !!
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden]) !!
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toModelo) !!
     * @method bool modificar(object toModelo) !!
@@ -631,11 +630,11 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Establece conexión con la base de datos.
     *
-    * @param bool [tlModoEscritura] .T. para abrir en modo escritura.
+    * @param bool [tlModoEscritura] .T. para abrir en modo lectura/escritura, o
     *                               .F. para abrir en modo solo lectura.
     *                               Si no se especifica, predeterminado .F.
-    *
-    * @return bool .T. si la conexión fue establecida correctamente.
+    * @return bool .T. si la conexión se establece correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION conectar
@@ -654,7 +653,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     **/
     * Cierra la conexión con la base de datos.
     *
-    * @return bool .T. si la conexión fue cerrada exitosamente.
+    * @return bool .T. si la conexión se cierra correctamente, o
+    *              .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION desconectar

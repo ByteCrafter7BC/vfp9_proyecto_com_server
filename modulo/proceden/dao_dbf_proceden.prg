@@ -28,17 +28,12 @@
 */
 
 **/
-* Clase de objeto de acceso a datos (DAO) para la tabla de países en formato
-* DBF.
+* Clase de acceso a datos (DAO).
 *
 * Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
 * especializa para la tabla 'proceden'. Su propósito es manejar las operaciones
 * de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
 * de esta tabla.
-*
-* Sobrescribe el método 'esta_relacionado' para verificar si un registro de
-* país está siendo utilizado en la tabla de artículos ('maesprod'), impidiendo
-* su eliminación si existen referencias.
 */
 #INCLUDE 'constantes.h'
 
@@ -48,7 +43,6 @@ DEFINE CLASS dao_dbf_proceden AS dao_dbf OF dao_dbf.prg
     * @method bool existe_codigo(int tnCodigo)
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
-    * @method bool esta_relacionado(int tnCodigo) !!
     * @method int contar()
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo()
@@ -58,17 +52,17 @@ DEFINE CLASS dao_dbf_proceden AS dao_dbf OF dao_dbf.prg
     * @method bool agregar(object toModelo)
     * @method bool modificar(object toModelo)
     * @method bool borrar(int tnCodigo)
+    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method bool esta_relacionado(int tnCodigo)
     */
 
     **
-    * Verifica si el código de un proceden está relacionado con otros registros.
+    * Verifica si el código de un país está relacionado con otros registros
+    * de la base de datos.
     *
-    * Este método sobrescribe la funcionalidad de la clase padre para comprobar
-    * específicamente si un proceden se utiliza en la tabla 'maesprod'.
-    *
-    * @param int tnCodigo Código de país a verificar.
-    *
-    * @return bool .T. si el registro está relacionado o si ocurre un error.
+    * @param int tnCodigo Código del país a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error, o
+    *              .F. si no está relacionado.
     * @override
     */
     FUNCTION esta_relacionado
@@ -79,11 +73,10 @@ DEFINE CLASS dao_dbf_proceden AS dao_dbf OF dao_dbf.prg
             RETURN .T.
         ENDIF
 
-        LOCAL llRelacionado, lcCondicionFiltro
-        llRelacionado = .F.
+        LOCAL lcCondicionFiltro, llRelacionado
         lcCondicionFiltro = 'proceden == ' + ALLTRIM(STR(tnCodigo))
 
-        IF !llRelacionado THEN
+        IF !llRelacionado THEN    && Artículos.
             llRelacionado = dao_existe_referencia('maesprod', lcCondicionFiltro)
         ENDIF
 
