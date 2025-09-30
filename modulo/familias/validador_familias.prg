@@ -30,36 +30,36 @@
 **
 * Clase de validación para el modelo 'familias'.
 *
-* Hereda de la clase 'validador_base' y añade propiedades específicas para
-* cinco parámetros numéricos ('p1' a 'p5'). Estos parámetros representan los
-* porcentajes de incremento sobre el precio de costo para las diferentes
-* listas de precios de venta.
+* Hereda de la clase 'validador_base' y añade cinco propiedades numéricas
+* específicas: 'p1' a 'p5'. Estos parámetros representan los porcentajes
+* de incremento sobre el precio de costo para las distintas listas de
+* precios de venta.
 */
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     **/
-    * @var string Mensaje de error para el porcentaje de la lista 1.
+    * @var string Mensaje de error para la propiedad 'p1'.
     */
     PROTECTED cErrorP1
 
     **/
-    * @var string Mensaje de error para el porcentaje de la lista 2.
+    * @var string Mensaje de error para la propiedad 'p2'.
     */
     PROTECTED cErrorP2
 
     **/
-    * @var string Mensaje de error para el porcentaje de la lista 3.
+    * @var string Mensaje de error para la propiedad 'p3'.
     */
     PROTECTED cErrorP3
 
     **/
-    * @var string Mensaje de error para el porcentaje de la lista 4.
+    * @var string Mensaje de error para la propiedad 'p4'.
     */
     PROTECTED cErrorP4
 
     **/
-    * @var string Mensaje de error para el porcentaje de la lista 5.
+    * @var string Mensaje de error para la propiedad 'p5'.
     */
     PROTECTED cErrorP5
 
@@ -107,8 +107,8 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Devuelve el mensaje de error para el porcentaje de la lista 1, o una
-    * cadena vacía si no hay error.
+    * Devuelve el mensaje de error de la propiedad 'p1',
+    * o una cadena vacía si no hay error.
     *
     * @return string
     */
@@ -117,8 +117,8 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Devuelve el mensaje de error para el porcentaje de la lista 2, o una
-    * cadena vacía si no hay error.
+    * Devuelve el mensaje de error de la propiedad 'p2',
+    * o una cadena vacía si no hay error.
     *
     * @return string
     */
@@ -127,8 +127,8 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Devuelve el mensaje de error para el porcentaje de la lista 3, o una
-    * cadena vacía si no hay error.
+    * Devuelve el mensaje de error de la propiedad 'p3',
+    * o una cadena vacía si no hay error.
     *
     * @return string
     */
@@ -137,8 +137,8 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Devuelve el mensaje de error para el porcentaje de la lista 4, o una
-    * cadena vacía si no hay error.
+    * Devuelve el mensaje de error de la propiedad 'p4',
+    * o una cadena vacía si no hay error.
     *
     * @return string
     */
@@ -147,8 +147,8 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     ENDFUNC
 
     **
-    * Devuelve el mensaje de error para el porcentaje de la lista 5, o una
-    * cadena vacía si no hay error.
+    * Devuelve el mensaje de error de la propiedad 'p5',
+    * o una cadena vacía si no hay error.
     *
     * @return string
     */
@@ -168,12 +168,12 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     */
 
     **
-    * Ejecuta todas las reglas de validación para la familia.
+    * Ejecuta todas las reglas de validación para el modelo.
     *
     * Llama al método de validación de la clase base y luego ejecuta las
-    * validaciones específicas para los parámetros P1 a P5.
+    * validaciones específicas para las propiedades 'p1' a 'p5'.
     *
-    * Este método es llamado por el constructor ('Init') para las operaciones
+    * Este método es invocado por el constructor ('Init') para las operaciones
     * de agregar (bandera 1) y modificar (bandera 2).
     *
     * Almacena los mensajes de error devueltos por los métodos de validación
@@ -200,14 +200,14 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
     * y no exceda el límite de 999.99.
     *
     * @param int tnLista Parámetro numérico a validar (de 1 a 5).
-    * @return string Una cadena vacía si la validación se completa
-    *                correctamente, o un mensaje de error en caso contrario.
+    * @return string Si la parámetro es válido, devuelve una cadena vacía;
+    *                de lo contrario, devuelve un mensaje de error.
     */
     PROTECTED FUNCTION validar_p
         LPARAMETERS tnLista
 
         IF VARTYPE(tnLista) != 'N' OR !BETWEEN(tnLista, 1, 5) THEN
-            RETURN STRTRAN(PARAM_INVALIDO, '{}', 'tnLista')
+            RETURN STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnLista')
         ENDIF
 
         IF !EMPTY(THIS.cErrorNombre) THEN
@@ -220,15 +220,16 @@ DEFINE CLASS validador_familias AS validador_base OF validador_base.prg
         lnP = EVALUATE('THIS.oModelo.obtener_p' + STR(tnLista, 1) + '()')
 
         IF VARTYPE(lnP) != 'N' THEN
-            RETURN lcEtiqueta + TIPO_NUMERICO
+            RETURN lcEtiqueta + MSG_TIPO_NUMERICO
         ENDIF
 
         IF lnP < 0 THEN
-            RETURN lcEtiqueta + MAYOR_O_IGUAL_A_CERO
+            RETURN lcEtiqueta + MSG_MAYOR_O_IGUAL_A_CERO
         ENDIF
 
         IF lnP > 999.99 THEN
-            RETURN lcEtiqueta + STRTRAN(MENOR_QUE, '{}', ALLTRIM(STR(999 + 1)))
+            RETURN lcEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
+                ALLTRIM(STR(999 + 1)))
         ENDIF
 
         RETURN SPACE(0)

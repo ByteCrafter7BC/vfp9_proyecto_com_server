@@ -27,17 +27,7 @@
 */
 
 **
-* Clase validadora para la entidad de departamentos.
-*
-* Esta clase hereda la funcionalidad genérica de validación de la clase base
-* 'validador_base'. Se especializa en la validación de un objeto de modelo
-* de tipo 'depar'.
-*
-* Su propósito es asegurar que los datos de los departamentos cumplan con las
-* reglas de negocio (por ejemplo, unicidad de código y nombre, longitud, etc.)
-* antes de ser persistidos en la base de datos. Al heredar de 'validador_base',
-* se beneficia de la lógica de validación predefinida sin necesidad de
-* implementar los métodos desde cero.
+* Clase de validación para el modelo 'depar'.
 */
 DEFINE CLASS validador_depar AS validador_base OF validador_base.prg
     **/
@@ -52,7 +42,7 @@ DEFINE CLASS validador_depar AS validador_base OF validador_base.prg
     **/
     * @section MÉTODOS PROTEGIDOS
     * @method bool configurar()
-    * @method bool validar()
+    * @method void validar()
     * @method string validar_codigo()
     * @method string validar_nombre()
     * @method string validar_vigente()
