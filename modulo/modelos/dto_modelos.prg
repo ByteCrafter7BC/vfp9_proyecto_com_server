@@ -1,6 +1,4 @@
 **/
-* dto_modelos.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -18,11 +16,68 @@
 * <https://www.gnu.org/licenses/>.
 */
 
+**/
+* @file dto_modelos.prg
+* @package modulo\modelos
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+* @class dto_modelos
+* @extends biblioteca\dto_base
+*/
+
+**
+* Clase de transferencia de datos (DTO) para la entidad 'modelos'.
+*
+* Esta clase se utiliza para transportar datos de modelos para órdenes de
+* trabajo entre diferentes capas de la aplicación. Hereda de 'dto_base' y
+* añade propiedades para dos parámetros numéricos específicos ('maquina'
+* y 'marca') con sus respectivos getters y setters para validación.
+*/
 DEFINE CLASS dto_modelos AS dto_base OF dto_base.prg
+    **/
+    * @var int Código de la máquina.
+    */
     PROTECTED nMaquina
+
+    **/
+    * @var int Código de la marca.
+    */
     PROTECTED nMarca
 
-    **--------------------------------------------------------------------------
+    **/
+    * @section MÉTODOS PÚBLICOS
+    * @method int obtener_codigo()
+    * @method string obtener_nombre()
+    * @method bool esta_vigente()
+    * @method bool establecer_codigo(int tnCodigo)
+    * @method bool establecer_nombre(string tcNombre)
+    * @method bool establecer_vigente(bool tlVigente)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool Init(int tnCodigo, string tcNombre, int tnMaquina, ;
+                        int tnMarca, bool tlVigente)
+    * @method int obtener_maquina()
+    * @method int obtener_marca()
+    * @method bool establecer_maquina(int tnMaquina)
+    * @method bool establecer_marca(int tnMarca)
+    */
+
+    **/
+    * Constructor de la clase.
+    *
+    * Inicializa una nueva instancia de la clase 'dto_modelos'. Si no se
+    * proporcionan parámetros, todas las propiedades se inicializan con
+    * valores predeterminados (0, '', .F.).
+    *
+    * @param int [tnCodigo] Código numérico único del modelo.
+    * @param string [tcNombre] Nombre o descripción del modelo.
+    * @param int [tnMaquina] Código de la máquina.
+    * @param int [tnMarca] Código de la marca.
+    * @param bool [tlVigente] Indica si el modelo está vigente.
+    * @return bool .T. si la inicialización se completa correctamente, o
+    *              .F. si ocurre un error.
+    * @override
+    */
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tnMaquina, tnMarca, tlVigente
 
@@ -44,25 +99,38 @@ DEFINE CLASS dto_modelos AS dto_base OF dto_base.prg
         ENDIF
     ENDFUNC
 
-    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
-    *                              GETTER SECTION                             *
-    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    **/
+    * @section GETTERS
+    */
 
-    **--------------------------------------------------------------------------
+    **/
+    * Devuelve el código de la máquina.
+    *
+    * @return int
+    */
     FUNCTION obtener_maquina
         RETURN THIS.nMaquina
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Devuelve el código de la marca.
+    *
+    * @return int
+    */
     FUNCTION obtener_marca
         RETURN THIS.nMarca
     ENDFUNC
 
-    **/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
-    *                              SETTER SECTION                             *
-    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    **/
+    * @section SETTERS
+    */
 
-    **--------------------------------------------------------------------------
+    **/
+    * Establece el código de la máquina.
+    *
+    * @param int tnMaquina
+    * @return bool
+    */
     FUNCTION establecer_maquina
         LPARAMETERS tnMaquina
 
@@ -73,7 +141,12 @@ DEFINE CLASS dto_modelos AS dto_base OF dto_base.prg
         THIS.nMaquina = tnMaquina
     ENDFUNC
 
-    **--------------------------------------------------------------------------
+    **/
+    * Establece el código de la marca.
+    *
+    * @param int tnMarca
+    * @return bool
+    */
     FUNCTION establecer_marca
         LPARAMETERS tnMarca
 

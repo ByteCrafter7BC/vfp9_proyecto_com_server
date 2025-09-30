@@ -26,18 +26,11 @@
 * @extends biblioteca\dto_base
 */
 
-**/
-* Objeto de Transferencia de Datos (DTO) para la tabla de máquinas.
+**
+* Clase de transferencia de datos (DTO) para la entidad 'maquinas'.
 *
-* Esta clase hereda la estructura de la clase base 'dto_base', que proporciona
-* las propiedades y métodos para manejar datos de código, nombre y estado de
-* vigencia.
-*
-* Su propósito es servir como un DTO especializado para la entidad 'maquinas',
-* permitiendo una clara distinción y organización en la capa de transferencia
-* de datos sin la necesidad de añadir una lógica adicional. Actúa como un
-* contenedor de datos para la transferencia entre las diferentes capas de la
-* aplicación.
+* Esta clase se utiliza para transportar datos de máquinas entre diferentes
+* capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_maquinas AS dto_base OF dto_base.prg
     **/
