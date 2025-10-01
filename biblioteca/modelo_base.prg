@@ -40,7 +40,7 @@
 */
 DEFINE CLASS modelo_base AS Custom
     **/
-    * @var int Código numérico del registro.
+    * @var int Código numérico único del registro.
     */
     PROTECTED nCodigo
 
@@ -69,11 +69,11 @@ DEFINE CLASS modelo_base AS Custom
     * Inicializa las propiedades del objeto con los valores proporcionados,
     * validando que los tipos de datos sean correctos.
     *
-    * @param int tnCodigo Código numérico del modelo.
+    * @param int tnCodigo Código numérico único del modelo.
     * @param string tcNombre Nombre descriptivo del modelo.
     * @param bool tlVigente Estado de vigencia del modelo.
-    *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente, o
+    *              .F. si ocurre un error.
     */
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tlVigente
@@ -92,16 +92,16 @@ DEFINE CLASS modelo_base AS Custom
     ENDFUNC
 
     **/
-    * Obtiene el código del registro.
+    * Devuelve el código del registro.
     *
-    * @return int Código numérico del registro.
+    * @return int Código numérico único del registro.
     */
     FUNCTION obtener_codigo
         RETURN THIS.nCodigo
     ENDFUNC
 
     **/
-    * Obtiene el nombre del registro.
+    * Devuelve el nombre del registro.
     *
     * @return string Nombre descriptivo del registro.
     */
@@ -122,11 +122,10 @@ DEFINE CLASS modelo_base AS Custom
     * Compara si dos objetos modelo son idénticos.
     *
     * Compara las propiedades 'código', 'nombre' y 'vigente' del objeto actual
-    * con las de otro objeto modelo.
+    * con las del otro objeto modelo.
     *
     * @param object toModelo Modelo con el que se va a comparar.
-    *
-    * @return bool .T. si los objetos son idénticos.
+    * @return bool .T. si los objetos son idénticos, o .F. si no lo son.
     */
     FUNCTION es_igual
         LPARAMETERS toModelo

@@ -27,7 +27,7 @@
 */
 
 **/
-* Clase que representa a una familia de artículos.
+* Clase modelo de datos para la entidad 'familias'.
 *
 * Hereda de la clase 'modelo_base' y añade propiedades específicas para
 * cinco parámetros numéricos ('p1' a 'p5'). Estos parámetros representan los
@@ -36,27 +36,27 @@
 */
 DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
-    * @var float Porcentaje para la lista de precios de venta 1.
+    * @var float Porcentaje para la lista 1.
     */
     PROTECTED nP1
 
     **/
-    * @var float Porcentaje para la lista de precios de venta 2.
+    * @var float Porcentaje para la lista 2.
     */
     PROTECTED nP2
 
     **/
-    * @var float Porcentaje para la lista de precios de venta 3.
+    * @var float Porcentaje para la lista 3.
     */
     PROTECTED nP3
 
     **/
-    * @var float Porcentaje para la lista de precios de venta 4.
+    * @var float Porcentaje para la lista 4.
     */
     PROTECTED nP4
 
     **/
-    * @var float Porcentaje para la lista de precios de venta 5.
+    * @var float Porcentaje para la lista 5.
     */
     PROTECTED nP5
 
@@ -65,7 +65,6 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     * @method int obtener_codigo()
     * @method string obtener_nombre()
     * @method bool esta_vigente()
-    * @method bool es_igual(object toModelo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool Init(int tnCodigo, string tcNombre, float tnP1, ;
                         float tnP2, float tnP3, float tnP4, float tnP5, ;
@@ -75,6 +74,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     * @method float obtener_p3()
     * @method float obtener_p4()
     * @method float obtener_p5()
+    * @method bool es_igual(object toModelo)
     */
 
     **/
@@ -87,11 +87,11 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     *
     * @param int tnCodigo Código numérico único de la familia.
     * @param string tcNombre Nombre o descripción de la familia.
-    * @param float tnP1 Porcentaje para la lista de precios de venta 1.
-    * @param float tnP2 Porcentaje para la lista de precios de venta 2.
-    * @param float tnP3 Porcentaje para la lista de precios de venta 3.
-    * @param float tnP4 Porcentaje para la lista de precios de venta 4.
-    * @param float tnP5 Porcentaje para la lista de precios de venta 5.
+    * @param float tnP1 Porcentaje para la lista 1.
+    * @param float tnP2 Porcentaje para la lista 2.
+    * @param float tnP3 Porcentaje para la lista 3.
+    * @param float tnP4 Porcentaje para la lista 4.
+    * @param float tnP5 Porcentaje para la lista 5.
     * @param bool tlVigente Indica si la familia está vigente.
     * @return bool .T. si la inicialización se completa correctamente, o
     *              .F. si ocurre un error.
@@ -124,7 +124,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
     * Devuelve el porcentaje para la lista de precios de venta 1.
     *
-    * @return float
+    * @return float Porcentaje para la lista 1.
     */
     FUNCTION obtener_p1
         RETURN THIS.nP1
@@ -133,7 +133,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
     * Devuelve el porcentaje para la lista de precios de venta 2.
     *
-    * @return float
+    * @return float Porcentaje para la lista 2.
     */
     FUNCTION obtener_p2
         RETURN THIS.nP2
@@ -142,7 +142,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
     * Devuelve el porcentaje para la lista de precios de venta 3.
     *
-    * @return float
+    * @return float Porcentaje para la lista 3.
     */
     FUNCTION obtener_p3
         RETURN THIS.nP3
@@ -151,7 +151,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
     * Devuelve el porcentaje para la lista de precios de venta 4.
     *
-    * @return float
+    * @return float Porcentaje para la lista 4.
     */
     FUNCTION obtener_p4
         RETURN THIS.nP4
@@ -160,7 +160,7 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     **/
     * Devuelve el porcentaje para la lista de precios de venta 5.
     *
-    * @return float
+    * @return float Porcentaje para la lista 5.
     */
     FUNCTION obtener_p5
         RETURN THIS.nP5
@@ -171,10 +171,11 @@ DEFINE CLASS familias AS modelo_base OF modelo_base.prg
     * iguales.
     *
     * Compara las propiedades de la clase base y las propiedades específicas
-    * (P1 a P5) de la clase 'familias'.
+    * ('p1' a 'p5') de la clase 'familias'.
     *
     * @param object toModelo Objeto de tipo 'familias' con el que se comparará.
     * @return bool .T. si los objetos son iguales, o .F. si no lo son.
+    * @override
     */
     FUNCTION es_igual
         LPARAMETERS toModelo

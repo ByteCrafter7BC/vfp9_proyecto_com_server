@@ -27,16 +27,7 @@
 */
 
 **
-* Clase modelo de datos para la entidad de máquinas.
-*
-* Esta clase hereda la estructura de la clase base 'modelo_base', que
-* proporciona las propiedades y métodos para manejar datos de código, nombre y
-* estado de vigencia.
-*
-* Su propósito es servir como una representación específica de la tabla de
-* máquinas en la capa de modelos. Al heredar de 'modelo_base', asegura
-* la consistencia en la estructura de datos y en los métodos de acceso,
-* adhiriéndose al estándar definido para la arquitectura de la aplicación.
+* Clase modelo de datos para la entidad 'maquinas'.
 */
 DEFINE CLASS maquinas AS modelo_base OF modelo_base.prg
     **/
