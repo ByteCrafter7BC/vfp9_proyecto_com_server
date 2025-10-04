@@ -1,6 +1,4 @@
 **/
-* es_digito.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,6 +17,14 @@
 */
 
 **/
+* @file es_digito.prg
+* @package prog
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+*/
+
+**/
 * Verifica si una expresión contiene únicamente caracteres numéricos.
 *
 * La función acepta una cadena o un valor numérico. Si el parámetro es de
@@ -29,12 +35,10 @@
 *
 * @param string|int tcExpresion Cadena o número a evaluar. Las cadenas no
 *                               deben contener espacios ni símbolos.
-*
 * @return bool .T. si la expresión es numérica válida (todos los caracteres
 *              son dígitos o el tipo es numérico).
 *              .F. si contiene letras, espacios, símbolos o si el parámetro
 *              es inválido.
-*
 * @example
 *     es_digito('12345')   && Retorna .T.
 *     es_digito('12a45')   && Retorna .F.

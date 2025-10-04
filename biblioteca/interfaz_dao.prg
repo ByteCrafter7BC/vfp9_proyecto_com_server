@@ -43,7 +43,7 @@ DEFINE CLASS interfaz_dao AS Custom
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar()
+    * @method int contar([string tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo()
     * @method mixed obtener_por_nombre()
@@ -57,9 +57,9 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Verifica si un código ya existe en la tabla.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
-    * @return bool .T. si el código existe o si ocurre un error.
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el código existe o si ocurre un error;
+    *              .F. si no existe.
     */
     FUNCTION existe_codigo
         LPARAMETERS tnCodigo
@@ -70,8 +70,8 @@ DEFINE CLASS interfaz_dao AS Custom
     * Verifica si un nombre ya existe en la tabla.
     *
     * @param string tcNombre Nombre a verificar.
-    *
-    * @return bool .T. si el nombre existe o si ocurre un error.
+    * @return bool .T. si el nombre existe o si ocurre un error;
+    *              .F. si no existe.
     */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre
@@ -81,8 +81,7 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Verifica si un registro está vigente.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
+    * @param int tnCodigo Código numérico único a verificar.
     * @return bool .T. si el registro existe y su estado es vigente.
     *              .F. si el registro no existe, no está vigente o si ocurre un
     *              error.
@@ -93,11 +92,12 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Verifica si un registro está relacionado con otras tablas.
+    * Verifica si un código está relacionado con otros registros de la base
+    * de datos.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
-    * @return bool .T. si el registro está relacionado o si ocurre un error.
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error;
+    *              .F. si no está relacionado.
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
@@ -109,7 +109,6 @@ DEFINE CLASS interfaz_dao AS Custom
     *
     * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta, sin
     *                                   la palabra "WHERE".
-    *
     * @return int Número de registros contados. Devuelve -1 si ocurre un error.
     */
     FUNCTION contar
@@ -130,12 +129,11 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene un registro, buscándolo por código.
+    * Realiza la búsqueda de un registro por su código.
     *
-    * @param int tnCodigo Código del registro a obtener.
-    *
-    * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si el registro no fue encuentrado o si ocurre un error.
+    * @param int tnCodigo Código numérico único del registro a buscar.
+    * @return mixed object modelo si el registro se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
@@ -143,12 +141,11 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene un registro, buscándolo por nombre.
+    * Realiza la búsqueda de un registro por su nombre.
     *
-    * @param string tcNombre Nombre del registro a obtener.
-    *
-    * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si el registro no fue encuentrado o si ocurre un error.
+    * @param string tcNombre Nombre del registro a buscar.
+    * @return mixed object modelo si el registro se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre
@@ -156,15 +153,15 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene una colección de registros en un cursor temporal.
+    * Devuelve todos los registros aplicando, opcionalmente, filtro y orden.
     *
-    * Ejecuta una consulta SELECT sobre la tabla y deja el resultado en un
-    * cursor llamado 'tm_' + THIS.cModelo
+    * El resultado se coloca en un cursor temporal llamado 'tm_' +
+    * THIS.cModelo.
     *
-    * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta.
-    * @param string [tcOrden] La cláusula ORDER BY de la consulta.
-    *
-    * @return bool .T. si la consulta fue ejecutada correctamente.
+    * @param string [tcCondicionFiltro] Cláusula WHERE de la consulta.
+    * @param string [tcOrden] Cláusula ORDER BY de la consulta.
+    * @return bool .T. si la consulta se ejecuta correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION obtener_todos
         LPARAMETERS tcCondicionFiltro, tcOrden
@@ -172,7 +169,7 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene el último mensaje de error registrado.
+    * Devuelve el último mensaje de error registrado.
     *
     * @return string Descripción del mensaje de error.
     */
@@ -184,8 +181,8 @@ DEFINE CLASS interfaz_dao AS Custom
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    *
-    * @return bool .T. si el registro fue agregado correctamente.
+    * @return bool .T. si el registro se agrega correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION agregar
         LPARAMETERS toModelo
@@ -196,8 +193,8 @@ DEFINE CLASS interfaz_dao AS Custom
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    *
-    * @return bool .T. si el registro fue modificado correctamente.
+    * @return bool .T. si el registro se modifica correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION modificar
         LPARAMETERS toModelo
@@ -207,9 +204,10 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Borra un registro de la tabla.
     *
-    * @param int tnCodigo Código numérico del registro a borrar.
-    *
-    * @return bool .T. si el registro fue borrado correctamente.
+    * @param int tnTipoNota Tipo del documento.
+    * @param int tnNroNota Número único del documento según el tipo.
+    * @return bool .T. si el registro se borra correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION borrar
         LPARAMETERS tnCodigo
@@ -230,18 +228,18 @@ DEFINE CLASS interfaz_dao AS Custom
     * Infiere el nombre del modelo y establece valores predeterminados para las
     * cláusulas SQL si no se han especificado.
     *
-    * @return bool .T. si la configuración fue completada correctamente.
+    * @return bool .T. si la configuración se completada correctamente;
+    *              .F. si ocurre un error.
     */
     PROTECTED FUNCTION configurar
         RETURN .F.
     ENDFUNC
 
     **/
-    * Crea un objeto a partir del registro actual de la tabla.
+    * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed Object Instancia de la clase modelo si la operación
-    *               completada correctamente.
-    *              .F. si ocurre un error.
+    * @return mixed object modelo si la operación se completa correctamente;
+    *               .F. si ocurre un error.
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN .F.
@@ -250,7 +248,8 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Establece conexión con la base de datos.
     *
-    * @return bool .T. si la conexión fue establecida correctamente.
+    * @return bool .T. si la conexión se establece correctamente;
+    *              .F. si ocurre un error.
     */
     PROTECTED FUNCTION conectar
         RETURN .F.
@@ -259,7 +258,8 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Cierra la conexión con la base de datos.
     *
-    * @return bool .T. si la conexión fue cerrada exitosamente.
+    * @return bool .T. si la conexión se cierra correctamente;
+    *              .F. si ocurre un error.
     */
     PROTECTED FUNCTION desconectar
         RETURN .F.

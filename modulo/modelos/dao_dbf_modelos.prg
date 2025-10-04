@@ -62,7 +62,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * @param string tcNombre Nombre del modelo a verificar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
-    * @return bool .T. si el nombre existe o si ocurre un error, o
+    * @return bool .T. si el nombre existe o si ocurre un error;
     *              .F. si el nombre no existe.
     * @override
     */
@@ -118,7 +118,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * de la base de datos.
     *
     * @param int tnCodigo Código del modelo a verificar.
-    * @return bool .T. si el registro está relacionado o si ocurre un error, o
+    * @return bool .T. si el registro está relacionado o si ocurre un error;
     *              .F. si no está relacionado.
     * @override
     */
@@ -150,7 +150,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * @param string tcNombre Nombre del modelo a buscar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
-    * @return mixed object modelo si el modelo se encuentra, o
+    * @return mixed object modelo si el modelo se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
     * @override
     */
@@ -209,7 +209,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     *
     * @param string [tcCondicionFiltro] Cláusula WHERE de la consulta.
     * @param string [tcOrden] Cláusula ORDER BY de la consulta.
-    * @return bool .T. si la consulta se ejecuta correctamente, o
+    * @return bool .T. si la consulta se ejecuta correctamente;
     *              .F. si ocurre un error.
     * @override
     */
@@ -253,7 +253,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool .T. si el registro se agrega correctamente, o
+    * @return bool .T. si el registro se agrega correctamente;
     *              .F. si ocurre un error.
     * @override
     */
@@ -316,7 +316,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool .T. si el registro se modifica correctamente, o
+    * @return bool .T. si el registro se modifica correctamente;
     *              .F. si ocurre un error.
     * @override
     */
@@ -427,7 +427,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     **/
     * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed object modelo si la operación se completa correctamente, o
+    * @return mixed object modelo si la operación se completa correctamente;
     *               .F. si ocurre un error.
     * @override
     */
@@ -439,10 +439,10 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     **/
     * Establece conexión con la base de datos.
     *
-    * @param bool [tlModoEscritura] .T. para abrir en modo lectura/escritura, o
+    * @param bool [tlModoEscritura] .T. para abrir en modo lectura/escritura;
     *                               .F. para abrir en modo solo lectura.
     *                               Si no se especifica, predeterminado .F.
-    * @return bool .T. si la conexión se establece correctamente, o
+    * @return bool .T. si la conexión se establece correctamente;
     *              .F. si ocurre un error.
     * @override
     */
@@ -474,7 +474,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     **/
     * Cierra la conexión con la base de datos.
     *
-    * @return bool .T. si la conexión se cierra correctamente, o
+    * @return bool .T. si la conexión se cierra correctamente;
     *              .F. si ocurre un error.
     * @override
     */
@@ -489,7 +489,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * base e incluye la validación de los campos 'maquina' y 'marca'.
     *
     * @param object toModelo Modelo a validar.
-    * @return bool .T. si el objeto es válido, o .F. si no lo es.
+    * @return bool .T. si el objeto es válido; .F. si no lo es.
     * @override
     */
     PROTECTED FUNCTION toModelo_Valid
@@ -513,7 +513,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * código referencial.
     *
     * @param int tnMaquina Código de la máquina a validar.
-    * @return bool .T. si el código es válido, o .F. si no lo es.
+    * @return bool .T. si el código es válido; .F. si no lo es.
     */
     PROTECTED FUNCTION tnMaquina_Valid
         LPARAMETERS tnMaquina
@@ -525,7 +525,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * código referencial.
     *
     * @param int tnMarca Código de la marca a validar.
-    * @return bool .T. si el código es válido, o .F. si no lo es.
+    * @return bool .T. si el código es válido; .F. si no lo es.
     */
     PROTECTED FUNCTION tnMarca_Valid
         LPARAMETERS tnMarca
