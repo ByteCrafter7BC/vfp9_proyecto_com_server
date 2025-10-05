@@ -31,12 +31,12 @@
 */
 DEFINE CLASS cabenot2 AS Custom
     **/
-    * @var int Tipo del documento.
+    * @var int Tipo de documento.
     */
     PROTECTED nTipoNota
 
     **/
-    * @var int Número único del documento según el tipo.
+    * @var int Número único de documento según el tipo.
     */
     PROTECTED nNroNota
 
@@ -60,8 +60,8 @@ DEFINE CLASS cabenot2 AS Custom
     * Inicializa las propiedades del objeto con los valores proporcionados,
     * validando que los tipos de datos sean correctos.
     *
-    * @param int tnTipoNota Tipo del documento.
-    * @param int tnNroNota Número único del documento según el tipo.
+    * @param int tnTipoNota Tipo de documento.
+    * @param int tnNroNota Número único de documento según el tipo.
     * @param string tcCdc CDC de 44 dígitos.
     * @return bool .T. si la inicialización se completa correctamente, o
     *              .F. si ocurre un error.
@@ -83,9 +83,9 @@ DEFINE CLASS cabenot2 AS Custom
     ENDFUNC
 
     **/
-    * Devuelve el tipo del documento.
+    * Devuelve el tipo de documento.
     *
-    * @return int Tipo del documento.
+    * @return int Tipo de documento.
     */
     FUNCTION obtener_tiponota
         RETURN THIS.nTipoNota
@@ -94,7 +94,7 @@ DEFINE CLASS cabenot2 AS Custom
     **/
     * Devuelve el número de documento.
     *
-    * @return int Número único del documento según el tipo.
+    * @return int Número único de documento según el tipo.
     */
     FUNCTION obtener_nronota
         RETURN THIS.nNroNota

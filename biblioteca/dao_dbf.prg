@@ -182,7 +182,6 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *
     * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta, sin
     *                                   la palabra "WHERE".
-    *
     * @return int Número de registros contados. Devuelve -1 si ocurre un error.
     * @override
     */
@@ -376,8 +375,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    *
-    * @return bool .T. si el registro fue agregado correctamente.
+    * @return bool .T. si el registro se agrega correctamente;
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION agregar
@@ -416,7 +415,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         INSERT INTO (THIS.cModelo) ;
             (codigo, nombre, vigente) ;
         VALUES ;
-            (m.codigo, m.nombre, m.vigente)
+            (m.codigo, ALLTRIM(m.nombre), m.vigente)
 
         WITH THIS
             .cUltimoError = ''
@@ -428,8 +427,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    *
-    * @return bool .T. si el registro fue modificado correctamente.
+    * @return bool .T. si el registro se modifica correctamente;
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION modificar
@@ -504,8 +503,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Borra un registro de la tabla.
     *
     * @param int tnCodigo Código numérico del registro a borrar.
-    *
-    * @return bool .T. si el registro fue borrado correctamente.
+    * @return bool .T. si el registro se borra correctamente;
+    *              .F. si ocurre un error.
     * @override
     */
     FUNCTION borrar
@@ -565,7 +564,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * Infiere el nombre del modelo y establece valores predeterminados para las
     * cláusulas SQL si no se han especificado.
     *
-    * @return bool .T. si la configuración fue completada correctamente.
+    * @return bool .T. si la configuración se completa correctamente;
+    *              .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION configurar

@@ -304,7 +304,10 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
             RETURN .F.
         ENDIF
 
-        INSERT INTO (THIS.cModelo) FROM MEMVAR
+        INSERT INTO (THIS.cModelo) ;
+            (codigo, nombre, maquina, marca, vigente) ;
+        VALUES ;
+            (m.codigo, m.nombre, m.maquina, m.marca, m.vigente)
 
         WITH THIS
             .cUltimoError = ''

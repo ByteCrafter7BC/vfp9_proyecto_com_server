@@ -101,7 +101,12 @@
 #DEFINE MSG_NO_VIGENTE                       "'{}' no está vigente."
 #DEFINE MSG_PARAM_INVALIDO                   "El parámetro '{}' no es válido."
 #DEFINE MSG_REFERENCIA_NO_EXISTE             "'{}' no existe."
+#DEFINE MSG_SOLO_DIGITOS                     'Debe contener solo dígitos.'
 #DEFINE MSG_TIPO_CARACTER                    'Debe ser de tipo caracter.'
 #DEFINE MSG_TIPO_LOGICO                      'Debe ser de tipo lógico.'
 #DEFINE MSG_TIPO_NUMERICO                    'Debe ser de tipo numérico.'
 #DEFINE MSG_YA_EXISTE                        'Ya existe.'
+
+*/ constantes_limites.h
+*/ Números máximos para campos numéricos.
+#DEFINE CABENOTC_NRODOCU    9999999    && 7 dígitos.

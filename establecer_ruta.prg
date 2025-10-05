@@ -37,6 +37,7 @@ FUNCTION establecer_ruta
                 biblioteca, ;
                 binario, ;
                 modulo\barrios, ;
+                modulo\cabenot2, ;
                 modulo\ciudades, ;
                 modulo\cobrador, ;
                 modulo\depar, ;

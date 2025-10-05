@@ -52,9 +52,7 @@ DEFINE CLASS dao_cabenot2 AS Custom
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_nota(int tnTipoNota, int tnNroNota)
     * @method bool existe_cdc(string tcCdc)
-    * @method bool esta_relacionado(int tnTipoNota, int tnNroNota)
     * @method int contar([string tcCondicionFiltro])
-    * @method int obtener_nuevo_numero(int tnTipoNota)
     * @method mixed obtener_por_nota(int tnTipoNota, int tnNroNota)
     * @method mixed obtener_por_cdc(string tcCdc)
     * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
@@ -67,8 +65,8 @@ DEFINE CLASS dao_cabenot2 AS Custom
     **/
     * Verifica si un documento ya existe en la tabla.
     *
-    * @param int tnTipoDocu Tipo del documento.
-    * @param int tnNroDocu Número único del documento según el tipo.
+    * @param int tnTipoDocu Tipo de documento.
+    * @param int tnNroDocu Número único de documento según el tipo.
     * @return bool .T. si el documento existe o si ocurre un error;
     *              .F. si no existe.
     */
@@ -85,20 +83,6 @@ DEFINE CLASS dao_cabenot2 AS Custom
     */
     FUNCTION existe_cdc
         LPARAMETERS tcCdc
-        RETURN .T.
-    ENDFUNC
-
-    **/
-    * Verifica si el documento está relacionado con otros registros de la
-    * base de datos.
-    *
-    * @param int tnTipoNota Tipo del documento.
-    * @param int tnNroNota Número único del documento según el tipo.
-    * @return bool .T. si el registro está relacionado o si ocurre un error;
-    *              .F. si no está relacionado.
-    */
-    FUNCTION esta_relacionado
-        LPARAMETERS tnTipoNota, tnNroNota
         RETURN .T.
     ENDFUNC
 
@@ -130,8 +114,8 @@ DEFINE CLASS dao_cabenot2 AS Custom
     **/
     * Realiza la búsqueda de un documento por su tipo y número.
     *
-    * @param int tnTipoNota Tipo del documento.
-    * @param int tnNroNota Número único del documento según el tipo.
+    * @param int tnTipoNota Tipo de documento.
+    * @param int tnNroNota Número único de documento según el tipo.
     * @return mixed object modelo si el documento se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
     */
@@ -174,7 +158,7 @@ DEFINE CLASS dao_cabenot2 AS Custom
     * @return string Descripción del mensaje de error.
     */
     FUNCTION obtener_ultimo_error
-        RETURN 'No implementado.'
+        RETURN IIF(VARTYPE(THIS.cUltimoError) == 'C', THIS.cUltimoError, '')
     ENDFUNC
 
     **/
@@ -195,7 +179,6 @@ DEFINE CLASS dao_cabenot2 AS Custom
     * @param object toModelo Modelo con los datos actualizados del registro.
     * @return bool .T. si el registro se modifica correctamente;
     *              .F. si ocurre un error.
-    * @override
     */
     FUNCTION modificar
         LPARAMETERS toModelo
@@ -205,8 +188,8 @@ DEFINE CLASS dao_cabenot2 AS Custom
     **/
     * Borra un registro de la tabla.
     *
-    * @param int tnTipoNota Tipo del documento.
-    * @param int tnNroNota Número único del documento según el tipo.
+    * @param int tnTipoNota Tipo de documento.
+    * @param int tnNroNota Número único de documento según el tipo.
     * @return bool .T. si el registro se borra correctamente;
     *              .F. si ocurre un error.
     */
@@ -217,6 +200,7 @@ DEFINE CLASS dao_cabenot2 AS Custom
 
     **/
     * @section MÉTODOS PROTEGIDOS
+    * @method bool Init()
     * @method bool configurar()
     * @method bool obtener_modelo()
     * @method bool conectar()
@@ -224,7 +208,23 @@ DEFINE CLASS dao_cabenot2 AS Custom
     * @method bool tnTipoNota_Valid(int tnTipoNota)
     * @method bool tnNroNota_Valid(int tnNroNota)
     * @method bool tcCdc_Valid(string tcCdc)
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
     */
+
+    **/
+    * Constructor de la clase DAO.
+    *
+    * Este método se llama automáticamente al crear una instancia de la clase.
+    * Delega la lógica de configuración al método 'configurar()'.
+    *
+    * @return bool .T. si la inicialización se completa correctamente;
+    *              .F. si ocurre un error.
+    */
+    PROTECTED FUNCTION Init
+        RETURN THIS.configurar()
+    ENDFUNC
 
     **/
     * Configura las propiedades por defecto del DAO.
@@ -308,6 +308,75 @@ DEFINE CLASS dao_cabenot2 AS Custom
 
         IF VARTYPE(tcCdc) != 'C' OR EMPTY(tcCdc) ;
                 OR LEN(tcCdc) != 44 OR !es_digito(tcCdc) THEN
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Valida un objeto modelo contra la estructura de la clase DAO.
+    *
+    * Este método es una validación completa que chequea si el objeto 'toModelo'
+    * es del tipo correcto, y si sus propiedades 'tiponota', 'nronota' y 'cdc'
+    * son válidas según los métodos de validación individuales.
+    *
+    * @param object toModelo Modelo a validar.
+    * @return bool .T. si el objeto es válido y cumple con las reglas de
+    *              validación de sus propiedades.
+    */
+    PROTECTED FUNCTION toModelo_Valid
+        LPARAMETERS toModelo
+
+        IF VARTYPE(toModelo) != 'O' ;
+                OR LOWER(toModelo.Class) != LOWER(THIS.cModelo) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnTipoNota_Valid(toModelo.obtener_tiponota()) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnNroNota_Valid(toModelo.obtener_nronota()) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tcCdc_Valid(toModelo.obtener_cdc()) THEN
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Valida una cadena de texto que se usará como condición de filtrado.
+    *
+    * Se utiliza para evitar inyecciones de código.
+    *
+    * @param string tcCondicionFiltro Cadena a validar.
+    * @return bool .T. si la cadena no está vacía y no excede la longitud
+    *              máxima; .F. en caso contrario.
+    */
+    PROTECTED FUNCTION tcCondicionFiltro_Valid
+        LPARAMETERS tcCondicionFiltro
+
+        IF VARTYPE(tcCondicionFiltro) != 'C' OR EMPTY(tcCondicionFiltro) ;
+                OR LEN(tcCondicionFiltro) > 150 THEN
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Valida una cadena de texto que indica el ordenamiento de los datos.
+    *
+    * Este método asegura que la ordenación se realice solo por los campos
+    * permitidos para la clase DAO.
+    *
+    * @param string tcOrden Cadena a validar ('tiponota', 'nronota' o 'cdc').
+    * @return bool .T. si la cadena es 'tiponota', 'nronota' o 'cdc';
+    *              .F. en caso contrario.
+    */
+    PROTECTED FUNCTION tcOrden_Valid
+        LPARAMETERS tcOrden
+
+        IF VARTYPE(tcOrden) != 'C' OR EMPTY(tcOrden) ;
+                OR !INLIST(tcOrden, 'tiponota', 'nronota', 'cdc') THEN
             RETURN .F.
         ENDIF
     ENDFUNC

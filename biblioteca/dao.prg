@@ -91,7 +91,7 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     */
 
     **/
-    * Obtiene el último mensaje de error registrado.
+    * Devuelve el último mensaje de error registrado.
     *
     * @return string Descripción del mensaje de error.
     */
@@ -122,7 +122,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * Este método se llama automáticamente al crear una instancia de la clase.
     * Delega la lógica de configuración al método 'configurar()'.
     *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente;
+    *              .F. si ocurre un error.
     */
     PROTECTED FUNCTION Init
         RETURN THIS.configurar()
@@ -263,7 +264,6 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * son válidas según los métodos de validación individuales.
     *
     * @param object toModelo Modelo a validar.
-    *
     * @return bool .T. si el objeto es válido y cumple con las reglas de
     *              validación de sus propiedades.
     */
@@ -294,9 +294,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * Se utiliza para evitar inyecciones de código.
     *
     * @param string tcCondicionFiltro Cadena a validar.
-    *
     * @return bool .T. si la cadena no está vacía y no excede la longitud
-    *              máxima.
+    *              máxima; .F. en caso contrario.
     */
     PROTECTED FUNCTION tcCondicionFiltro_Valid
         LPARAMETERS tcCondicionFiltro
@@ -314,8 +313,8 @@ DEFINE CLASS dao AS interfaz_dao OF interfaz_dao.prg
     * permitidos para la clase DAO.
     *
     * @param string tcOrden Cadena a validar ('codigo' o 'nombre').
-    *
-    * @return bool .T. si la cadena es 'codigo' o 'nombre'
+    * @return bool .T. si la cadena es 'codigo' o 'nombre';
+    *              .F. en caso contrario.
     */
     PROTECTED FUNCTION tcOrden_Valid
         LPARAMETERS tcOrden

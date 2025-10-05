@@ -108,7 +108,8 @@ DEFINE CLASS validador_base AS Custom
     * @param object toModelo Modelo con los datos a validar.
     * @param object toDao DAO para las consultas de validación.
     *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente;
+    *              .F. en caso contrario.
     */
     FUNCTION Init
         LPARAMETERS tnBandera, toModelo, toDao
@@ -198,7 +199,8 @@ DEFINE CLASS validador_base AS Custom
     * definidas, las establece con valores predeterminados y deriva el nombre
     * del modelo del nombre de la clase.
     *
-    * @return bool .T. si la configuración fue completada correctamente.
+    * @return bool .T. si la configuración se completa correctamente;
+    *              .F. en caso contrario.
     */
     PROTECTED FUNCTION configurar
         IF VARTYPE(THIS.cModelo) != 'C' OR EMPTY(THIS.cModelo) THEN

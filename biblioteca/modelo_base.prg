@@ -112,7 +112,7 @@ DEFINE CLASS modelo_base AS Custom
     **
     * Verifica si el registro está vigente.
     *
-    * @return bool .T. si el registro está vigente.
+    * @return bool .T. si el registro está vigente; .F. si no lo está.
     */
     FUNCTION esta_vigente
         RETURN THIS.lVigente
