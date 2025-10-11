@@ -97,14 +97,19 @@
 #DEFINE MSG_MENOR_QUE                        'Debe ser menor que {}.'
 #DEFINE MSG_NO_BLANCO                        'No puede quedar en blanco.'
 #DEFINE MSG_NO_BORRA_REGISTRO_RELACIONADO    'No se puede borrar el registro porque figura en otros archivos.'
+#DEFINE MSG_NO_ES_VALIDO                     'No es válido.'
 #DEFINE MSG_NO_EXISTE                        'No existe.'
 #DEFINE MSG_NO_VIGENTE                       "'{}' no está vigente."
 #DEFINE MSG_PARAM_INVALIDO                   "El parámetro '{}' no es válido."
 #DEFINE MSG_REFERENCIA_NO_EXISTE             "'{}' no existe."
 #DEFINE MSG_SOLO_DIGITOS                     'Debe contener solo dígitos.'
 #DEFINE MSG_TIPO_CARACTER                    'Debe ser de tipo caracter.'
+#DEFINE MSG_TIPO_DESCONOCIDO                 'Tipo de dato desconocido.'
+#DEFINE MSG_TIPO_FECHA                       'Debe ser de tipo fecha.'
+#DEFINE MSG_TIPO_FECHA_HORA                  'Debe ser de tipo fecha y hora.'
 #DEFINE MSG_TIPO_LOGICO                      'Debe ser de tipo lógico.'
 #DEFINE MSG_TIPO_NUMERICO                    'Debe ser de tipo numérico.'
+
 #DEFINE MSG_YA_EXISTE                        'Ya existe.'
 
 */ constantes_limites.h

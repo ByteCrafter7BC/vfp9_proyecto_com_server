@@ -99,19 +99,6 @@ DEFINE CLASS dao_cabenot2 AS Custom
     ENDFUNC
 
     **/
-    * Obtiene el siguiente número secuencial disponible.
-    *
-    * Busca el primer hueco en la secuencia a partir de 1.
-    *
-    * @return int Número entero positivo que representa el siguiente número
-    *             disponible. Devuelve -1 si ocurre un error.
-    */
-    FUNCTION obtener_nuevo_numero
-        LPARAMETERS tnTipoNota
-        RETURN -1
-    ENDFUNC
-
-    **/
     * Realiza la búsqueda de un documento por su tipo y número.
     *
     * @param int tnTipoNota Tipo de documento.

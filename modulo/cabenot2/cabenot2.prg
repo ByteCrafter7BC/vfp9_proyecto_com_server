@@ -26,7 +26,7 @@
 * @extends Custom
 */
 
-**
+**/
 * Clase modelo de datos para la entidad 'cabenot2'.
 */
 DEFINE CLASS cabenot2 AS Custom

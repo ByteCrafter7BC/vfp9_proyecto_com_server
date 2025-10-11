@@ -141,4 +141,115 @@ DEFINE CLASS modelo_base AS Custom
             RETURN .F.
         ENDIF
     ENDFUNC
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool asignar_cadena(string tcPropiedad, string tcValor)
+    * @method bool asignar_numerico(string tcPropiedad, double tnValor)
+    */
+
+    **/
+    * Asigna un valor de tipo cadena de caracteres a una propiedad del objeto.
+    *
+    * @param string tcPropiedad Nombre de la propiedad a la que se asignará el
+    *               valor.
+    * @param string tcValor Valor que se asignará a la propiedad.
+    * @return bool .T. si el valor se asigna correctamente;
+    *              .F. en caso contrario.
+    * @example
+    * && Asigna 'José' a THIS.cNombre si la propiedad existe.
+    * THIS.asignar_cadena('cNombre', ' José ')
+    *
+    * @throws void No lanza excepciones, pero retorna .F. si los parámetros no
+    *              son válidos o la propiedad no existe.
+    *
+    * @see PEMSTATUS() Para verificar existencia y accesibilidad de propiedades.
+    * @see ALLTRIM() Para eliminar espacios en blanco antes y después del valor.
+    * @see STORE TO  Para asignar valor a una propiedad dinámica.
+    */
+    PROTECTED FUNCTION asignar_cadena
+        LPARAMETERS tcPropiedad, tcValor
+
+        IF VARTYPE(tcPropiedad) != 'C' ;
+                OR EMPTY(tcPropiedad) ;
+                OR !PEMSTATUS(THIS, tcPropiedad, 5)
+                OR VARTYPE(tcValor) != 'C' THEN
+            RETURN .F.
+        ENDIF
+
+        STORE ALLTRIM(tcValor) TO ('THIS.' + tcPropiedad)
+    ENDFUNC
+
+    **/
+    * Asigna un valor numérico a una propiedad del objeto con validación de
+    * signo.
+    *
+    * @param string tcPropiedad Nombre de la propiedad a la que se asignará el
+    *               valor.
+    * @param double tnValor Valor numérico que se asignará a la propiedad.
+    * @param  bool [tlSinSigno] Indica si el valor debe ser positivo (.T.) o
+    *                           permite negativos (.F.).
+    * @return bool .T. si el valor se asigna correctamente;
+    *              .F. en caso contrario.
+    * @example
+    * && Asignar un valor positivo obligatorio.
+    * THIS.asignar_numerico('nEdad', 25, .T.)
+    *
+    * && Asignar un valor que puede ser negativo.
+    * THIS.asignar_numerico('nSaldo', -150.50, .F.)
+    *
+    * && Esto fallará porque el valor es negativo pero se requiere positivo.
+    * THIS.asignar_numerico('nCantidad', -5, .T.)    && Retorna .F.
+    *
+    * @see PEMSTATUS() Para verificar existencia y accesibilidad de propiedades.
+    * @see STORE TO  Para asignar valor a una propiedad dinámica.
+    */
+    PROTECTED FUNCTION asignar_numerico
+        LPARAMETERS tcPropiedad, tnValor, tlSinSigno
+
+        IF VARTYPE(tcPropiedad) != 'C' ;
+                OR EMPTY(tcPropiedad) ;
+                OR !PEMSTATUS(THIS, tcPropiedad, 5)
+                OR VARTYPE(tnValor) != 'N' ;
+                OR VARTYPE(tlSinSigno) != 'L' THEN
+            RETURN .F.
+        ENDIF
+
+        IF tlSinSigno THEN    && Unsigned: solo puede ser positivo o cero.
+            IF tnValor < 0 THEN
+                RETURN .F.
+            ENDIF
+        ENDIF
+
+        STORE tnValor TO ('THIS.' + tcPropiedad)
+    ENDFUNC
+
+    **/
+    * Asigna un valor lógico (.T. o .F.) a una propiedad del objeto actual.
+    *
+    * @param string tcPropiedad Nombre de la propiedad a la que se asignará el
+    *               valor.
+    * @param bool tlValor Valor lógico que se asignará a la propiedad.
+    *
+    * @return bool .T. si el valor se asigna correctamente;
+    *              .F. en caso contrario.
+    * @example
+    * THIS.asignar_logico('lVigente', .T.)    && Establece THIS.lVigente a .T.
+    *
+    * @see PEMSTATUS() Para verificar existencia y accesibilidad de propiedades.
+    * @see VARTYPE() Para evaluar el tipo de dato de una variable.
+    * @see STORE TO  Para asignar valor a una propiedad dinámica.
+    */
+    PROTECTED FUNCTION asignar_logico
+        LPARAMETERS tcPropiedad, tlValor
+
+        IF VARTYPE(tcPropiedad) != 'C' ;
+                OR EMPTY(tcPropiedad) ;
+                OR !PEMSTATUS(THIS, tcPropiedad, 5)
+                OR VARTYPE(tlValor) != 'L' THEN
+            RETURN .F.
+        ENDIF
+
+        STORE tlValor TO ('THIS.' + tcPropiedad)
+    ENDFUNC
 ENDDEFINE

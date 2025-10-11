@@ -24,7 +24,7 @@
 * @since 1.0.0
 * @abstract
 * @class dto_base
-* @extends Custom
+* @extends modelo_base
 */
 
 **/
@@ -39,28 +39,15 @@
 * Su propósito es asegurar la consistencia y la reutilización de código en
 * todas las clases de DTO.
 */
-DEFINE CLASS dto_base AS Custom
-    **/
-    * @var int Código numérico del registro.
-    */
-    PROTECTED nCodigo
-
-    **/
-    * @var string Nombre descriptivo del registro.
-    */
-    PROTECTED cNombre
-
-    **/
-    * @var bool Indica si el registro se encuentra vigente.
-    */
-    PROTECTED lVigente
-
+DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method bool Init([int tnCodigo], [string tcNombre], [bool tlVigente])
     * @method int obtener_codigo()
     * @method string obtener_nombre()
     * @method bool esta_vigente()
+    * @method bool es_igual(object toModelo)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool Init([int tnCodigo], [string tcNombre], [bool tlVigente])
     * @method bool establecer_codigo(int tnCodigo)
     * @method bool establecer_nombre(string tcNombre)
     * @method bool establecer_vigente(bool tlVigente)
@@ -78,7 +65,9 @@ DEFINE CLASS dto_base AS Custom
     * @param string [tcNombre = ''] Nombre descriptivo del DTO.
     * @param bool [tlVigente = .F.] Estado de vigencia del DTO.
     *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización se completa correctamente, o
+    *              .F. si ocurre un error.
+    * @override
     */
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tlVigente
@@ -97,88 +86,42 @@ DEFINE CLASS dto_base AS Custom
     ENDFUNC
 
     **/
-    * @section GETTERS
-    */
-
-    **/
-    * Obtiene el código del registro.
-    *
-    * @return int Código numérico del registro.
-    */
-    FUNCTION obtener_codigo
-        RETURN THIS.nCodigo
-    ENDFUNC
-
-    **/
-    * Obtiene el nombre del registro.
-    *
-    * @return string Nombre descriptivo del registro.
-    */
-    FUNCTION obtener_nombre
-        RETURN THIS.cNombre
-    ENDFUNC
-
-    **
-    * Verifica si el registro está vigente.
-    *
-    * @return bool .T. si el registro está vigente.
-    */
-    FUNCTION esta_vigente
-        RETURN THIS.lVigente
-    ENDFUNC
-
-    **/
     * @section SETTERS
     */
 
     **/
-    * Establece el código numérico del DTO.
+    * Establece el código numérico único del DTO.
     *
-    * @param int tnCodigo Código a establecer.
-    *
-    * @return bool .T. si el valor fue establecido correctamente.
+    * @param int tnCodigo Código numérico a establecer.
+    * @return bool .T. si el valor se establece correctamente;
+    *              .F. en caso contrario.
     */
     FUNCTION establecer_codigo
         LPARAMETERS tnCodigo
-
-        IF VARTYPE(tnCodigo) != 'N' THEN
-            RETURN .F.
-        ENDIF
-
-        THIS.nCodigo = tnCodigo
+        RETURN THIS.asignar_numerico('nCodigo', tnCodigo, .T.)
     ENDFUNC
 
     **/
-    * Establece el nombre del DTO, eliminando los espacios en blanco.
+    * Establece el nombre del DTO.
     *
     * @param string tcNombre Nombre a establecer.
-    *
-    * @return bool .T. si el valor fue establecido correctamente.
+    * @return bool .T. si el valor se establece correctamente;
+    *              .F. en caso contrario.
     */
     FUNCTION establecer_nombre
         LPARAMETERS tcNombre
-
-        IF VARTYPE(tcNombre) != 'C' THEN
-            RETURN .F.
-        ENDIF
-
-        THIS.cNombre = ALLTRIM(tcNombre)
+        RETURN THIS.asignar_cadena('cNombre', tcNombre)
     ENDFUNC
 
     **/
     * Establece el estado de vigencia del DTO.
     *
     * @param bool tlVigente Valor lógico a establecer.
-    *
-    * @return bool .T. si el valor fue establecido correctamente.
+    * @return bool .T. si el valor se establece correctamente;
+    *              .F. en caso contrario.
     */
     FUNCTION establecer_vigente
         LPARAMETERS tlVigente
-
-        IF VARTYPE(tlVigente) != 'L' THEN
-            RETURN .F.
-        ENDIF
-
-        THIS.lVigente = tlVigente
+        RETURN THIS.asignar_logico('lVigente', tlVigente)
     ENDFUNC
 ENDDEFINE

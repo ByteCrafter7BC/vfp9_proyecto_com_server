@@ -27,7 +27,7 @@
 * @uses constantes.h
 */
 
-**
+**/
 * Clase de validación para el modelo 'cabenot2'.
 */
 DEFINE CLASS validador_cabenot2 AS Custom

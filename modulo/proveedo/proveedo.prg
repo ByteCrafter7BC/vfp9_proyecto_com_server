@@ -26,7 +26,7 @@
 * @extends biblioteca\modelo_base
 */
 
-**
+**/
 * Clase modelo de datos para la entidad 'proveedo'.
 */
 DEFINE CLASS proveedo AS modelo_base OF modelo_base.prg
@@ -238,10 +238,49 @@ DEFINE CLASS proveedo AS modelo_base OF modelo_base.prg
 
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method bool Init(object toDto)
     * @method int obtener_codigo()
     * @method string obtener_nombre()
     * @method bool esta_vigente()
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool Init(object toDto)
+    * @method string obtener_direc1()
+    * @method string obtener_direc2()
+    * @method string obtener_ciudad()
+    * @method string obtener_telefono()
+    * @method string obtener_fax()
+    * @method string obtener_email()
+    * @method string obtener_ruc()
+    * @method int obtener_dias_plazo()
+    * @method string obtener_dueno()
+    * @method string obtener_teldueno()
+    * @method string obtener_gtegral()
+    * @method string obtener_telgg()
+    * @method string obtener_gteventas()
+    * @method string obtener_telgv()
+    * @method string obtener_gtemkg()
+    * @method string obtener_telgm()
+    * @method string obtener_stecnico()
+    * @method string obtener_stdirec1()
+    * @method string obtener_stdirec2()
+    * @method string obtener_sttel()
+    * @method string obtener_sthablar1()
+    * @method string obtener_vendedor1()
+    * @method string obtener_larti1()
+    * @method string obtener_tvend1()
+    * @method string obtener_vendedor2()
+    * @method string obtener_larti2()
+    * @method string obtener_tvend2()
+    * @method string obtener_vendedor3()
+    * @method string obtener_larti3()
+    * @method string obtener_tvend3()
+    * @method string obtener_vendedor4()
+    * @method string obtener_larti4()
+    * @method string obtener_tvend4()
+    * @method string obtener_vendedor5()
+    * @method string obtener_larti5()
+    * @method string obtener_tvend5()
+    * @method float obtener_saldo_actu()
+    * @method float obtener_saldo_usd()
     * @method bool es_igual(object toModelo)
     */
 
@@ -276,10 +315,10 @@ DEFINE CLASS proveedo AS modelo_base OF modelo_base.prg
               m.fax, m.e_mail, m.ruc, m.dias_plazo, m.dueno, m.teldueno, ;
               m.gtegral, m.telgg, m.gteventas, m.telgv, m.gtemkg, m.telgm, ;
               m.stecnico, m.stdirec1, m.stdirec2, m.sttel, m.sthablar1, ;
-              m.vendedor1, m.larti1, m.tvend1, m.vendedor2, m.larti2, m.tvend2, ;
-              m.vendedor3, m.larti3, m.tvend3, m.vendedor4, m.larti4, m.tvend4, ;
-              m.vendedor5, m.larti5, m.tvend5, m.saldo_actu, m.saldo_usd, ;
-              m.vigente
+              m.vendedor1, m.larti1, m.tvend1, m.vendedor2, m.larti2,
+              m.tvend2, m.vendedor3, m.larti3, m.tvend3, m.vendedor4, ;
+              m.larti4, m.tvend4, m.vendedor5, m.larti5, m.tvend5, ;
+              m.saldo_actu, m.saldo_usd, m.vigente
 
         STORE 0 TO m.codigo, m.dias_plazo, m.saldo_actu, m.saldo_usd
         STORE '' TO m.nombre, m.direc1, m.direc2, m.ciudad, m.telefono, ;
