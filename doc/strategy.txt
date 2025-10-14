@@ -1,0 +1,15 @@
+1.000.000 Capital Total
+  100.000 Cuenta de Futuros 10% del Capital Total
+   90.000 Capital en billetera fría 90% de la Cuenta de Futuros
+   10.000 Capital a arriesgar por cada trade 10% de la Cuenta de Futuros
+       5x Apalancamiento
+       2% Stop Loss
+
+En tendencia diaria de BTC alcista.
+    - Operar en 4H (futuros) sin Stop Loss.
+    - Gestionar el capital si el mercado va en contra; debe caer $5000 a $7000
+      para volver a abrir una posición en Long con el 10% de la cuenta de futuros.
+
+En tendencia diaria de BTC bajista.
+    - Operar en 4H (futuros) con Stop Loss al 2%
+
