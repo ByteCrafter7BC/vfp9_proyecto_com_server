@@ -82,7 +82,7 @@ DEFINE CLASS modelo_base AS Custom
         ENDIF
 
         IF !THIS.campo_establecer_valor('codigo', tnCodigo) ;
-                OR !THIS.campo_establecer_valor('nombre', tcNombre) ;
+                OR !THIS.campo_establecer_valor('nombre', ALLTRIM(tcNombre)) ;
                 OR !THIS.campo_establecer_valor('vigente', tlVigente) THEN
             RETURN .F.
         ENDIF
@@ -204,10 +204,11 @@ DEFINE CLASS modelo_base AS Custom
     *
     * @return bool .T. si la carga se completa correctamente;
     *              .F. si ocurre un error.
-    * @uses mixed campo_obtener(string tcModelo)
+    * @uses mixed campo_obtener_todos(string tcModelo)
     *       Para cargar los campos del modelo.
     */
     PROTECTED FUNCTION campo_cargar
+        LOCAL loCampos
         loCampos = campo_obtener_todos(LOWER(THIS.Name))
 
         IF VARTYPE(loCampos) != 'O' OR loCampos.Count == 0 THEN

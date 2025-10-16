@@ -48,6 +48,7 @@ FUNCTION establecer_ruta
                 modulo\mecanico, ;
                 modulo\modelos, ;
                 modulo\proceden, ;
+                modulo\proveedo, ;
                 modulo\rubros1, ;
                 modulo\rubros2, ;
                 modulo\sifen, ;

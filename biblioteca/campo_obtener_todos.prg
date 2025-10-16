@@ -49,6 +49,8 @@ FUNCTION campo_obtener_todos
     DO CASE
     CASE tcModelo == 'marcas1'
         campo_obtener_base()
+    CASE tcModelo == 'proveedo'
+        campo_obtener_proveedo()
     ENDCASE
 
     RETURN poCampos
@@ -301,6 +303,107 @@ FUNCTION campo_obtener_base
     * Establece todos los campos requeridos.
     IF !campo_establecer_requerido('codigo', .T.) ;
             OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('vigente', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los getter a verdadero (.T.).
+    IF !campo_establecer_getter_todos(.T.) THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC
+
+**/
+* Carga los campos del modelo 'proveedo'.
+*
+* @return bool .T. si la carga se completa correctamente;
+*              .F. si ocurre un error.
+* @uses bool campo_agregar(string tcCampo, string tcTipo, int tnAncho, ;
+                            int tnDecimales, string tcEtiqueta)
+*       Para agregar un campo a la variable privada 'poCampos'.
+* @uses bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
+*       Para establecer si un campo de tipo numérico acepta números
+*       negativos.
+* @uses bool campo_establecer_requerido(string tcCampo, bool tlValor)
+*       Para establecer si un campo es requerido.
+* @uses bool campo_establecer_getter_todos(bool tlValor)
+*       Para establecer el estado getter de todos los campos.
+*/
+FUNCTION campo_obtener_proveedo
+    * Agrega todos los campos.
+    IF !campo_agregar('codigo', 'N', 5, , 'Código: ') ;
+            OR !campo_agregar('nombre', 'C', 40, , 'Nombre: ') ;
+            OR !campo_agregar('direc1', 'C', 60, , ;
+                'Línea 1 de la dirección: ') ;
+            OR !campo_agregar('direc2', 'C', 60, , ;
+                'Línea 2 de la dirección: ') ;
+            OR !campo_agregar('ciudad', 'C', 25, , 'Ciudad: ') ;
+            OR !campo_agregar('telefono', 'C', 40, , 'Teléfono: ') ;
+            OR !campo_agregar('fax', 'C', 25, , 'Fax: ') ;
+            OR !campo_agregar('e_mail', 'C', 60, , 'E-mail: ') ;
+            OR !campo_agregar('ruc', 'C', 15, , 'RUC: ') ;
+            OR !campo_agregar('dias_plazo', 'N', 3, , 'Días de plazo: ') ;
+            OR !campo_agregar('dueno', 'C', 40, , 'Propietario: ') ;
+            OR !campo_agregar('teldueno', 'C', 25, , ;
+                'Teléfono del propietario: ') ;
+            OR !campo_agregar('gtegral', 'C', 40, , 'Gerente general: ') ;
+            OR !campo_agregar('telgg', 'C', 25, , ;
+                'Teléfono del gerente general: ') ;
+            OR !campo_agregar('gteventas', 'C', 40, , 'Gerente de ventas: ') ;
+            OR !campo_agregar('telgv', 'C', 25, , ;
+                'Teléfono del gerente de ventas: ') ;
+            OR !campo_agregar('gtemkg', 'C', 40, , 'Gerente de marketing: ') ;
+            OR !campo_agregar('telgm', 'C', 25, , ;
+                'Teléfono del gerente de marketing: ') ;
+            OR !campo_agregar('stecnico', 'C', 40, , 'Servicio técnico: ') ;
+            OR !campo_agregar('stdirec1', 'C', 60, , ;
+                'Línea 1 de la dirección del servicio técnico: ') ;
+            OR !campo_agregar('stdirec2', 'C', 60, , ;
+                'Línea 2 de la dirección del servicio técnico: ') ;
+            OR !campo_agregar('sttel', 'C', 25, , ;
+                'Teléfono del servicio técnico: ') ;
+            OR !campo_agregar('sthablar1', 'C', 60, , ;
+                'Contacto del servicio técnico: ') ;
+            OR !campo_agregar('vendedor1', 'C', 40, , ;
+                'Nombre del vendedor de la línea de artículos 1: ') ;
+            OR !campo_agregar('larti1', 'C', 25, , 'Línea de artículos 1: ') ;
+            OR !campo_agregar('tvend1', 'C', 25, , ;
+                'Teléfono del vendedor de la línea de artículos 1: ') ;
+            OR !campo_agregar('vendedor2', 'C', 40, , ;
+                'Nombre del vendedor de la línea de artículos 2: ') ;
+            OR !campo_agregar('larti2', 'C', 25, , 'Línea de artículos 2: ') ;
+            OR !campo_agregar('tvend2', 'C', 25, , ;
+                'Teléfono del vendedor de la línea de artículos 2: ') ;
+            OR !campo_agregar('vendedor3', 'C', 40, , ;
+                'Nombre del vendedor de la línea de artículos 3: ') ;
+            OR !campo_agregar('larti3', 'C', 25, , 'Línea de artículos 3: ') ;
+            OR !campo_agregar('tvend3', 'C', 25, , ;
+                'Teléfono del vendedor de la línea de artículos 3: ') ;
+            OR !campo_agregar('vendedor4', 'C', 40, , ;
+                'Nombre del vendedor de la línea de artículos 4: ') ;
+            OR !campo_agregar('larti4', 'C', 25, , 'Línea de artículos 4: ') ;
+            OR !campo_agregar('tvend4', 'C', 25, , ;
+                'Teléfono del vendedor de la línea de artículos 4: ') ;
+            OR !campo_agregar('vendedor5', 'C', 40, , ;
+                'Nombre del vendedor de la línea de artículos 5: ') ;
+            OR !campo_agregar('larti5', 'C', 25, , 'Línea de artículos 5: ') ;
+            OR !campo_agregar('tvend5', 'C', 25, , ;
+                'Teléfono del vendedor de la línea de artículos 5: ') ;
+            OR !campo_agregar('saldo_actu', 'N', 12, , 'Saldo adeudado PYG: ') ;
+            OR !campo_agregar('saldo_usd', 'N', 12, , 'Saldo adeudado USD: ') ;
+            OR !campo_agregar('vigente', 'C', 1, , 'Vigente: ') THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos sin signo (unsigned).
+    IF !campo_establecer_sin_signo('codigo', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos requeridos.
+    IF !campo_establecer_requerido('codigo', .T.) ;
+            OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('ruc', .T.) ;
             OR !campo_establecer_requerido('vigente', .T.) THEN
         RETURN .F.
     ENDIF

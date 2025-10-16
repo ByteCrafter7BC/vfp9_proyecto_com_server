@@ -26,7 +26,7 @@
 * @extends biblioteca\modelo_base
 */
 
-**
+**/
 * Clase modelo de datos para la entidad 'marcas1'.
 */
 DEFINE CLASS marcas1 AS modelo_base OF modelo_base.prg
@@ -40,20 +40,14 @@ DEFINE CLASS marcas1 AS modelo_base OF modelo_base.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool cargar_campos()
-    * @method bool cargar_campos_base()
-    * @method bool agregar_campo(string tcCampo, string tcTipo, int tnAncho, ;
-                                 int tnDecimales, string tcEtiqueta)
-    * @method bool existe_campo(string tcCampo)
-    * @method int posicion_campo(string tcCampo)
-    * @method bool establecer_campo_sin_signo(string tcCampo, bool tlValor)
-    * @method bool establecer_campo_requerido(string tcCampo, bool tlValor)
-    * @method bool establecer_campo_getter(string tcCampo, bool tlValor)
-    * @method bool establecer_campo_setter(string tcCampo, bool tlValor)
-    * @method bool establecer_campo_getter_todos(bool tlValor)
-    * @method bool establecer_campo_setter_todos(bool tlValor)
-    * @method bool establecer_campo_valor(string tcCampo, mixed tvValor)
-    * @method mixed obtener_campo_valor(string tcCampo)
-    * @method mixed obtener_campo(string tcCampo)
+    * @method bool campo_cargar()
+    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_getter_todos(bool tlValor)
+    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_setter_todos(bool tlValor)
+    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    * @method bool campo_existe(string tcCampo)
+    * @method mixed campo_obtener(string tcCampo)
+    * @method mixed campo_obtener_valor(string tcCampo)
     */
 ENDDEFINE

@@ -26,7 +26,7 @@
 * @extends biblioteca\dto_base
 */
 
-**
+**/
 * Clase de transferencia de datos (DTO) para la entidad 'marcas1'.
 *
 * Esta clase se utiliza para transportar datos de marcas de artículos entre
@@ -35,12 +35,22 @@
 DEFINE CLASS dto_marcas1 AS dto_base OF dto_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method bool Init([int tnCodigo], [string tcNombre], [bool tlVigente])
-    * @method int obtener_codigo()
-    * @method string obtener_nombre()
-    * @method bool esta_vigente()
-    * @method bool establecer_codigo(int tnCodigo)
-    * @method bool establecer_nombre(string tcNombre)
-    * @method bool establecer_vigente(bool tlVigente)
+    * @method bool Init(int tnCodigo, string tcNombre, bool tlVigente)
+    * @method mixed obtener(string tcCampo)
+    * @method bool establecer(string tcCampo)
+    * @method bool es_igual(object toModelo)
+    */
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool campo_cargar()
+    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_getter_todos(bool tlValor)
+    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_setter_todos(bool tlValor)
+    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    * @method bool campo_existe(string tcCampo)
+    * @method mixed campo_obtener(string tcCampo)
+    * @method mixed campo_obtener_valor(string tcCampo)
     */
 ENDDEFINE
