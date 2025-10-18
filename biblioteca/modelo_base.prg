@@ -47,9 +47,12 @@ DEFINE CLASS modelo_base AS Custom
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool Init(int tnCodigo, string tcNombre, bool tlVigente)
-    * @method mixed obtener(string tcCampo)
-    * @method bool establecer(string tcCampo)
+    * @method mixed campo_establecer_ultimo_error(string tcCampo, ;
+                                                  string tcUltimoError)
+    * @method mixed campo_obtener(string tcCampo)
     * @method bool es_igual(object toModelo)
+    * @method bool establecer(string tcCampo)
+    * @method mixed obtener(string tcCampo)
     */
 
     **/
@@ -81,75 +84,64 @@ DEFINE CLASS modelo_base AS Custom
             RETURN .F.
         ENDIF
 
+        tcNombre = UPPER(ALLTRIM(tcNombre))
+
         IF !THIS.campo_establecer_valor('codigo', tnCodigo) ;
-                OR !THIS.campo_establecer_valor('nombre', ALLTRIM(tcNombre)) ;
+                OR !THIS.campo_establecer_valor('nombre', tcNombre) ;
                 OR !THIS.campo_establecer_valor('vigente', tlVigente) THEN
             RETURN .F.
         ENDIF
     ENDFUNC
 
     **/
-    * Devuelve el valor de un campo, si la propiedad getter es igual a .T.
+    * Establece el mensaje de error ocurrido en la validación de un campo.
     *
     * @param string tcCampo Nombre del campo a buscar.
-    * @return mixed Si se ejecuta correctamente, devuelve uno de los siguientes
-    *               tipos de datos: 'C', 'D', 'L', 'N' o 'T'. En caso contrario,
-    *               devuelve NULL.
-    * @uses bool campo_existe(string tcCampo)
-    *       Para verifica si un campo existe en la propiedad protegida
-    *       'oCampos'.
-    * @uses mixed campo_obtener(string tcCampo)
-    *       Para obtener un objeto con todas las propiedades de un campo.
-    */
-    FUNCTION obtener
-        LPARAMETERS tcCampo
-
-        IF PARAMETERS() != 1 OR !THIS.campo_existe(tcCampo) THEN
-            RETURN NULL
-        ENDIF
-
-        LOCAL loCampo
-        loCampo = THIS.campo_obtener(tcCampo)
-
-        IF VARTYPE(loCampo) != 'O' OR !loCampo.permitir_getter() THEN
-            RETURN NULL
-        ENDIF
-
-        RETURN loCampo.obtener_valor()
-    ENDFUNC
-
-    **/
-    * Establece el valor de un campo, si la propiedad setter es igual a .T.
-    *
-    * @param string tcCampo Nombre del campo a buscar.
-    * @param mixed tvValor Valor del campo a asignar.
+    * @param string tcUltimoError Valor que se asignará a la propiedad.
     * @return bool .T. si el valor se establece correctamente;
     *              .F. en caso contrario.
     * @uses bool campo_existe(string tcCampo)
     *       Para verifica si un campo existe en la propiedad protegida
     *       'oCampos'.
-    * @uses mixed campo_obtener(string tcCampo)
-    *       Para obtener un objeto con todas las propiedades de un campo.
-    * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
-    *       Para establecer el valor de un campo.
+    * @uses object oCampos Almacena la estructura de la tabla.
     */
-    FUNCTION establecer
-        LPARAMETERS tcCampo, tvValor
+    FUNCTION campo_establecer_ultimo_error
+        LPARAMETERS tcCampo, tcUltimoError
 
-        IF PARAMETERS() != 2 OR !THIS.campo_existe(tcCampo) THEN
+        IF PARAMETERS() != 2 ;
+                OR !THIS.campo_existe(tcCampo) ;
+                OR VARTYPE(tcUltimoError) != 'C' THEN
             RETURN .F.
         ENDIF
 
-        LOCAL loCampo
-        loCampo = THIS.campo_obtener(tcCampo)
+        RETURN THIS.oCampos.Item(tcCampo).establecer_ultimo_error(tcUltimoError)
+    ENDFUNC
 
-        IF VARTYPE(loCampo) != 'O' ;
-                OR !loCampo.permitir_setter() ;
-                OR VARTYPE(tvValor) != loCampo.obtener_tipo() THEN
+    **/
+    * Devuelve un objeto con todas las propiedades de un campo.
+    *
+    * Propiedades: nombre, tipo, ancho, decimales, sin_signo, requerido, valor,
+    * getter, setter, etiqueta y ultimo_error.
+    *
+    * Para acceder a los datos del objeto se deben utilizar los métodos getters
+    * correspondientes (ej: obtener_nombre(), obtener_tipo(), etc.).
+    *
+    * @param string tcCampo Nombre del campo a buscar.
+    * @return mixed object si el campo existe;
+    *              .F. si ocurre un error.
+    * @uses bool campo_existe(string tcCampo)
+    *       Para verifica si un campo existe en la propiedad protegida
+    *       'oCampos'.
+    * @uses object oCampos Almacena la estructura de la tabla.
+    */
+    FUNCTION campo_obtener
+        LPARAMETERS tcCampo
+
+        IF PARAMETERS() != 1 OR !THIS.campo_existe(tcCampo) THEN
             RETURN .F.
         ENDIF
 
-        RETURN THIS.campo_establecer_valor(tcCampo, tvValor)
+        RETURN THIS.oCampos.Item(tcCampo)
     ENDFUNC
 
     **/
@@ -187,6 +179,70 @@ DEFINE CLASS modelo_base AS Custom
     ENDFUNC
 
     **/
+    * Establece el valor de un campo, si la propiedad setter es igual a .T.
+    *
+    * @param string tcCampo Nombre del campo a buscar.
+    * @param mixed tvValor Valor del campo a asignar.
+    * @return bool .T. si el valor se establece correctamente;
+    *              .F. en caso contrario.
+    * @uses bool campo_existe(string tcCampo)
+    *       Para verifica si un campo existe en la propiedad protegida
+    *       'oCampos'.
+    * @uses mixed campo_obtener(string tcCampo)
+    *       Para obtener un objeto con todas las propiedades de un campo.
+    * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    *       Para establecer el valor de un campo.
+    */
+    FUNCTION establecer
+        LPARAMETERS tcCampo, tvValor
+
+        IF PARAMETERS() != 2 OR !THIS.campo_existe(tcCampo) THEN
+            RETURN .F.
+        ENDIF
+
+        LOCAL loCampo
+        loCampo = THIS.campo_obtener(tcCampo)
+
+        IF VARTYPE(loCampo) != 'O' ;
+                OR !loCampo.permitir_setter() ;
+                OR VARTYPE(tvValor) != loCampo.obtener_tipo() THEN
+            RETURN .F.
+        ENDIF
+
+        RETURN THIS.campo_establecer_valor(tcCampo, tvValor)
+    ENDFUNC
+
+    **/
+    * Devuelve el valor de un campo, si la propiedad getter es igual a .T.
+    *
+    * @param string tcCampo Nombre del campo a buscar.
+    * @return mixed Si se ejecuta correctamente, devuelve uno de los siguientes
+    *               tipos de datos: 'C', 'D', 'L', 'N' o 'T'. En caso contrario,
+    *               devuelve NULL.
+    * @uses bool campo_existe(string tcCampo)
+    *       Para verifica si un campo existe en la propiedad protegida
+    *       'oCampos'.
+    * @uses mixed campo_obtener(string tcCampo)
+    *       Para obtener un objeto con todas las propiedades de un campo.
+    */
+    FUNCTION obtener
+        LPARAMETERS tcCampo
+
+        IF PARAMETERS() != 1 OR !THIS.campo_existe(tcCampo) THEN
+            RETURN NULL
+        ENDIF
+
+        LOCAL loCampo
+        loCampo = THIS.campo_obtener(tcCampo)
+
+        IF VARTYPE(loCampo) != 'O' OR !loCampo.permitir_getter() THEN
+            RETURN NULL
+        ENDIF
+
+        RETURN loCampo.obtener_valor()
+    ENDFUNC
+
+    **/
     * @section MÉTODOS PROTEGIDOS
     * @method bool campo_cargar()
     * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
@@ -195,7 +251,6 @@ DEFINE CLASS modelo_base AS Custom
     * @method bool campo_establecer_setter_todos(bool tlValor)
     * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
     * @method bool campo_existe(string tcCampo)
-    * @method mixed campo_obtener(string tcCampo)
     * @method mixed campo_obtener_valor(string tcCampo)
     */
 
@@ -364,33 +419,6 @@ DEFINE CLASS modelo_base AS Custom
         ENDIF
 
         RETURN THIS.oCampos.GetKey(tcCampo) > 0
-    ENDFUNC
-
-    **/
-    * Devuelve un objeto con todas las propiedades de un campo.
-    *
-    * Propiedades: nombre, tipo, ancho, decimales, sin_signo, requerido, valor,
-    * getter, setter, etiqueta y ultimo_error.
-    *
-    * Para acceder a los datos del objeto se deben utilizar los métodos getters
-    * correspondientes (ej: obtener_nombre(), obtener_tipo(), etc.).
-    *
-    * @param string tcCampo Nombre del campo a buscar.
-    * @return mixed object si el campo existe;
-    *              .F. si ocurre un error.
-    * @uses bool campo_existe(string tcCampo)
-    *       Para verifica si un campo existe en la propiedad protegida
-    *       'oCampos'.
-    * @uses object oCampos Almacena la estructura de la tabla.
-    */
-    PROTECTED FUNCTION campo_obtener
-        LPARAMETERS tcCampo
-
-        IF PARAMETERS() != 1 OR !THIS.campo_existe(tcCampo) THEN
-            RETURN .F.
-        ENDIF
-
-        RETURN THIS.oCampos.Item(tcCampo)
     ENDFUNC
 
     **/

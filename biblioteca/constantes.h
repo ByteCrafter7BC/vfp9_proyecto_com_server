@@ -87,6 +87,7 @@
 
 */ constantes_mensajes.h
 #DEFINE MSG_ARCHIVO_VACIO                    'El archivo está vacío.'
+#DEFINE MSG_CAMPO_NO_EXISTE                  "El campo '{}' no existe."
 #DEFINE MSG_CODIGO_MAYOR_QUE_CERO            'El código debe ser mayor que cero.'
 #DEFINE MSG_ERROR_CONEXION                   'No hay conexión con la base de datos.'
 #DEFINE MSG_ERROR_INSTANCIA_CLASE            "No se pudo instanciar la clase '{}'. "
@@ -109,7 +110,6 @@
 #DEFINE MSG_TIPO_FECHA_HORA                  'Debe ser de tipo fecha y hora.'
 #DEFINE MSG_TIPO_LOGICO                      'Debe ser de tipo lógico.'
 #DEFINE MSG_TIPO_NUMERICO                    'Debe ser de tipo numérico.'
-
 #DEFINE MSG_YA_EXISTE                        'Ya existe.'
 
 */ constantes_limites.h

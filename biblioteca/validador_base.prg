@@ -43,32 +43,9 @@
 
 DEFINE CLASS validador_base AS Custom
     **/
-    * @var array Arreglo bidimensional que almacena la estructura de la tabla.
-    * @structure [n, 1] = nombre del campo (ej.: 'codigo', 'nombre', 'vigente'),
-    *            [n, 2] = tipo de dato el campo (ej.: 'C', 'D', 'L', 'N', 'T'),
-    *            [n, 3] = ancho del campo (ej.: 4, 30, 1),
-    *            [n, 4] = decimales (posiciones decimales en caso de tipo 'N'),
-    *            [n, 5] = etiqueta (ej.: 'Código: ', 'Nombre: ', 'Vigente: '),
-    *            [n, 6] = nombre de la propiedad de la clase (ej.: 'nCodigo'),
-    *            [n, 7] = getter de la clase (ej.: 'obtener_codigo'),
-    *            [n, 8] = setter de la clase (ej.: 'establecer_codigo').
-    */
-    PROTECTED aEstructuraTabla[1, 8]
-
-    **/
     * @var string Nombre del modelo que se está validando.
     */
     PROTECTED cModelo
-
-    **/
-    * @var int Ancho del campo 'codigo' de la tabla asociada al modelo.
-    */
-    PROTECTED nAnchoCodigo
-
-    **/
-    * @var int Ancho del campo 'nombre' de la tabla asociada al modelo.
-    */
-    PROTECTED nAnchoNombre
 
     **/
     * @var int Bandera que indica el tipo de operación a validar.
@@ -203,9 +180,6 @@ DEFINE CLASS validador_base AS Custom
     * @method string validar_codigo()
     * @method string validar_nombre()
     * @method string validar_vigente()
-    * @method bool cargar_estructura_tabla()
-    * @method mixed obtener_campo(string tcCampo)
-    * @method string validar_campo(string tcCampo)
     */
 
     **/
@@ -225,34 +199,6 @@ DEFINE CLASS validador_base AS Custom
             ENDIF
 
             THIS.cModelo = SUBSTR(LOWER(THIS.Name), 11)
-        ENDIF
-
-        IF !THIS.cargar_estructura_tabla(THIS.cModelo) THEN
-            RETURN .F.
-        ENDIF
-
-        IF VARTYPE(THIS.nAnchoCodigo) != 'N' OR THIS.nAnchoCodigo <= 0 THEN
-            DO CASE
-            CASE INLIST(THIS.cModelo, 'cobrador', 'depar', 'maquinas', ;
-                    'mecanico', 'vendedor')
-                THIS.nAnchoCodigo = 999
-            CASE INLIST(THIS.cModelo, 'barrios', 'ciudades', 'clientes', ;
-                    'proveedo')
-                THIS.nAnchoCodigo = 99999
-            OTHERWISE
-                THIS.nAnchoCodigo = 9999
-            ENDCASE
-        ENDIF
-
-        IF VARTYPE(THIS.nAnchoNombre) != 'N' OR THIS.nAnchoNombre <= 0 THEN
-            DO CASE
-            CASE THIS.cModelo == 'clientes'
-                THIS.nAnchoNombre = 56
-            CASE INLIST(THIS.cModelo, 'maesprod', 'proveedo')
-                THIS.nAnchoNombre = 40
-            OTHERWISE
-                THIS.nAnchoNombre = 30
-            ENDCASE
         ENDIF
     ENDFUNC
 
@@ -280,19 +226,17 @@ DEFINE CLASS validador_base AS Custom
     *                Cadena vacía si no hay error.
     */
     PROTECTED FUNCTION validar_codigo
-        LOCAL lcEtiqueta, lnCodigo, loModelo
-        lcEtiqueta = 'Código: '
-        lnCodigo = THIS.oModelo.obtener_codigo()
+        LOCAL lcCampo, lcUltimoError, loCampo, lcEtiqueta, lnCodigo, loModelo
+        lcCampo = 'codigo'
+        lcUltimoError = THIS.campo_obtener_ultimo_error(lcCampo)
 
-        IF lnCodigo <= 0 THEN
-            RETURN lcEtiqueta + MSG_MAYOR_QUE_CERO
+        IF !EMPTY(lcUltimoError) THEN
+            RETURN lcUltimoError
         ENDIF
 
-        IF lnCodigo > THIS.nAnchoCodigo THEN
-            RETURN lcEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
-                ALLTRIM(STR(THIS.nAnchoCodigo + 1)))
-        ENDIF
-
+        loCampo = THIS.oModelo.campo_obtener(lcCampo)
+        lcEtiqueta = loCampo.obtener_etiqueta()
+        lnCodigo = loCampo.obtener_valor()
         loModelo = THIS.oDao.obtener_por_codigo(lnCodigo)
 
         IF THIS.nBandera == 1 THEN    && Agregar
@@ -325,23 +269,22 @@ DEFINE CLASS validador_base AS Custom
     *                Cadena vacía si no hay error.
     */
     PROTECTED FUNCTION validar_nombre
-        LOCAL lcEtiqueta, lcNombre, loModelo
-        lcEtiqueta = 'Nombre: '
-        lcNombre = THIS.oModelo.obtener_nombre()
+        LOCAL lcCampo, lcUltimoError, loCampo, lcEtiqueta, lcNombre, loModelo
 
         IF !EMPTY(THIS.cErrorCodigo) THEN
             RETURN THIS.cErrorCodigo
         ENDIF
 
-        IF EMPTY(lcNombre) THEN
-            RETURN lcEtiqueta + MSG_NO_BLANCO
+        lcCampo = 'nombre'
+        lcUltimoError = THIS.campo_obtener_ultimo_error(lcCampo)
+
+        IF !EMPTY(lcUltimoError) THEN
+            RETURN lcUltimoError
         ENDIF
 
-        IF LEN(lcNombre) > THIS.nAnchoNombre THEN
-            RETURN lcEtiqueta + STRTRAN(MSG_LONGITUD_MAXIMA, '{}', ;
-                ALLTRIM(STR(THIS.nAnchoNombre)))
-        ENDIF
-
+        loCampo = THIS.oModelo.campo_obtener(lcCampo)
+        lcEtiqueta = loCampo.obtener_etiqueta()
+        lcNombre = loCampo.obtener_valor()
         loModelo = THIS.oDao.obtener_por_nombre(lcNombre)
 
         IF THIS.nBandera == 1 THEN    && Agregar
@@ -376,184 +319,32 @@ DEFINE CLASS validador_base AS Custom
     *                Cadena vacía si no hay error.
     */
     PROTECTED FUNCTION validar_vigente
-        IF VARTYPE(THIS.oModelo.esta_vigente()) != 'L' THEN
-            RETURN 'Vigente: ' + MSG_TIPO_LOGICO
-        ENDIF
-
-        RETURN SPACE(0)
+        RETURN THIS.campo_obtener_ultimo_error('vigente')
     ENDFUNC
 
     **/
-    * Carga la estructura de la tabla a la propiedad de tipo arreglo
-    * 'aEstructuraTabla'.
-    *
-    * Este método es llamado por el constructor ('Init').
-    *
-    * @return bool .T. si la carga se completa correctamente;
-    *              .F. si ocurre un error.
-    */
-    PROTECTED FUNCTION cargar_estructura_tabla
-        DIMENSION THIS.aEstructuraTabla[3, 8]
-        **/
-        * Estructura de la tabla
-        * [n, 1] = nombre del campo (ej.: 'codigo', 'nombre', 'vigente'),
-        * [n, 2] = tipo de dato el campo (ej.: 'C', 'D', 'L', 'N', 'T'),
-        * [n, 3] = ancho del campo (ej.: 4, 30, 1),
-        * [n, 4] = decimales (posiciones decimales en caso de tipo 'N'),
-        * [n, 5] = etiqueta (ej.: 'Código: ', 'Nombre: ', 'Vigente: '),
-        * [n, 6] = nombre de la propiedad de la clase (ej.: 'nCodigo'),
-        * [n, 7] = getter de la clase (ej.: 'obtener_codigo'),
-        * [n, 8] = setter de la clase (ej.: 'establecer_codigo').
-        */
-        THIS.aEstructuraTabla[01, 1] = 'codigo'
-        THIS.aEstructuraTabla[01, 2] = 'N'
-        THIS.aEstructuraTabla[01, 3] = 4
-        THIS.aEstructuraTabla[01, 5] = 'Código: '
-
-        THIS.aEstructuraTabla[02, 1] = 'nombre'
-        THIS.aEstructuraTabla[02, 2] = 'C'
-        THIS.aEstructuraTabla[02, 3] = 30
-        THIS.aEstructuraTabla[02, 5] = 'Nombre: '
-
-        THIS.aEstructuraTabla[03, 1] = 'vigente'
-        THIS.aEstructuraTabla[03, 2] = 'L'
-        THIS.aEstructuraTabla[03, 3] = 1
-        THIS.aEstructuraTabla[03, 5] = 'Vigente: '
-    ENDFUNC
-
-    **/
-    * Devuelve un objeto con todas las propiedades de un campo.
-    *
-    * Propiedades: nombre, tipo, ancho, decimales, etiqueta, propiedad,
-    * getter y setter.
+    * Devuelve el último mensaje de error del campo.
     *
     * @param string tcCampo Nombre del campo a buscar.
-    * @return mixed object si el campo existe;
-    *              .F. si ocurre un error.
-    */
-    PROTECTED FUNCTION obtener_campo
-        LPARAMETERS tcCampo
-
-        IF VARTYPE(tcCampo) != 'C' OR EMPTY(tcCampo) THEN
-            RETURN .F.
-        ENDIF
-
-        * Verifica que el primer elemento del arreglo sea de tipo Character.
-        IF VARTYPE(THIS.aEstructuraTabla[1, 1]) != 'C' THEN
-            RETURN .F.
-        ENDIF
-
-        LOCAL lnContador, loCampo
-
-        FOR lnContador = 1 TO ALEN(THIS.aEstructuraTabla, 1)
-            IF THIS.aEstructuraTabla[lnContador, 1] == tcCampo THEN
-                loCampo = CREATEOBJECT('Empty')
-
-                ADDPROPERTY(loCampo, 'nombre', ;
-                    THIS.aEstructuraTabla[lnContador, 1])
-                ADDPROPERTY(loCampo, 'tipo', ;
-                    THIS.aEstructuraTabla[lnContador, 2])
-                ADDPROPERTY(loCampo, 'ancho', ;
-                    THIS.aEstructuraTabla[lnContador, 3])
-
-                IF VARTYPE(THIS.aEstructuraTabla[lnContador, 4]) == 'L' THEN
-                    ADDPROPERTY(loCampo, 'decimales', 0)
-                ELSE
-                    ADDPROPERTY(loCampo, 'decimales', ;
-                        THIS.aEstructuraTabla[lnContador, 4])
-                ENDIF
-
-                ADDPROPERTY(loCampo, 'etiqueta', ;
-                    THIS.aEstructuraTabla[lnContador, 5])
-
-                IF VARTYPE(THIS.aEstructuraTabla[lnContador, 6]) == 'L' THEN
-                    ADDPROPERTY(loCampo, 'propiedad', ;
-                        LOWER(loCampo.tipo) + PROPER(loCampo.nombre))
-                ELSE
-                    ADDPROPERTY(loCampo, 'propiedad', ;
-                        THIS.aEstructuraTabla[lnContador, 6])
-                ENDIF
-
-                IF VARTYPE(THIS.aEstructuraTabla[lnContador, 7]) == 'L' THEN
-                    ADDPROPERTY(loCampo, 'getter', ;
-                        'obtener_' + LOWER(loCampo.nombre))
-                ELSE
-                    ADDPROPERTY(loCampo, 'getter', ;
-                        THIS.aEstructuraTabla[lnContador, 7])
-                ENDIF
-
-                IF VARTYPE(THIS.aEstructuraTabla[lnContador, 8]) == 'L' THEN
-                    ADDPROPERTY(loCampo, 'setter', ;
-                        'establecer_' + LOWER(loCampo.nombre))
-                ELSE
-                    ADDPROPERTY(loCampo, 'setter', ;
-                        THIS.aEstructuraTabla[lnContador, 8])
-                ENDIF
-
-                EXIT
-            ENDIF
-        ENDFOR
-
-        RETURN loCampo
-    ENDFUNC
-
-    **/
-    * Valida el tipo de dato y la longitud máxima de un campo.
-    *
-    * @param string tcCampo Nombre del campo a validar.
     * @return string Mensaje de error si la validación falla.
     *                Cadena vacía si no hay error.
     */
-    PROTECTED FUNCTION validar_campo
+    PROTECTED FUNCTION campo_obtener_ultimo_error
         LPARAMETERS tcCampo
 
         IF VARTYPE(tcCampo) != 'C' OR EMPTY(tcCampo) THEN
-            RETURN STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcCampo')
+            RETURN "ERROR: el parámetro 'tcCampo' no es válido."
         ENDIF
 
-        LOCAL loCampo, lvValor, lcTipo, lnAncho
-        loCampo = THIS.obtener_campo(tcCampo)
+        LOCAL loCampo
+        loCampo = THIS.oModelo.campo_obtener(tcCampo)
 
         IF VARTYPE(loCampo) != 'O' THEN
-            RETURN "El campo '" + ALLTRIM(tcCampo) + "' no existe en el " + ;
-                "arreglo 'aEstructuraTabla'."
+            RETURN STRTRAN(MSG_CAMPO_NO_EXISTE, '{}', tcCampo)
         ENDIF
 
-        lvValor = EVALUATE('THIS.oModelo.' + loCampo.getter + '()')
-
-        IF VARTYPE(lvValor) != loCampo.tipo THEN
-            DO CASE
-            CASE loCampo.tipo == 'C'
-                lcTipo = MSG_TIPO_CARACTER
-            CASE loCampo.tipo == 'D'
-                lcTipo = MSG_TIPO_FECHA
-            CASE loCampo.tipo == 'L'
-                lcTipo = MSG_TIPO_LOGICO
-            CASE loCampo.tipo == 'N'
-                lcTipo = MSG_TIPO_NUMERICO
-            CASE loCampo.tipo == 'T'
-                lcTipo = MSG_TIPO_FECHA_HORA
-            OTHERWISE
-                lcTipo = MSG_TIPO_DESCONOCIDO
-            ENDCASE
-
-            RETURN loCampo.etiqueta + lcTipo
-        ENDIF
-
-        IF loCampo.tipo == 'C' THEN
-            IF LEN(lvValor) > loCampo.ancho THEN
-                RETURN loCampo.etiqueta + STRTRAN(MSG_LONGITUD_MAXIMA, '{}', ;
-                    ALLTRIM(STR(loCampo.ancho)))
-            ENDIF
-        ENDIF
-
-        IF loCampo.tipo == 'N' THEN
-            lnAncho = VAL(REPLICATE('9', loCampo.ancho))
-
-            IF lvValor > lnAncho THEN
-                RETURN loCampo.etiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
-                    ALLTRIM(STR(lnAncho + 1)))
-            ENDIF
+        IF !loCampo.es_valido() THEN
+            RETURN loCampo.obtener_etiqueta() + loCampo.obtener_ultimo_error()
         ENDIF
 
         RETURN SPACE(0)

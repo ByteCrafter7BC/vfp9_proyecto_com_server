@@ -24,7 +24,15 @@
 * @since 1.0.0
 * @class campo
 * @extends Custom
+* @uses constantes.h
 */
+
+**/
+* Clase para representar un campo de una tabla; implementa validación del valor
+* del campo almacenado en la propiedad 'vValor'.
+*/
+#INCLUDE 'constantes.h'
+
 DEFINE CLASS campo AS Custom
     **/
     * var string Nombre del campo (ej.: 'codigo', 'nombre', 'vigente').
@@ -93,6 +101,7 @@ DEFINE CLASS campo AS Custom
     * @method int obtener_decimales()
     * @method bool es_sin_signo()
     * @method bool es_requerido()
+    * @method bool es_valido()
     * @method mixed obtener_valor()
     * @method bool permitir_getter()
     * @method bool permitir_setter()
@@ -253,6 +262,37 @@ DEFINE CLASS campo AS Custom
     ENDFUNC
 
     **/
+    * Valida el valor del campo.
+    *
+    * @return bool .T. si el valor del campo es válido; .F. en caso contrario.
+    * @uses string validar_tipo()
+    *       Para validar el tipo de dato del valor del campo.
+    * @uses string validar_ancho()
+    *       Para validar el ancho del valor del campo.
+    * @uses string validar_sin_signo()
+    *       Para validar la propiedad sin signo (unsigned) del valor campo.
+    * @uses string validar_requerido()
+    *       Para validar la propiedad requerido del valor campo.
+    */
+    FUNCTION es_valido
+        THIS.cUltimoError = THIS.validar_tipo()
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_ancho()
+        ENDIF
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_sin_signo()
+        ENDIF
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_requerido()
+        ENDIF
+
+        RETURN EMPTY(THIS.cUltimoError)
+    ENDFUNC
+
+    **/
     * Devuelve el valor del campo.
     *
     * @return mixed Valor que depende del tipo de dato del campo.
@@ -319,7 +359,10 @@ DEFINE CLASS campo AS Custom
             RETURN .F.
         ENDIF
 
-        THIS.lSinSigno = tlValor
+        WITH THIS
+            .lSinSigno = tlValor
+            .es_valido()
+        ENDWITH
     ENDFUNC
 
     **/
@@ -336,7 +379,10 @@ DEFINE CLASS campo AS Custom
             RETURN .F.
         ENDIF
 
-        THIS.lRequerido = tlValor
+        WITH THIS
+            .lRequerido = tlValor
+            .es_valido()
+        ENDWITH
     ENDFUNC
 
     **/
@@ -353,7 +399,10 @@ DEFINE CLASS campo AS Custom
             RETURN .F.
         ENDIF
 
-        THIS.vValor = tvValor
+        WITH THIS
+            .vValor = tvValor
+            .es_valido()
+        ENDWITH
     ENDFUNC
 
     **/
@@ -406,4 +455,95 @@ DEFINE CLASS campo AS Custom
 
         THIS.cUltimoError = tcUltimoError
     ENDIF
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method string validar_tipo()
+    * @method string validar_ancho()
+    * @method string validar_sin_signo()
+    * @method string validar_requerido()
+    */
+
+    **/
+    * Valida el tipo de dato del valor del campo.
+    *
+    * @return string
+    */
+    PROTECTED FUNCTION validar_tipo
+        IF VARTYPE(THIS.vValor) != THIS.cTipo THEN
+            DO CASE
+            CASE THIS.cTipo == 'C'
+                RETURN THIS.cEtiqueta + MSG_TIPO_CARACTER
+            CASE THIS.cTipo == 'D'
+                RETURN THIS.cEtiqueta + MSG_TIPO_FECHA
+            CASE THIS.cTipo == 'L'
+                RETURN THIS.cEtiqueta + MSG_TIPO_LOGICO
+            CASE THIS.cTipo == 'N'
+                RETURN THIS.cEtiqueta + MSG_TIPO_NUMERICO
+            CASE THIS.cTipo == 'T'
+                RETURN THIS.cEtiqueta + MSG_TIPO_FECHA_HORA
+            ENDCASE
+        ENDIF
+
+        RETURN SPACE(0)
+    ENDFUNC
+
+    **/
+    * Valida el ancho del valor del campo.
+    *
+    * @return string
+    */
+    PROTECTED FUNCTION validar_ancho
+        IF THIS.cTipo == 'C' THEN
+            IF LEN(THIS.vValor) > THIS.nAncho THEN
+                RETURN THIS.cEtiqueta + STRTRAN(MSG_LONGITUD_MAXIMA, '{}', ;
+                    ALLTRIM(STR(THIS.nAncho)))
+            ENDIF
+        ENDIF
+
+        IF THIS.cTipo == 'N' THEN
+            IF THIS.vValor > THIS.nAncho THEN
+                RETURN THIS.cEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
+                    ALLTRIM(STR(THIS.nAncho + 1)))
+            ENDIF
+        ENDIF
+
+        RETURN SPACE(0)
+    ENDFUNC
+
+    **/
+    * Valida la propiedad sin signo (unsigned) del valor campo.
+    *
+    * @return string
+    */
+    PROTECTED FUNCTION validar_sin_signo
+        IF THIS.lSinSigno AND THIS.cTipo == 'N' AND THIS.vValor < 0 THEN
+            RETURN THIS.cEtiqueta + MSG_MAYOR_O_IGUAL_A_CERO
+        ENDIF
+
+        RETURN SPACE(0)
+    ENDFUNC
+
+    **/
+    * Valida la propiedad requerido del valor campo.
+    *
+    * @return string
+    */
+    PROTECTED FUNCTION validar_requerido
+        IF THIS.lRequerido THEN
+            IF INLIST(THIS.cTipo, 'C', 'D', 'T') THEN
+                IF EMPTY(THIS.vValor) THEN
+                    RETURN THIS.cEtiqueta + MSG_NO_BLANCO
+                ENDIF
+            ENDIF
+
+            IF THIS.cTipo == 'N' THEN
+                IF THIS.vValor <= 0 THEN
+                    RETURN THIS.cEtiqueta + MSG_MAYOR_QUE_CERO
+                ENDIF
+            ENDIF
+        ENDIF
+
+        RETURN SPACE(0)
+    ENDFUNC
 ENDDEFINE
