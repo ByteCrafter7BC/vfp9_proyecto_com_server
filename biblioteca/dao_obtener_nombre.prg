@@ -22,11 +22,11 @@
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @see dao_obtener_por_codigo()
+* @uses dao_obtener_por_codigo
 */
 
 **/
-* Obtiene el nombre de un registro específico a partir de su código.
+* Devuelve el nombre de un registro específico a partir de su código.
 *
 * Esta función utiliza 'dao_obtener_por_codigo()' para obtener el objeto
 * correspondiente al código dado. Si el objeto es válido, se invoca su método
@@ -34,8 +34,7 @@
 *
 * @param string tcModelo Nombre o alias de la tabla (modelo) a consultar.
 * @param int tnCodigo Código numérico del registro cuyo nombre se desea obtener.
-*
-* @return string Nombre del registro. Si el registro no fue encontrado, devuelve
+* @return string Nombre del registro. Si el registro no se encuentra, devuelve
 *                una cadena vacía.
 */
 FUNCTION dao_obtener_nombre
@@ -48,5 +47,5 @@ FUNCTION dao_obtener_nombre
         RETURN SPACE(0)
     ENDIF
 
-    RETURN loModelo.obtener_nombre()
+    RETURN loModelo.obtener('nombre')
 ENDFUNC

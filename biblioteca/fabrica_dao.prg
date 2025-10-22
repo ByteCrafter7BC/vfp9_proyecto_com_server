@@ -59,8 +59,8 @@ DEFINE CLASS fabrica_dao AS Custom
     */
 
     **/
-    * Obtiene la instancia de la fábrica DAO específica para un tipo de base de
-    * datos.
+    * Devuelve la instancia de la fábrica DAO específica para un tipo de base
+    * de datos.
     *
     * @param int tnCualFabrica Constante que identifica el tipo de base de
     *                          datos, ejemplos:
@@ -68,8 +68,7 @@ DEFINE CLASS fabrica_dao AS Custom
     *                          BD_FIREBIRD  = 2 (Base de datos Firebird).
     *                          BD_MYSQL     = 3 (Base de datos MySQL).
     *                          BD_POSTGRES  = 4 (Base de datos PostgreSQL).
-    *
-    * @return mixed Object Instancia de la clase fábrica DAO específica.
+    * @return mixed object Instancia de la clase fábrica DAO específica;
     *               .F. si el parámetro es inválido o si la instancia no se
     *               pudo crear.
     */
@@ -106,7 +105,7 @@ DEFINE CLASS fabrica_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene la instancia del objeto DAO para un modelo específico.
+    * Devuelve la instancia del objeto DAO para un modelo específico.
     *
     * Si la instancia del DAO para el modelo ya existe, la devuelve. De lo
     * contrario, la crea, la almacena en el arreglo 'aDao' y luego la devuelve.
@@ -114,8 +113,7 @@ DEFINE CLASS fabrica_dao AS Custom
     * @param string tcModelo Nombre del modelo (entidad) para el cual se
     *                        requiere el objeto DAO (ejemplos: 'ciudades',
     *                        'clientes', 'proveedores', etc.).
-    *
-    * @return mixed Object Instancia del objeto DAO del modelo solicitado.
+    * @return mixed object Instancia del objeto DAO del modelo solicitado;
     *               .F. si el modelo es inválido o si el objeto DAO no pudo ser
     *               creado.
     */
@@ -158,7 +156,8 @@ DEFINE CLASS fabrica_dao AS Custom
     * Inicializa el arreglo bidimensional 'aDao' con una lista de modelos
     * predefinidos y sus respectivas implementaciones de DAO.
     *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la inicialización fue completada correctamente;
+    *              .F. en caso contrario.
     */
     PROTECTED FUNCTION Init
         DIMENSION THIS.aDao[14, 2]
@@ -186,11 +185,9 @@ DEFINE CLASS fabrica_dao AS Custom
     *
     * @param string tcModelo Nombre del modelo (entidad) para el que se creará
     *                        la instancia del DAO.
-    *
-    * @return mixed Object Instancia del objeto DAO creado.
+    * @return mixed object Instancia del objeto DAO creado;
     *               .F. si el modelo es inválido o si la instancia no pudo ser
     *               creada.
-    *
     * @throws Exception Si no puede crear la instancia del DAO.
     */
     PROTECTED FUNCTION crear

@@ -101,7 +101,6 @@ DEFINE CLASS campo AS Custom
     * @method int obtener_decimales()
     * @method bool es_sin_signo()
     * @method bool es_requerido()
-    * @method bool es_valido()
     * @method mixed obtener_valor()
     * @method bool permitir_getter()
     * @method bool permitir_setter()
@@ -259,37 +258,6 @@ DEFINE CLASS campo AS Custom
     */
     FUNCTION es_requerido
         RETURN THIS.lRequerido
-    ENDFUNC
-
-    **/
-    * Valida el valor del campo.
-    *
-    * @return bool .T. si el valor del campo es válido; .F. en caso contrario.
-    * @uses string validar_tipo()
-    *       Para validar el tipo de dato del valor del campo.
-    * @uses string validar_ancho()
-    *       Para validar el ancho del valor del campo.
-    * @uses string validar_sin_signo()
-    *       Para validar la propiedad sin signo (unsigned) del valor campo.
-    * @uses string validar_requerido()
-    *       Para validar la propiedad requerido del valor campo.
-    */
-    FUNCTION es_valido
-        THIS.cUltimoError = THIS.validar_tipo()
-
-        IF EMPTY(THIS.cUltimoError) THEN
-            THIS.cUltimoError = THIS.validar_ancho()
-        ENDIF
-
-        IF EMPTY(THIS.cUltimoError) THEN
-            THIS.cUltimoError = THIS.validar_sin_signo()
-        ENDIF
-
-        IF EMPTY(THIS.cUltimoError) THEN
-            THIS.cUltimoError = THIS.validar_requerido()
-        ENDIF
-
-        RETURN EMPTY(THIS.cUltimoError)
     ENDFUNC
 
     **/
@@ -454,15 +422,47 @@ DEFINE CLASS campo AS Custom
         ENDIF
 
         THIS.cUltimoError = tcUltimoError
-    ENDIF
+    ENDFUNC
 
     **/
     * @section MÉTODOS PROTEGIDOS
+    * @method bool es_valido()
     * @method string validar_tipo()
     * @method string validar_ancho()
     * @method string validar_sin_signo()
     * @method string validar_requerido()
     */
+
+    **/
+    * Valida el valor del campo.
+    *
+    * @return bool .T. si el valor del campo es válido; .F. en caso contrario.
+    * @uses string validar_tipo()
+    *       Para validar el tipo de dato del valor del campo.
+    * @uses string validar_ancho()
+    *       Para validar el ancho del valor del campo.
+    * @uses string validar_sin_signo()
+    *       Para validar la propiedad sin signo (unsigned) del valor campo.
+    * @uses string validar_requerido()
+    *       Para validar la propiedad requerido del valor campo.
+    */
+    PROTECTED FUNCTION es_valido
+        THIS.cUltimoError = THIS.validar_tipo()
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_ancho()
+        ENDIF
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_sin_signo()
+        ENDIF
+
+        IF EMPTY(THIS.cUltimoError) THEN
+            THIS.cUltimoError = THIS.validar_requerido()
+        ENDIF
+
+        RETURN EMPTY(THIS.cUltimoError)
+    ENDFUNC
 
     **/
     * Valida el tipo de dato del valor del campo.

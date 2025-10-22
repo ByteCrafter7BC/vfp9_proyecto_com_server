@@ -130,8 +130,7 @@ DEFINE CLASS conjunto_prueba AS Custom
     * @param mixed tvEsperado Valor esperado de la prueba.
     * @param mixed tvObtenido Valor obtenido de la ejecución del código.
     * @param string tcMensaje Mensaje descriptivo del fallo.
-    *
-    * @return bool .T. si los valores son iguales.
+    * @return bool .T. si los valores son iguales; .F. en caso contrario.
     */
     PROTECTED FUNCTION afirmar_igual
         LPARAMETERS tvEsperado, tvObtenido, tcMensaje
@@ -164,7 +163,7 @@ DEFINE CLASS conjunto_prueba AS Custom
     *
     * @param bool tlValor Valor lógico a evaluar.
     * @param string tcMensaje Mensaje descriptivo del fallo.
-    * @return bool .T. si el valor es verdadero.
+    * @return bool .T. si el valor es verdadero; .F. en caso contrario.
     */
     PROTECTED FUNCTION afirmar_verdadero
         LPARAMETERS tlValor, tcMensaje
@@ -179,7 +178,7 @@ DEFINE CLASS conjunto_prueba AS Custom
     *
     * @param bool tlValor Valor lógico a evaluar.
     * @param string tcMensaje Mensaje descriptivo del fallo.
-    * @return bool .T. si el valor es falso.
+    * @return bool .T. si el valor es falso; .F. en caso contrario.
     */
     PROTECTED FUNCTION afirmar_falso
         LPARAMETERS tlValor, tcMensaje

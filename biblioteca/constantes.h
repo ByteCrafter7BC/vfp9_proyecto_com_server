@@ -89,6 +89,7 @@
 #DEFINE MSG_ARCHIVO_VACIO                    'El archivo está vacío.'
 #DEFINE MSG_CAMPO_NO_EXISTE                  "El campo '{}' no existe."
 #DEFINE MSG_CODIGO_MAYOR_QUE_CERO            'El código debe ser mayor que cero.'
+#DEFINE MSG_ERROR_ANCHO_CAMPO                "No se pudo obtener el ancho del campo '{0}' del modelo '{1}'."
 #DEFINE MSG_ERROR_CONEXION                   'No hay conexión con la base de datos.'
 #DEFINE MSG_ERROR_INSTANCIA_CLASE            "No se pudo instanciar la clase '{}'. "
 #DEFINE MSG_LONGITUD_MAXIMA                  'Longitud máxima {} caracteres.'

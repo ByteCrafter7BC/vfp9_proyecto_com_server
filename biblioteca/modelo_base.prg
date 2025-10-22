@@ -47,9 +47,8 @@ DEFINE CLASS modelo_base AS Custom
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool Init(int tnCodigo, string tcNombre, bool tlVigente)
-    * @method mixed campo_establecer_ultimo_error(string tcCampo, ;
-                                                  string tcUltimoError)
     * @method mixed campo_obtener(string tcCampo)
+    * @method object campo_obtener_todos()
     * @method bool es_igual(object toModelo)
     * @method bool establecer(string tcCampo)
     * @method mixed obtener(string tcCampo)
@@ -94,30 +93,6 @@ DEFINE CLASS modelo_base AS Custom
     ENDFUNC
 
     **/
-    * Establece el mensaje de error ocurrido en la validación de un campo.
-    *
-    * @param string tcCampo Nombre del campo a buscar.
-    * @param string tcUltimoError Valor que se asignará a la propiedad.
-    * @return bool .T. si el valor se establece correctamente;
-    *              .F. en caso contrario.
-    * @uses bool campo_existe(string tcCampo)
-    *       Para verifica si un campo existe en la propiedad protegida
-    *       'oCampos'.
-    * @uses object oCampos Almacena la estructura de la tabla.
-    */
-    FUNCTION campo_establecer_ultimo_error
-        LPARAMETERS tcCampo, tcUltimoError
-
-        IF PARAMETERS() != 2 ;
-                OR !THIS.campo_existe(tcCampo) ;
-                OR VARTYPE(tcUltimoError) != 'C' THEN
-            RETURN .F.
-        ENDIF
-
-        RETURN THIS.oCampos.Item(tcCampo).establecer_ultimo_error(tcUltimoError)
-    ENDFUNC
-
-    **/
     * Devuelve un objeto con todas las propiedades de un campo.
     *
     * Propiedades: nombre, tipo, ancho, decimales, sin_signo, requerido, valor,
@@ -127,8 +102,7 @@ DEFINE CLASS modelo_base AS Custom
     * correspondientes (ej: obtener_nombre(), obtener_tipo(), etc.).
     *
     * @param string tcCampo Nombre del campo a buscar.
-    * @return mixed object si el campo existe;
-    *              .F. si ocurre un error.
+    * @return mixed object si el campo existe; .F. si ocurre un error.
     * @uses bool campo_existe(string tcCampo)
     *       Para verifica si un campo existe en la propiedad protegida
     *       'oCampos'.
@@ -142,6 +116,16 @@ DEFINE CLASS modelo_base AS Custom
         ENDIF
 
         RETURN THIS.oCampos.Item(tcCampo)
+    ENDFUNC
+
+    **/
+    * Devuelve un objeto con todos los campos del modelo.
+    *
+    * @return object Objeto de tipo 'Collection'.
+    * @uses object oCampos Almacena la estructura de la tabla.
+    */
+    FUNCTION campo_obtener_todos
+        RETURN THIS.oCampos
     ENDFUNC
 
     **/
@@ -190,8 +174,6 @@ DEFINE CLASS modelo_base AS Custom
     *       'oCampos'.
     * @uses mixed campo_obtener(string tcCampo)
     *       Para obtener un objeto con todas las propiedades de un campo.
-    * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
-    *       Para establecer el valor de un campo.
     */
     FUNCTION establecer
         LPARAMETERS tcCampo, tvValor
@@ -209,7 +191,7 @@ DEFINE CLASS modelo_base AS Custom
             RETURN .F.
         ENDIF
 
-        RETURN THIS.campo_establecer_valor(tcCampo, tvValor)
+        RETURN loCampo.establecer_valor(tvValor)
     ENDFUNC
 
     **/
@@ -303,8 +285,6 @@ DEFINE CLASS modelo_base AS Custom
     * @param tlValor Valor a asignar.
     * @return bool .T. si el valor se asigna correctamente;
     *              .F. en caso contrario.
-    * @uses bool campo_establecer_getter(string tcCampo, bool tlValor)
-    *       Para establecer el estado getter de un campo.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_getter_todos
@@ -314,12 +294,10 @@ DEFINE CLASS modelo_base AS Custom
             RETURN .F.
         ENDIF
 
-        LOCAL loCampo, lcCampo
+        LOCAL loCampo
 
         FOR EACH loCampo IN THIS.oCampos
-            lcCampo = loCampo.obtener_nombre()    && Nombre del campo.
-
-            IF !THIS.campo_establecer_getter(lcCampo, tlValor) THEN
+            IF !loCampo.establecer_getter(tlValor) THEN
                 RETURN .F.
             ENDIF
         ENDFOR
@@ -355,8 +333,6 @@ DEFINE CLASS modelo_base AS Custom
     * @param tlValor Valor a asignar.
     * @return bool .T. si el valor se asigna correctamente;
     *              .F. en caso contrario.
-    * @uses bool campo_establecer_setter(string tcCampo, bool tlValor)
-    *       Para establecer el estado setter de un campo.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_setter_todos
@@ -366,12 +342,10 @@ DEFINE CLASS modelo_base AS Custom
             RETURN .F.
         ENDIF
 
-        LOCAL loCampo, lcCampo
+        LOCAL loCampo
 
         FOR EACH loCampo IN THIS.oCampos
-            lcCampo = loCampo.obtener_nombre()    && Nombre del campo.
-
-            IF !THIS.campo_establecer_setter(lcCampo, tlValor) THEN
+            IF !loCampo.establecer_setter(tlValor) THEN
                 RETURN .F.
             ENDIF
         ENDFOR

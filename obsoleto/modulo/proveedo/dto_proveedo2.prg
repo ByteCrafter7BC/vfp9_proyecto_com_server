@@ -29,17 +29,15 @@
 **/
 * Clase de transferencia de datos (DTO) para la entidad 'proveedo'.
 *
-* Esta clase se utiliza para transportar datos de marcas de artículos entre
-* diferentes capas de la aplicación. Hereda de 'dto_base'.
+* Esta clase se utiliza para transportar datos de proveedores entre diferentes
+* capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_proveedo AS dto_base OF dto_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method mixed campo_obtener(string tcCampo)
-    * @method object campo_obtener_todos()
-    * @method bool es_igual(object toModelo)
-    * @method bool establecer(string tcCampo)
     * @method mixed obtener(string tcCampo)
+    * @method bool establecer(string tcCampo)
+    * @method bool es_igual(object toModelo)
     */
 
     **/
@@ -52,6 +50,7 @@ DEFINE CLASS dto_proveedo AS dto_base OF dto_base.prg
     * @method bool campo_establecer_setter_todos(bool tlValor)
     * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
     * @method bool campo_existe(string tcCampo)
+    * @method mixed campo_obtener(string tcCampo)
     * @method mixed campo_obtener_valor(string tcCampo)
     */
 ENDDEFINE

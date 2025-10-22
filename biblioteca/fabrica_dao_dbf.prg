@@ -24,7 +24,6 @@
 * @since 1.0.0
 * @class fabrica_dao_dbf
 * @extends fabrica_dao
-* @see fabrica_dao
 */
 
 **/
@@ -37,22 +36,22 @@
 DEFINE CLASS fabrica_dao_dbf AS fabrica_dao OF fabrica_dao.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method mixed obtener_fabrica_dao(int tnCualFabrica) !!
     * @method mixed obtener(string tcModelo)
+    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method mixed obtener_fabrica_dao(int tnCualFabrica)
     */
 
     **/
-    * Obtiene la instancia de la fábrica DAO específica para un tipo de base de
-    * datos.
+    * Devuelve la instancia de la fábrica DAO específica para un tipo de base
+    * de datos.
     *
     * @param int tnCualFabrica Constante que identifica el tipo de base de
     *                          datos, ejemplos:
-    *                          BD_DBF      = 1 (Base de datos DBF nativa).
-    *                          BD_FIREBIRD = 2 (Base de datos Firebird).
-    *                          BD_MYSQL    = 3 (Base de datos MySQL).
-    *                          BD_POSTGRES = 4 (Base de datos PostgreSQL).
-    *
-    * @return mixed Object Instancia de la clase fábrica DAO específica.
+    *                          BD_DBF       = 1 (Base de datos DBF nativa).
+    *                          BD_FIREBIRD  = 2 (Base de datos Firebird).
+    *                          BD_MYSQL     = 3 (Base de datos MySQL).
+    *                          BD_POSTGRES  = 4 (Base de datos PostgreSQL).
+    * @return mixed object Instancia de la clase fábrica DAO específica;
     *               .F. si el parámetro es inválido o si la instancia no se
     *               pudo crear.
     * @override
@@ -64,8 +63,9 @@ DEFINE CLASS fabrica_dao_dbf AS fabrica_dao OF fabrica_dao.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool Init() !!
     * @method mixed crear(string tcModelo)
+    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method bool Init()
     */
 
     **/
@@ -74,8 +74,8 @@ DEFINE CLASS fabrica_dao_dbf AS fabrica_dao OF fabrica_dao.prg
     * Inicializa la clase y valida que el prefijo del DAO sea el correcto para
     * los objetos DBF.
     *
-    * @return bool .T. si la inicialización y validación fueron completadas
-    *              correctamente.
+    * @return bool .T. si la inicialización y validación se completaron
+    *              correctamente;
     *              .F. si la inicialización de la clase padre falla o si el
     *              prefijo 'cPrefijoDao' es inválido.
     * @override

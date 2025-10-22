@@ -17,12 +17,12 @@
 */
 
 **/
-* @file dao_dbf_marcas1.prg
-* @package modulo\marcas1
+* @file dao_dbf_proveedo.prg
+* @package modulo\proveedo
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @class dao_dbf_marcas1
+* @class dao_dbf_proveedo
 * @extends biblioteca\dao_dbf
 * @uses constantes.h
 */
@@ -31,13 +31,13 @@
 * Clase de acceso a datos (DAO).
 *
 * Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
-* especializa para la tabla 'marcas1'. Su propósito es manejar las operaciones
+* especializa para la tabla 'proveedo'. Su propósito es manejar las operaciones
 * de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
 * de esta tabla.
 */
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
+DEFINE CLASS dao_dbf_proveedo AS dao_dbf OF dao_dbf.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
@@ -54,6 +54,8 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
     * @method bool borrar(int tnCodigo)
     * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
     * @method bool esta_relacionado(int tnCodigo)
+    * @method bool existe_ruc(string tcRuc)
+    * @method mixed obtener_por_ruc(string tcRuc)
     */
 
     **/
@@ -85,6 +87,81 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
         ENDIF
 
         RETURN llRelacionado
+    ENDFUNC
+
+    **/
+    * Verifica si un RUC ya existe en la tabla.
+    *
+    * @param string tcRuc RUC a buscar.
+    * @return bool .T. si el RUC existe o si ocurre un error; .F. si no existe.
+    */
+    FUNCTION existe_ruc
+        LPARAMETERS tcRuc
+
+        IF !es_cadena(tcRuc, 7, 15)
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcRuc')
+            RETURN .T.
+        ENDIF
+
+        tcRuc = LEFT(UPPER(ALLTRIM(tcRuc)) + SPACE(15), 15)
+
+        IF !THIS.conectar() THEN
+            THIS.cUltimoError = MSG_ERROR_CONEXION
+            RETURN .T.
+        ENDIF
+
+        LOCAL llExiste
+
+        SELECT (THIS.cModelo)
+        SET ORDER TO 0
+        LOCATE FOR UPPER(ruc) == tcRuc
+        llExiste = FOUND()
+
+        WITH THIS
+            .cUltimoError = ''
+            .desconectar()
+        ENDWITH
+
+        RETURN llExiste
+    ENDFUNC
+
+    **/
+    * Devuelve un registro por su RUC.
+    *
+    * @param string tcRuc RUC del registro a buscar.
+    * @return mixed object modelo si el registro se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
+    */
+    FUNCTION obtener_por_ruc
+        LPARAMETERS tcRuc
+
+        IF !es_cadena(tcRuc, 7, 15)
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcRuc')
+            RETURN .F.
+        ENDIF
+
+        tcRuc = LEFT(UPPER(ALLTRIM(tcRuc)) + SPACE(15), 15)
+
+        IF !THIS.conectar() THEN
+            THIS.cUltimoError = MSG_ERROR_CONEXION
+            RETURN .F.
+        ENDIF
+
+        LOCAL loModelo
+
+        SELECT (THIS.cModelo)
+        SET ORDER TO 0
+        LOCATE FOR UPPER(ruc) == tcRuc
+        IF FOUND() THEN
+            loModelo = THIS.obtener_modelo()
+        ENDIF
+
+        WITH THIS
+            .cUltimoError = ''
+            .desconectar()
+        ENDWITH
+
+        RETURN loModelo
     ENDFUNC
 
     **/

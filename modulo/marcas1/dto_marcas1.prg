@@ -35,14 +35,16 @@
 DEFINE CLASS dto_marcas1 AS dto_base OF dto_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method bool Init(int tnCodigo, string tcNombre, bool tlVigente)
-    * @method mixed obtener(string tcCampo)
-    * @method bool establecer(string tcCampo)
+    * @method mixed campo_obtener(string tcCampo)
+    * @method object campo_obtener_todos()
     * @method bool es_igual(object toModelo)
+    * @method bool establecer(string tcCampo)
+    * @method mixed obtener(string tcCampo)
     */
 
     **/
     * @section MÉTODOS PROTEGIDOS
+    * @method bool Init()
     * @method bool campo_cargar()
     * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
     * @method bool campo_establecer_getter_todos(bool tlValor)
@@ -50,7 +52,6 @@ DEFINE CLASS dto_marcas1 AS dto_base OF dto_base.prg
     * @method bool campo_establecer_setter_todos(bool tlValor)
     * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
     * @method bool campo_existe(string tcCampo)
-    * @method mixed campo_obtener(string tcCampo)
     * @method mixed campo_obtener_valor(string tcCampo)
     */
 ENDDEFINE

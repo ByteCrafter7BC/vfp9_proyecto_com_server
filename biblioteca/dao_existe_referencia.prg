@@ -22,7 +22,7 @@
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @see crear_dao()
+* @uses crear_dao
 */
 
 **/
@@ -42,9 +42,8 @@
 *                        referencia.
 * @param string tcCondicionFiltro Condición de filtro (cláusula WHERE) para
 *                                 encontrar los registros.
-*
 * @return bool .T. si encuentra al menos un registro que cumpla la condición (o
-*              si hay un error).
+*              si hay un error);
 *              .F. únicamente si no se encuentra ningún registro coincidente.
 */
 FUNCTION dao_existe_referencia

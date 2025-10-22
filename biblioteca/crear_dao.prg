@@ -35,9 +35,8 @@
 *
 * @param string tcModelo Nombre del modelo (entidad) para el cual se obtendrá
 *                        el objeto DAO.
-*
-* @return mixed Object Instancia del objeto DAO si la operación fue completada
-*               correctamente.
+* @return mixed object Instancia del objeto DAO si la operación se completa
+*               correctamente;
 *               .F. si el parámetro es inválido o si ocurre un error al
 *               instanciar el objeto.
 */

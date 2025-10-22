@@ -22,12 +22,11 @@
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @see crear_dao()
-* @uses constantes.h
+* @uses constantes.h, crear_dao
 */
 
 **/
-* Obtiene un objeto modelo utilizando su código único.
+* Devuelve un objeto modelo utilizando su código único.
 *
 * Esta función valida los parámetros, crea la instancia del DAO correspondiente
 * (ej: dao_dbf_clientes, dao_mysql_clientes, etc.) y le delega la tarea de
@@ -36,11 +35,8 @@
 * @param string tcModelo Nombre del modelo/tabla a consultar (ej: 'clientes',
 *                        'proveedores', etc.).
 * @param int tnCodigo Código numérico del registro que se desea obtener.
-*
-* @return mixed Object modelo si el registro fue encontrado.
-*               .F. si el registro no fue encontrado (devuelto por el método del
-*               DAO).
-*
+* @return mixed object modelo si el registro se encuentra;
+*               .F. en caso contrario (devuelto por el método del DAO).
 * @throws string Mensaje de error si no se pudo instanciar el DAO.
 */
 #INCLUDE 'constantes.h'
@@ -79,7 +75,6 @@ ENDFUNC
 * @internal Es una función auxiliar utilizada principalmente por las fábricas
 *           de objetos DAO.
 * @global int BD_ACTUAL Constante que define el motor de base de datos actual.
-*
 * @return string Prefijo del nombre de la clase DAO (ejemplos: 'dao_dbf_',
 *                'dao_firebird_', 'dao_mysql_', etc.).
 */

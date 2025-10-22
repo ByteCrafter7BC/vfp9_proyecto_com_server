@@ -43,11 +43,11 @@ DEFINE CLASS interfaz_dao AS Custom
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar([string tcCondicionFiltro])
+    * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo()
     * @method mixed obtener_por_nombre()
-    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toModelo)
     * @method bool modificar(object toModelo)
@@ -117,7 +117,7 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Obtiene el siguiente código numérico secuencial disponible.
+    * Devuelve el siguiente código numérico secuencial disponible.
     *
     * Busca el primer hueco en la secuencia de códigos a partir de 1.
     *
@@ -129,7 +129,7 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Realiza la búsqueda de un registro por su código.
+    * Devuelve un registro por su código.
     *
     * @param int tnCodigo Código numérico único del registro a buscar.
     * @return mixed object modelo si el registro se encuentra;
@@ -141,7 +141,7 @@ DEFINE CLASS interfaz_dao AS Custom
     ENDFUNC
 
     **/
-    * Realiza la búsqueda de un registro por su nombre.
+    * Devuelve un registro por su nombre.
     *
     * @param string tcNombre Nombre del registro a buscar.
     * @return mixed object modelo si el registro se encuentra;
@@ -171,7 +171,7 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Devuelve el último mensaje de error registrado.
     *
-    * @return string Descripción del mensaje de error.
+    * @return string Descripción del error; cadena vacía si no hay error.
     */
     FUNCTION obtener_ultimo_error
         RETURN 'No implementado.'
@@ -204,8 +204,7 @@ DEFINE CLASS interfaz_dao AS Custom
     **/
     * Borra un registro de la tabla.
     *
-    * @param int tnTipoNota Tipo del documento.
-    * @param int tnNroNota Número único del documento según el tipo.
+    * @param int tnCodigo Código numérico único del registro a borrar.
     * @return bool .T. si el registro se borra correctamente;
     *              .F. si ocurre un error.
     */

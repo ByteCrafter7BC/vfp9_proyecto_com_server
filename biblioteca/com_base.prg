@@ -60,9 +60,9 @@ DEFINE CLASS com_base AS Session
 
     **/
     * No utilizar { DataSession = 2    && 2 – Private Data Session. }
-    * Problema: Al llamar a la función create_dao(string tcModel), se devuelve
+    * Problema: Al llamar a la función crear_dao(string tcModel), se devuelve
     * un objeto DAO. Este objeto, a su vez, tiene varios métodos, uno de los
-    * cuales es obtener_todos([string tcCondicionFiltro], [string tcOrden]));
+    * cuales es obtener_todos(string [tcCondicionFiltro], string [tcOrden]);
     * cuando se llama a este método sin argumentos, debería recuperar todos los
     * registros del modelo, pero no lo hace.
     * Solución: DataSession = 1    && 1 – Default Data Session.
@@ -75,11 +75,11 @@ DEFINE CLASS com_base AS Session
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar([string tcCondicionFiltro])
+    * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
     * @method mixed obtener_por_nombre(string tcNombre)
-    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)
@@ -90,9 +90,9 @@ DEFINE CLASS com_base AS Session
     **/
     * Verifica si un código ya existe en la tabla.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
-    * @return bool .T. si el código existe o si ocurre un error.
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el código existe o si ocurre un error;
+    *              .F. si no existe.
     */
     FUNCTION existe_codigo(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si existe el código u ocurre un error; de lo contrario, devuelve falso (.F.).'
@@ -103,8 +103,8 @@ DEFINE CLASS com_base AS Session
     * Verifica si un nombre ya existe en la tabla.
     *
     * @param string tcNombre Nombre a verificar.
-    *
-    * @return bool .T. si el nombre existe o si ocurre un error.
+    * @return bool .T. si el nombre existe o si ocurre un error;
+    *              .F. si no existe.
     */
     FUNCTION existe_nombre(tcNombre AS String) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si existe el nombre u ocurre un error; de lo contrario, devuelve falso (.F.).'
@@ -114,8 +114,7 @@ DEFINE CLASS com_base AS Session
     **/
     * Verifica si un registro está vigente.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
+    * @param int tnCodigo Código numérico único a verificar.
     * @return bool .T. si el registro existe y su estado es vigente.
     *              .F. si el registro no existe, no está vigente o si ocurre un
     *              error.
@@ -126,11 +125,12 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Verifica si un registro está relacionado con otras tablas.
+    * Verifica si un código está relacionado con otros registros de la base
+    * de datos.
     *
-    * @param int tnCodigo Código numérico a verificar.
-    *
-    * @return bool .T. si el registro está relacionado o si ocurre un error.
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error;
+    *              .F. si no está relacionado.
     */
     FUNCTION esta_relacionado(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si está relacionado el registro u ocurre un error; de lo contrario, devuelve falso (.F.).'
@@ -142,7 +142,6 @@ DEFINE CLASS com_base AS Session
     *
     * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta, sin
     *                                   la palabra "WHERE".
-    *
     * @return int Número de registros contados. Devuelve -1 si ocurre un error.
     */
     FUNCTION contar(tcCondicionFiltro AS String) AS Integer ;
@@ -151,7 +150,7 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Obtiene el siguiente código numérico secuencial disponible.
+    * Devuelve el siguiente código numérico secuencial disponible.
     *
     * Busca el primer hueco en la secuencia de códigos a partir de 1.
     *
@@ -164,12 +163,11 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Obtiene un registro, buscándolo por código.
+    * Devuelve un registro por su código.
     *
-    * @param int tnCodigo Código del registro a obtener.
-    *
-    * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si el registro no fue encuentrado o si ocurre un error.
+    * @param int tnCodigo Código numérico único del registro a buscar.
+    * @return mixed object modelo si el registro se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
     */
     FUNCTION obtener_por_codigo(tnCodigo AS Integer) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el código; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
@@ -177,12 +175,11 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Obtiene un registro, buscándolo por nombre.
+    * Devuelve un registro por su nombre.
     *
-    * @param string tcNombre Nombre del registro a obtener.
-    *
-    * @return mixed Object modelo si el registro fue encontrado.
-    *               .F. si el registro no fue encuentrado o si ocurre un error.
+    * @param string tcNombre Nombre del registro a buscar.
+    * @return mixed object modelo si el registro se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
     */
     FUNCTION obtener_por_nombre(tcNombre AS String) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
@@ -190,11 +187,12 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Obtiene una colección de registros en formato XML.
+    * Devuelve todos los registros aplicando, opcionalmente, filtro y orden.
     *
-    * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta.
-    * @param string [tcOrden] La cláusula ORDER BY de la consulta.
+    * El resultado se devuelve como una cadena de caracteres XML.
     *
+    * @param string [tcCondicionFiltro] Cláusula WHERE de la consulta.
+    * @param string [tcOrden] Cláusula ORDER BY de la consulta.
     * @return string Cadena XML con el resultado de la búsqueda. Retorna una
     *                cadena vacía en caso de no encontrar registros o si ocurre
     *                un error.
@@ -220,7 +218,7 @@ DEFINE CLASS com_base AS Session
     **/
     * Crea y devuelve un objeto DTO del modelo asociado.
     *
-    * @return mixed Object DTO si se puede crear.
+    * @return mixed object DTO si se puede crear;
     *               .F. si ocurre un error en la creación.
     */
     FUNCTION obtener_dto() AS Object ;
@@ -239,21 +237,21 @@ DEFINE CLASS com_base AS Session
     ENDFUNC
 
     **/
-    * Obtiene el último mensaje de error registrado en la clase.
+    * Devuelve el último mensaje de error registrado.
     *
-    * @return string Descripción del error. Cadena vacía si no hay error.
+    * @return string Descripción del error; cadena vacía si no hay error.
     */
     FUNCTION obtener_ultimo_error AS String ;
         HELPSTRING 'Devuelve una cadena con la descripción del último error. Si no hay ningún error, devuelve una cadena vacía.'
-        RETURN IIF(VARTYPE(THIS.cUltimoError) == 'C', THIS.cUltimoError, '')
+        RETURN IIF(es_cadena(THIS.cUltimoError, 0, 254), THIS.cUltimoError, '')
     ENDFUNC
 
     **/
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toDto DTO que contiene los datos del registro.
-    *
-    * @return bool .T. si el registro fue agregado correctamente.
+    * @return bool .T. si el registro se agrega correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION agregar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede agregar el registro; de lo contrario, devuelve falso (.F.).'
@@ -268,8 +266,8 @@ DEFINE CLASS com_base AS Session
     * Modifica un registro existente en la tabla.
     *
     * @param object toDto DTO con los datos actualizados del registro.
-    *
-    * @return bool .T. si el registro fue modificado correctamente.
+    * @return bool .T. si el registro se modifica correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION modificar(toDto AS Object) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede modificar el registro; de lo contrario, devuelve falso (.F.).'
@@ -283,9 +281,9 @@ DEFINE CLASS com_base AS Session
     **/
     * Borra un registro de la tabla.
     *
-    * @param int tnCodigo Código numérico del registro a borrar.
-    *
-    * @return bool .T. si el registro fue borrado correctamente.
+    * @param int tnCodigo Código numérico único del registro a borrar.
+    * @return bool .T. si el registro se borra correctamente;
+    *              .F. si ocurre un error.
     */
     FUNCTION borrar(tnCodigo AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si puede borrar el registro; de lo contrario, devuelve falso (.F.).'
@@ -311,7 +309,8 @@ DEFINE CLASS com_base AS Session
     * Este método se llama automáticamente al crear una instancia de la clase.
     * Delega la lógica de configuración al método 'configurar()'.
     *
-    * @return bool .T. si la inicialización fue completada correctamente.
+    * @return bool .T. si la configuración se completada correctamente;
+    *              .F. si ocurre un error.
     */
     PROTECTED FUNCTION Init
         RETURN THIS.configurar()
@@ -324,12 +323,13 @@ DEFINE CLASS com_base AS Session
     * inicializar el entorno de datos y el objeto DAO. También establece la
     * propiedad '_oSCREEN' si no existe.
     *
-    * @return bool .T. si la configuración fue completada correctamente.
+    * @return bool .T. si la configuración se completa correctamente;
+    *              .F. en caso contrario.
     */
     PROTECTED FUNCTION configurar
         THIS.establecer_entorno()
 
-        IF VARTYPE(THIS.cModelo) != 'C' OR EMPTY(THIS.cModelo) THEN
+        IF !es_cadena(THIS.cModelo) THEN
             RETURN .F.
         ENDIF
 
@@ -352,12 +352,13 @@ DEFINE CLASS com_base AS Session
     **/
     * Crea una instancia del objeto DAO y la asigna a la propiedad 'oDao'.
     *
-    * @return bool .T. si el objeto DAO se creó correctamente.
+    * @return bool .T. si el objeto DAO se creó correctamente;
+    *              .F. en caso contrario.
     */
     PROTECTED FUNCTION establecer_dao
         THIS.oDao = crear_dao(THIS.cModelo)
 
-        IF VARTYPE(THIS.oDao) != 'O' THEN
+        IF !es_objeto(THIS.oDao) THEN
             registrar_error('com_' + LOWER(THIS.cModelo), ;
                 'establecer_dao', ;
                 STRTRAN(MSG_ERROR_INSTANCIA_CLASE, '{}', THIS.cModelo))
@@ -373,22 +374,22 @@ DEFINE CLASS com_base AS Session
     * modelo.
     *
     * @param object toDto DTO que se va a convertir.
-    * @return mixed Object si la conversión fue completada correctamente.
+    * @return mixed object si la conversión se completa correctamente;
     *               .F. si el parámetro de entrada no es un objeto válido.
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF VARTYPE(toDto) != 'O' THEN
+        IF !es_objeto(toDto) THEN
             RETURN .F.
         ENDIF
 
         LOCAL lnCodigo, lcNombre, llVigente
 
         WITH toDto
-            lnCodigo = .obtener_codigo()
-            lcNombre = ALLTRIM(.obtener_nombre())
-            llVigente = .esta_vigente()
+            lnCodigo = .obtener('codigo')
+            lcNombre = ALLTRIM(.obtener('nombre'))
+            llVigente = .obtener('vigente')
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;

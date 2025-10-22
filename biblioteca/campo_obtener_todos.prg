@@ -32,6 +32,7 @@
 *
 * Utiliza el prefijo 'campo_' como espacio de nombres (namespace).
 *
+* @param tcModelo Nombre del modelo a buscar.
 * @return mixed object si se crea correctamente; .F. si ocurre un error.
 * @uses bool campo_obtener_base()
 *       Para cargar los campos del modelo base.

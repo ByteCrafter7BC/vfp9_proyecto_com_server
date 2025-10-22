@@ -42,9 +42,11 @@
 DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method mixed obtener(string tcCampo)
-    * @method bool establecer(string tcCampo)
+    * @method mixed campo_obtener(string tcCampo)
+    * @method object campo_obtener_todos()
     * @method bool es_igual(object toModelo)
+    * @method bool establecer(string tcCampo)
+    * @method mixed obtener(string tcCampo)
     */
 
     **/
@@ -55,7 +57,6 @@ DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
     * @method bool campo_establecer_setter_todos(bool tlValor)
     * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
     * @method bool campo_existe(string tcCampo)
-    * @method mixed campo_obtener(string tcCampo)
     * @method mixed campo_obtener_valor(string tcCampo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool Init()
@@ -65,7 +66,7 @@ DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
     **/
     * Constructor de la clase.
     *
-    * @return bool .T. si la inicialización se completa correctamente, o
+    * @return bool .T. si la inicialización se completa correctamente;
     *              .F. si ocurre un error.
     * @override
     */
