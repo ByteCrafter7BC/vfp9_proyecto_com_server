@@ -50,6 +50,8 @@ FUNCTION campo_obtener_todos
     DO CASE
     CASE tcModelo == 'marcas1'
         campo_obtener_base()
+    CASE tcModelo == 'marcas2'
+        campo_obtener_base()
     CASE tcModelo == 'proveedo'
         campo_obtener_proveedo()
     ENDCASE

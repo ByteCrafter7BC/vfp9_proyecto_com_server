@@ -43,11 +43,11 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
     * @method bool existe_codigo(int tnCodigo)
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
-    * @method int contar()
+    * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
-    * @method mixed obtener_por_codigo()
-    * @method mixed obtener_por_nombre()
-    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method mixed obtener_por_codigo(int tnCodigo)
+    * @method mixed obtener_por_nombre(string tcNombre)
+    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toModelo)
     * @method bool modificar(object toModelo)
@@ -56,19 +56,19 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
     * @method bool esta_relacionado(int tnCodigo)
     */
 
-    **
-    * Verifica si el código de una marca está relacionado con otros registros
-    * de la base de datos.
+    **/
+    * Verifica si un código está relacionado con otros registros de la base
+    * de datos.
     *
-    * @param int tnCodigo Código de la marca a verificar.
-    * @return bool .T. si el registro está relacionado o si ocurre un error, o
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error;
     *              .F. si no está relacionado.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
 
-        IF !THIS.tnCodigo_Valid(tnCodigo) THEN
+        IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
@@ -93,18 +93,10 @@ DEFINE CLASS dao_dbf_marcas2 AS dao_dbf OF dao_dbf.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
+    * @method bool Init()
     * @method bool configurar()
     * @method mixed obtener_modelo()
-    * @method bool conectar([bool tlModoEscritura])
+    * @method bool conectar(bool [tlModoEscritura])
     * @method bool desconectar()
-    * @method bool Init()
-    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
-    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
-    * @method bool tnCodigo_Valid(int tnCodigo)
-    * @method bool tcNombre_Valid(string tcNombre)
-    * @method bool tlVigente_Valid(bool tlVigente)
-    * @method bool toModelo_Valid(object toModelo)
-    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
-    * @method bool tcOrden_Valid(string tcOrden)
     */
 ENDDEFINE

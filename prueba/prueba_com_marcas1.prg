@@ -231,8 +231,8 @@ DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
         IF VARTYPE(THIS.oDto) == 'O' THEN
             WITH THIS.oDto
                 .establecer('codigo', THIS.oCom.obtener_nuevo_codigo())
-                .establecer('nombre', ;
-                    'Nombre ' + ALLTRIM(STR(.obtener('codigo'))))
+                .establecer('nombre', 'Nombre ' + ;
+                    ALLTRIM(STR(.obtener('codigo'))))
                 .establecer('vigente', .T.)
             ENDWITH
         ENDIF
