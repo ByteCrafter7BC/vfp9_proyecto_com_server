@@ -403,9 +403,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         LOCAL m.codigo, m.nombre, m.vigente
 
         WITH toModelo
-            m.codigo = .obtener_codigo()
-            m.nombre = .obtener_nombre()
-            m.vigente = .esta_vigente()
+            m.codigo = .obtener('codigo')
+            m.nombre = .obtener('nombre')
+            m.vigente = .obtener('vigente')
         ENDWITH
 
         IF THIS.existe_codigo(m.codigo) THEN
@@ -456,9 +456,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
               loModelo
 
         WITH toModelo
-            m.codigo = .obtener_codigo()
-            m.nombre = .obtener_nombre()
-            m.vigente = .esta_vigente()
+            m.codigo = .obtener('codigo')
+            m.nombre = .obtener('nombre')
+            m.vigente = .obtener('vigente')
         ENDWITH
 
         IF !THIS.existe_codigo(m.codigo) THEN
@@ -470,7 +470,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         loModelo = THIS.obtener_por_nombre(m.nombre)
 
         IF VARTYPE(loModelo) == 'O' THEN
-            IF loModelo.obtener_codigo() != m.codigo THEN
+            IF loModelo.obtener('codigo') != m.codigo THEN
                 THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
                     "' ya existe."
                 RETURN .F.
@@ -560,7 +560,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool configurar()
     * @method mixed obtener_modelo()
-    * @method bool conectar([bool tlModoEscritura])
+    * @method bool conectar(bool [tlModoEscritura])
     * @method bool desconectar()
     */
 
