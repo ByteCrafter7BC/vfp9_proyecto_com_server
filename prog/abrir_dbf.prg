@@ -1,6 +1,4 @@
 **/
-* abrir_dbf.prg
-*
 * Derechos de autor (C) 2000-2025 ByteCrafter7BC <bytecrafter7bc@gmail.com>
 *
 * Este programa es software libre: puede redistribuirlo y/o modificarlo
@@ -19,7 +17,16 @@
 */
 
 **/
-* Abre un archivo DBF ubicado en la carpeta definida por CARPETA_DATOS.
+* @file abrir_dbf.prg
+* @package prog
+* @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
+* @version 1.0.0
+* @since 1.0.0
+*/
+
+**/
+* Abre un archivo DBF ubicado en la carpeta definida por constante
+* CARPETA_DATOS.
 *
 * Esta función valida los parámetros recibidos, construye la ruta completa
 * del archivo y lo abre en modo compartido. Si el archivo ya está abierto,
@@ -29,35 +36,34 @@
 *
 * @param string tcTabla Nombre de la tabla (sin extensión .dbf) que se desea
 *                       abrir.
-*
 * @param bool [tlModoEscritura] Indica si se abre en modo escritura (.T.) o solo
 *                               lectura (.F.).
 *                               Si no se especifica correctamente, se asume .F.
-*
 * @return bool .T. si el archivo fue abierto correctamente o ya estaba abierto.
 *              .F. si hubo error en los parámetros o el archivo no existe.
-*
 * @throws error Se invoca registrar_error() si el archivo no existe en la ruta
 *               especificada.
-*
+* @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+*       Para validar si un valor es una cadena de caracteres y su longitud
+*       está dentro de un rango específico.
+* @uses bool es_logico(bool tlLogico)
+*       Para validar si un valor es de tipo lógico.
 * @example
-*     abrir_dbf('clientes', .T.) && Abre clientes.dbf en modo escritura.
-*     abrir_dbf('productos') && Abre productos.dbf en modo solo lectura.
+*     abrir_dbf('clientes', .T.)    && Abre clientes.dbf en modo escritura.
+*     abrir_dbf('productos')    && Abre productos.dbf en modo solo lectura.
 */
 #DEFINE CARPETA_DATOS    'C:\turtle\aya\integrad.000\'
 
 FUNCTION abrir_dbf
     LPARAMETERS tcTabla, tlModoEscritura
 
-    * inicio { validaciones de parámetros }
-    IF VARTYPE(tcTabla) != 'C' OR EMPTY(tcTabla) THEN
+    IF !BETWEEN(PARAMETERS(), 1, 2) OR !es_cadena(tcTabla) THEN
         RETURN .F.
     ENDIF
 
-    IF VARTYPE(tlModoEscritura) != 'L' THEN
+    IF !es_logico(tlModoEscritura) THEN
         tlModoEscritura = .F.
     ENDIF
-    * fin { validaciones de parámetros }
 
     LOCAL lcDbf
     lcDbf = ADDBS(CARPETA_DATOS) + tcTabla + '.dbf'

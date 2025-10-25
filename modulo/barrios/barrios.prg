@@ -26,51 +26,42 @@
 * @extends biblioteca\modelo_base
 */
 
-**
+**/
 * Clase modelo de datos para la entidad 'barrios'.
-*
-* Hereda de la clase 'modelo_base' y añade dos propiedades numéricas
-* específicas: 'departamen' y 'ciudad'.
 */
 DEFINE CLASS barrios AS modelo_base OF modelo_base.prg
     **/
-    * @var int Código numérico del departamento.
-    */
-    PROTECTED nDepartamen
-
-    **/
-    * @var int Código numérico de la ciudad.
-    */
-    PROTECTED nCiudad
-
-    **/
     * @section MÉTODOS PÚBLICOS
-    * @method int obtener_codigo()
-    * @method string obtener_nombre()
-    * @method bool esta_vigente()
+    * @method mixed campo_obtener(string tcCampo)
+    * @method object campo_obtener_todos()
+    * @method bool establecer(string tcCampo)
+    * @method mixed obtener(string tcCampo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool Init(int tnCodigo, string tcNombre, int tnDepartamen, ;
                         int tnCiudad, bool tlVigente)
-    * @method int obtener_departamen()
-    * @method int obtener_ciudad()
     * @method bool es_igual(object toModelo)
     */
 
     **/
     * Constructor de la clase.
     *
-    * Inicializa una nueva instancia de la clase 'barrios'.
-    *
-    * Además de los parámetros de la clase base, inicializa los dos parámetros
-    * numéricos específicos de esta clase.
+    * Inicializa las propiedades del objeto con los valores proporcionados,
+    * validando que los tipos de datos sean correctos.
     *
     * @param int tnCodigo Código numérico único del barrio.
-    * @param string tcNombre Nombre o descripción del barrio.
+    * @param string tcNombre Nombre descriptivo del barrio.
     * @param int tnDepartamen Código numérico del departamento.
     * @param int tnCiudad Código numérico de la ciudad.
-    * @param bool tlVigente Indica si el barrio está vigente.
-    * @return bool .T. si la inicialización se completa correctamente, o
+    * @param bool tlVigente Estado de vigencia del barrio.
+    * @return bool .T. si la inicialización se completa correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool campo_cargar()
+    *       Para cargar los campos a la propiedad protegida 'oCampos'.
+    * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    *       Para establecer el valor de un campo.
     * @override
     */
     FUNCTION Init
@@ -80,44 +71,31 @@ DEFINE CLASS barrios AS modelo_base OF modelo_base.prg
             RETURN .F.
         ENDIF
 
-        IF VARTYPE(tnDepartamen) != 'N' ;
-                OR VARTYPE(tnCiudad) != 'N' THEN
+        IF !es_numero(tnDepartamen, 0, 999) ;
+                OR !es_numero(tnCiudad, 0) THEN
             RETURN .F.
         ENDIF
 
-        WITH THIS
-            .nDepartamen = tnDepartamen
-            .nCiudad = tnCiudad
-        ENDWITH
+        IF !THIS.campo_cargar() THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.campo_establecer_valor('departamen', tnDepartamen) ;
+                OR !THIS.campo_establecer_valor('ciudad', tnCiudad) THEN
+            RETURN .F.
+        ENDIF
     ENDFUNC
 
     **/
-    * Devuelve el código del departamento.
-    *
-    * @return int Código numérico del departamento.
-    */
-    FUNCTION obtener_departamen
-        RETURN THIS.nDepartamen
-    ENDFUNC
-
-    **/
-    * Devuelve el código de la ciudad.
-    *
-    * @return int Código numérico de la ciudad.
-    */
-    FUNCTION obtener_ciudad
-        RETURN THIS.nCiudad
-    ENDFUNC
-
-    **/
-    * Compara la instancia actual con otro objeto para determinar si son
-    * iguales.
+    * Compara si dos objetos modelo son idénticos.
     *
     * Compara las propiedades de la clase base y las propiedades específicas
     * ('departamen' y 'ciudad') de la clase 'barrios'.
     *
-    * @param object toModelo Objeto de tipo 'barrios' con el que se comparará.
-    * @return bool .T. si los objetos son iguales, o .F. si no lo son.
+    * @param object toModelo Modelo con el que se va a comparar.
+    * @return bool .T. si los objetos son idénticos, o .F. si no lo son.
+    * @uses mixed campo_obtener_valor(string tcCampo)
+    *       Para obtener el valor de un campo.
     * @override
     */
     FUNCTION es_igual
@@ -127,9 +105,28 @@ DEFINE CLASS barrios AS modelo_base OF modelo_base.prg
             RETURN .F.
         ENDIF
 
-        IF toModelo.obtener_departamen() != THIS.nDepartamen ;
-                OR toModelo.obtener_ciudad() != THIS.nCiudad THEN
+        LOCAL lnDepartamen, lnCiudad
+
+        WITH THIS
+            lnDepartamen = .campo_obtener_valor('departamen')
+            lnCiudad = .campo_obtener_valor('ciudad')
+        ENDWITH
+
+        IF toModelo.obtener('departamen') != lnDepartamen ;
+                OR toModelo.obtener('ciudad') != lnCiudad THEN
             RETURN .F.
         ENDIF
     ENDFUNC
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool campo_cargar()
+    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_getter_todos(bool tlValor)
+    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_setter_todos(bool tlValor)
+    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    * @method bool campo_existe(string tcCampo)
+    * @method mixed campo_obtener_valor(string tcCampo)
+    */
 ENDDEFINE

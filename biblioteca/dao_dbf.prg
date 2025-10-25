@@ -69,10 +69,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param int tnCodigo Código numérico único a verificar.
     * @return bool .T. si el código existe o si ocurre un error;
     *              .F. si no existe.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
     * @override
     */
     FUNCTION existe_codigo
         LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .T.
+        ENDIF
 
         IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
@@ -107,6 +115,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param string tcNombre Nombre a verificar.
     * @return bool .T. si el nombre existe o si ocurre un error;
     *              .F. si no existe.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
     * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
     *       Para obtener el ancho del campo de un modelo.
     * @override
@@ -114,17 +125,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     FUNCTION existe_nombre
         LPARAMETERS tcNombre
 
+        LOCAL llExiste, lnAncho
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .T.
+        ENDIF
+
         IF !es_cadena(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .T.
         ENDIF
 
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .T.
-        ENDIF
-
-        LOCAL llExiste, lnAncho
         lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
 
         IF lnAncho == 0 THEN
@@ -134,6 +146,11 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+
+        IF !THIS.conectar() THEN
+            THIS.cUltimoError = MSG_ERROR_CONEXION
+            RETURN .T.
+        ENDIF
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre)
@@ -154,10 +171,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @return bool .T. si el registro existe y su estado es vigente.
     *              .F. si el registro no existe, no está vigente o si ocurre un
     *              error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
     * @override
     */
     FUNCTION esta_vigente
         LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
@@ -191,6 +216,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param string [tcCondicionFiltro] La cláusula WHERE de la consulta, sin
     *                                   la palabra "WHERE".
     * @return int Número de registros contados. Devuelve -1 si ocurre un error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
     * @override
     */
     FUNCTION contar
@@ -261,10 +289,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param int tnCodigo Código numérico único del registro a buscar.
     * @return mixed object modelo si el registro se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
     * @override
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
@@ -298,31 +334,42 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param string tcNombre Nombre del registro a buscar.
     * @return mixed object modelo si el registro se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
+    *       Para obtener el ancho del campo de un modelo.
     * @override
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre
+
+        LOCAL loModelo, lnAncho
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_cadena(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .F.
         ENDIF
 
-        IF !THIS.conectar() THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        LOCAL loModelo, lnAncho
         lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
 
         IF lnAncho == 0 THEN
             THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
                 '{0}', 'nombre'), '{1}', THIS.cModelo)
-            RETURN .T.
+            RETURN .F.
         ENDIF
 
         tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+
+        IF !THIS.conectar() THEN
+            THIS.cUltimoError = MSG_ERROR_CONEXION
+            RETURN .F.
+        ENDIF
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && nombre
@@ -348,6 +395,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param string [tcOrden] Cláusula ORDER BY de la consulta.
     * @return bool .T. si la consulta se ejecuta correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
     * @override
     */
     FUNCTION obtener_todos
@@ -390,10 +440,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param object toModelo Modelo que contiene los datos del registro.
     * @return bool .T. si el registro se agrega correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @override
     */
     FUNCTION agregar
         LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_objeto(toModelo, THIS.cModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
@@ -415,8 +473,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         ENDIF
 
         IF THIS.existe_nombre(m.nombre) THEN
-            THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
-                "' ya existe."
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
             RETURN .F.
         ENDIF
 
@@ -428,7 +485,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         INSERT INTO (THIS.cModelo) ;
             (codigo, nombre, vigente) ;
         VALUES ;
-            (m.codigo, ALLTRIM(m.nombre), m.vigente)
+            (m.codigo, m.nombre, m.vigente)
 
         WITH THIS
             .cUltimoError = ''
@@ -442,10 +499,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param object toModelo Modelo con los datos actualizados del registro.
     * @return bool .T. si el registro se modifica correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @override
     */
     FUNCTION modificar
         LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_objeto(toModelo, THIS.cModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
@@ -469,17 +534,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
 
         loModelo = THIS.obtener_por_nombre(m.nombre)
 
-        IF VARTYPE(loModelo) == 'O' THEN
-            IF loModelo.obtener('codigo') != m.codigo THEN
-                THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
-                    "' ya existe."
-                RETURN .F.
-            ENDIF
+        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            RETURN .F.
         ENDIF
 
         loModelo = THIS.obtener_por_codigo(m.codigo)
 
-        IF VARTYPE(loModelo) != 'O' THEN
+        IF !es_objeto(loModelo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -499,7 +561,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice1'    && codigo
         IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH ALLTRIM(m.nombre), ;
+            REPLACE nombre WITH m.nombre, ;
                     vigente WITH m.vigente
             THIS.cUltimoError = ''
         ELSE
@@ -518,10 +580,18 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @param int tnCodigo Código numérico único del registro a borrar.
     * @return bool .T. si el registro se borra correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
     * @override
     */
     FUNCTION borrar
         LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
 
         IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
@@ -572,10 +642,16 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *
     * @return bool .T. si la configuración se completada correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
     * @override
     */
     PROTECTED FUNCTION configurar
-        IF VARTYPE(THIS.cModelo) != 'C' OR EMPTY(THIS.cModelo) THEN
+        IF !es_cadena(THIS.cModelo) THEN
             IF ATC('dao_dbf_', THIS.Name) == 0 THEN
                 RETURN .F.
             ENDIF
@@ -583,12 +659,12 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             THIS.cModelo = SUBSTR(LOWER(THIS.Name), 9)
         ENDIF
 
-        IF VARTYPE(THIS.cSqlOrder) != 'C' OR EMPTY(THIS.cSqlOrder) THEN
+        IF !es_cadena(THIS.cSqlOrder) THEN
             THIS.cSqlOrder = IIF(THIS.cModelo != 'modelos', ;
                 'nombre', 'nombre_completo')
         ENDIF
 
-        IF VARTYPE(THIS.cSqlSelect) != 'C' OR EMPTY(THIS.cSqlSelect) THEN
+        IF !es_cadena(THIS.cSqlSelect, 5, 254) THEN
             DO CASE
             CASE THIS.cModelo == 'barrios'
                 THIS.cSqlSelect = 'codigo, nombre, departamen, ciudad, vigente'
@@ -617,7 +693,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, ALLTRIM(nombre), vigente)
+            codigo, nombre, vigente)
     ENDFUNC
 
     **/
@@ -628,12 +704,17 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *                               Si no se especifica, por defecto .F.
     * @return bool .T. si la conexión se establece correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
+    * @uses bool abrir_dbf(string tcTabla, bool [tlModoEscritura])
+    *       Para abrir un archivo DBF ubicado en la carpeta definida por
+    *       la constante CARPETA_DATOS.
     * @override
     */
     PROTECTED FUNCTION conectar
         LPARAMETERS tlModoEscritura
 
-        IF VARTYPE(tlModoEscritura) != 'L' THEN
+        IF !es_logico(tlModoEscritura) THEN
             tlModoEscritura = .F.
         ENDIF
 
@@ -648,6 +729,9 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *
     * @return bool .T. si la conexión se cierra correctamente;
     *              .F. si ocurre un error.
+    * @uses bool cerrar_dbf(string tcTabla)
+    *       Para cerrar una tabla DBF previamente abierta en el entorno de
+    *       trabajo.
     * @override
     */
     PROTECTED FUNCTION desconectar

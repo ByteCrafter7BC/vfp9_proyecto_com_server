@@ -34,21 +34,30 @@
 *
 * @param tcModelo Nombre del modelo a buscar.
 * @return mixed object si se crea correctamente; .F. si ocurre un error.
+* @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+*       Para validar si un valor es una cadena de caracteres y su longitud
+*       está dentro de un rango específico.
 * @uses bool campo_obtener_base()
 *       Para cargar los campos del modelo base.
 */
 FUNCTION campo_obtener_todos
     LPARAMETERS tcModelo
 
-    IF VARTYPE(tcModelo) != 'C' OR EMPTY(tcModelo) THEN
+    IF !es_cadena(tcModelo) THEN
         RETURN .F.
     ENDIF
+
+    tcModelo = LOWER(ALLTRIM(tcModelo))
 
     PRIVATE poCampos
     poCampos = CREATEOBJECT('Collection')
 
     DO CASE
-    CASE tcModelo == 'marcas1'
+    CASE tcModelo == 'barrios'
+        campo_obtener_barrios()
+    CASE tcModelo == 'depar'
+        campo_obtener_depar()
+     CASE tcModelo == 'marcas1'
         campo_obtener_base()
     CASE tcModelo == 'marcas2'
         campo_obtener_base()
@@ -273,6 +282,96 @@ ENDFUNC
 **/
 * @section IMPLEMENTACIÓN DE MODELOS
 */
+
+**/
+* Carga los campos del modelo 'barrios'.
+*
+* @return bool .T. si la carga se completa correctamente;
+*              .F. si ocurre un error.
+* @uses bool campo_agregar(string tcCampo, string tcTipo, int tnAncho, ;
+                            int tnDecimales, string tcEtiqueta)
+*       Para agregar un campo a la variable privada 'poCampos'.
+* @uses bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
+*       Para establecer si un campo de tipo numérico acepta números
+*       negativos.
+* @uses bool campo_establecer_requerido(string tcCampo, bool tlValor)
+*       Para establecer si un campo es requerido.
+* @uses bool campo_establecer_getter_todos(bool tlValor)
+*       Para establecer el estado getter de todos los campos.
+*/
+FUNCTION campo_obtener_barrios
+    * Agrega todos los campos.
+    IF !campo_agregar('codigo', 'N', 5, , 'Código: ') ;
+            OR !campo_agregar('nombre', 'C', 30, , 'Nombre: ') ;
+            OR !campo_agregar('departamen', 'N', 3, , 'Depart.: ') ;
+            OR !campo_agregar('ciudad', 'N', 5, , 'Ciudad: ') ;
+            OR !campo_agregar('vigente', 'L', 1, , 'Vigente: ') THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos sin signo (unsigned).
+    IF !campo_establecer_sin_signo('codigo', .T.) ;
+            OR !campo_establecer_sin_signo('departamen', .T.) ;
+            OR !campo_establecer_sin_signo('ciudad', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos requeridos.
+    IF !campo_establecer_requerido('codigo', .T.) ;
+            OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('departamen', .T.) ;
+            OR !campo_establecer_requerido('ciudad', .T.) ;
+            OR !campo_establecer_requerido('vigente', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los getter a verdadero (.T.).
+    IF !campo_establecer_getter_todos(.T.) THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC
+
+**/
+* Carga los campos del modelo 'depar'.
+*
+* @return bool .T. si la carga se completa correctamente;
+*              .F. si ocurre un error.
+* @uses bool campo_agregar(string tcCampo, string tcTipo, int tnAncho, ;
+                            int tnDecimales, string tcEtiqueta)
+*       Para agregar un campo a la variable privada 'poCampos'.
+* @uses bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
+*       Para establecer si un campo de tipo numérico acepta números
+*       negativos.
+* @uses bool campo_establecer_requerido(string tcCampo, bool tlValor)
+*       Para establecer si un campo es requerido.
+* @uses bool campo_establecer_getter_todos(bool tlValor)
+*       Para establecer el estado getter de todos los campos.
+*/
+FUNCTION campo_obtener_depar
+    * Agrega todos los campos.
+    IF !campo_agregar('codigo', 'N', 3, , 'Código: ') ;
+            OR !campo_agregar('nombre', 'C', 30, , 'Nombre: ') ;
+            OR !campo_agregar('vigente', 'L', 1, , 'Vigente: ') THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos sin signo (unsigned).
+    IF !campo_establecer_sin_signo('codigo', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos requeridos.
+    IF !campo_establecer_requerido('codigo', .T.) ;
+            OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('vigente', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los getter a verdadero (.T.).
+    IF !campo_establecer_getter_todos(.T.) THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC
 
 **/
 * Carga los campos del modelo base.

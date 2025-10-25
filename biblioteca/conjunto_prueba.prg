@@ -60,6 +60,9 @@ DEFINE CLASS conjunto_prueba AS Custom
     * Este método imprime el total de pruebas ejecutadas, aprobadas y fallidas,
     * y muestra un mensaje final indicando si todas las pruebas pasaron o si
     * se encontraron fallos.
+    * @uses int nPruebasEjecutadas Número total de pruebas ejecutadas.
+    * @uses int nPruebasAprobadas Número de pruebas que han pasado exitosamente.
+    * @uses int nPruebasFallidas Número de pruebas que han fallado.
     */
     PROCEDURE obtener_informe
         ? REPLICATE('=', 40)
@@ -89,6 +92,9 @@ DEFINE CLASS conjunto_prueba AS Custom
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero al crear una nueva instancia.
+    * @uses int nPruebasEjecutadas Número total de pruebas ejecutadas.
+    * @uses int nPruebasAprobadas Número de pruebas que han pasado exitosamente.
+    * @uses int nPruebasFallidas Número de pruebas que han fallado.
     */
     PROTECTED PROCEDURE Init
         STORE 0 TO THIS.nPruebasEjecutadas, ;
@@ -103,6 +109,9 @@ DEFINE CLASS conjunto_prueba AS Custom
     *
     * @param string tcNombrePrueba Nombre o descripción de la prueba.
     * @param bool tlResultado Resultado de la prueba (.T. = pasó, .F. = falló).
+    * @uses int nPruebasEjecutadas Número total de pruebas ejecutadas.
+    * @uses int nPruebasAprobadas Número de pruebas que han pasado exitosamente.
+    * @uses int nPruebasFallidas Número de pruebas que han fallado.
     */
     PROTECTED PROCEDURE ejecutar_prueba
         LPARAMETERS tcNombrePrueba, tlResultado
@@ -164,6 +173,9 @@ DEFINE CLASS conjunto_prueba AS Custom
     * @param bool tlValor Valor lógico a evaluar.
     * @param string tcMensaje Mensaje descriptivo del fallo.
     * @return bool .T. si el valor es verdadero; .F. en caso contrario.
+    * @uses bool afirmar_igual(mixed tvEsperado, mixed tvObtenido, ;
+                                 string tcMensaje)
+    *       Para afirmar que dos valores son iguales.
     */
     PROTECTED FUNCTION afirmar_verdadero
         LPARAMETERS tlValor, tcMensaje
@@ -179,6 +191,9 @@ DEFINE CLASS conjunto_prueba AS Custom
     * @param bool tlValor Valor lógico a evaluar.
     * @param string tcMensaje Mensaje descriptivo del fallo.
     * @return bool .T. si el valor es falso; .F. en caso contrario.
+    * @uses bool afirmar_igual(mixed tvEsperado, mixed tvObtenido, ;
+                                 string tcMensaje)
+    *       Para afirmar que dos valores son iguales.
     */
     PROTECTED FUNCTION afirmar_falso
         LPARAMETERS tlValor, tcMensaje

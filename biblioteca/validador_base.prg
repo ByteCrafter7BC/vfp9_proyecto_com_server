@@ -80,17 +80,23 @@ DEFINE CLASS validador_base AS Custom
     *                      1 para Agregar, 2 para Modificar y 3 para Borrar.
     * @param object toModelo Modelo con los datos a validar.
     * @param object toDao DAO para las consultas de validación.
-    *
     * @return bool .T. si la inicialización se completa correctamente;
     *              .F. en caso contrario.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool validar()
+    *       Para ejecutar las validaciones de todos los campos del modelo.
     */
     FUNCTION Init
         LPARAMETERS tnBandera, toModelo, toDao
 
-        IF VARTYPE(tnBandera) != 'N' ;
-                OR !BETWEEN(tnBandera, 1, 3) ;
-                OR VARTYPE(toModelo) != 'O' ;
-                OR VARTYPE(toDao) != 'O' THEN
+        IF !es_numero(tnBandera, 1, 3) ;
+                OR !es_objeto(toModelo) ;
+                OR !es_objeto(toDao) THEN
             RETURN .F.
         ENDIF
 
@@ -100,8 +106,8 @@ DEFINE CLASS validador_base AS Custom
             .oDao = toDao
         ENDWITH
 
-        IF BETWEEN(THIS.nBandera, 1, 2) THEN
-            THIS.validar()
+        IF es_numero(THIS.nBandera, 1, 2) THEN
+            RETURN THIS.validar()
         ENDIF
     ENDFUNC
 
@@ -116,9 +122,16 @@ DEFINE CLASS validador_base AS Custom
     *
     * @return bool .T. si el modelo es válido para la operación;
     *              .F. en caso contrario.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool campo_existe_error()
+    *       Para verificar el último mensaje de error de todos los campos del
+    *       modelo.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     FUNCTION es_valido
-        IF BETWEEN(THIS.nBandera, 1, 2) THEN
+        IF es_numero(THIS.nBandera, 1, 2) THEN
             RETURN !THIS.campo_existe_error()
         ELSE
             RETURN !THIS.oDao.esta_relacionado(THIS.oModelo.obtener('codigo'))
@@ -130,6 +143,8 @@ DEFINE CLASS validador_base AS Custom
     *
     * @param string tcCampo Nombre del campo a buscar.
     * @return string Mensaje de error. Cadena vacía si no hay error.
+    * @uses string campo_obtener_ultimo_error(string tcCampo)
+    *       Para obtener el último mensaje de error del campo.
     */
     FUNCTION obtener_error
         LPARAMETERS tcCampo
@@ -154,19 +169,25 @@ DEFINE CLASS validador_base AS Custom
     * @param string tcUltimoError Mensaje de error a establecer.
     * @return bool .T. si el valor se establece correctamente;
     *              .F. en caso contrario.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
     */
     PROTECTED FUNCTION campo_establecer_ultimo_error
         LPARAMETERS tcCampo, tcUltimoError
 
-        IF VARTYPE(tcCampo) != 'C' OR EMPTY(tcCampo) ;
-                OR VARTYPE(tcUltimoError) != 'C' THEN
+        IF !es_cadena(tcCampo) OR !es_cadena(tcUltimoError, 0, 254) THEN
             RETURN .F.
         ENDIF
 
         LOCAL loCampo
         loCampo = THIS.oModelo.campo_obtener(tcCampo)
 
-        IF VARTYPE(loCampo) != 'O' THEN
+        IF !es_objeto(loCampo) THEN
             RETURN .F.
         ENDIF
 
@@ -178,12 +199,16 @@ DEFINE CLASS validador_base AS Custom
     *
     * @return bool .T. si existe un error o si ocurre uno;
     *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
     */
     PROTECTED FUNCTION campo_existe_error
         LOCAL loCampos, loCampo
         loCampos = THIS.oModelo.campo_obtener_todos()
 
-        IF VARTYPE(loCampos) != 'O' THEN
+        IF !es_objeto(loCampos) THEN
             RETURN .T.
         ENDIF
 
@@ -203,18 +228,25 @@ DEFINE CLASS validador_base AS Custom
     * @param string tcCampo Nombre del campo a buscar.
     * @return string Mensaje de error si ocurre una falla;
     *                cadena vacía si no hay error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
     */
     PROTECTED FUNCTION campo_obtener_ultimo_error
         LPARAMETERS tcCampo
 
-        IF VARTYPE(tcCampo) != 'C' OR EMPTY(tcCampo) THEN
+        IF !es_cadena(tcCampo) THEN
             RETURN "ERROR: El parámetro 'tcCampo' no es válido."
         ENDIF
 
         LOCAL loCampo
         loCampo = THIS.oModelo.campo_obtener(tcCampo)
 
-        IF VARTYPE(loCampo) != 'O' THEN
+        IF !es_objeto(loCampo) THEN
             RETURN STRTRAN(MSG_CAMPO_NO_EXISTE, '{}', tcCampo)
         ENDIF
 
@@ -229,12 +261,20 @@ DEFINE CLASS validador_base AS Custom
     *
     * Almacena los mensajes de error devueltos por los métodos de validación
     * en la propiedad 'cUltimoError' de cada campo.
+    *
+    * @return bool .T. si las validaciones se ejecutan correctamente;
+    *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+
     */
-    PROTECTED PROCEDURE validar
+    PROTECTED FUNCTION validar
         LOCAL loCampos, loCampo, lcCampo
         loCampos = THIS.oModelo.campo_obtener_todos()
 
-        IF VARTYPE(loCampos) != 'O' THEN
+        IF !es_objeto(loCampos) THEN
             RETURN .F.
         ENDIF
 
@@ -246,7 +286,7 @@ DEFINE CLASS validador_base AS Custom
                 EVALUATE('THIS.validar_' + lcCampo + '()')
             ENDIF
         ENDFOR
-    ENDPROC
+    ENDFUNC
 
     **/
     * Valida el código del modelo.
@@ -255,6 +295,11 @@ DEFINE CLASS validador_base AS Custom
     *              .F. en caso contrario.
     * @uses string campo_obtener_ultimo_error(string tcCampo)
     *       Para obtener el último mensaje de error del campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_codigo
         LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
@@ -278,7 +323,7 @@ DEFINE CLASS validador_base AS Custom
                 RETURN .F.
             ENDIF
 
-            IF VARTYPE(loModelo) == 'O' THEN
+            IF es_objeto(loModelo) THEN
                 loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
                 RETURN .F.
             ENDIF
@@ -290,7 +335,7 @@ DEFINE CLASS validador_base AS Custom
                     RETURN .F.
                 ENDIF
 
-                IF VARTYPE(loModelo) != 'O' THEN
+                IF !es_objeto(loModelo) THEN
                     loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_EXISTE)
                     RETURN .F.
                 ENDIF
@@ -308,6 +353,11 @@ DEFINE CLASS validador_base AS Custom
     * @uses bool campo_establecer_ultimo_error(string tcCampo, ;
                                                string tcUltimoError)
     *       Para establecer el último mensaje de error del campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_nombre
         LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
@@ -338,23 +388,23 @@ DEFINE CLASS validador_base AS Custom
                 RETURN .F.
             ENDIF
 
-            IF VARTYPE(loModelo) == 'O' THEN
+            IF es_objeto(loModelo) THEN
                 loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
                 RETURN .F.
             ENDIF
-        ELSE
-            IF THIS.nBandera == 2 THEN    && Modificar
-                IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
-                    loCampo.establecer_ultimo_error(lcEtiqueta + ;
-                        THIS.oDao.obtener_ultimo_error())
-                    RETURN .F.
-                ENDIF
+        ENDIF
 
-                IF VARTYPE(loModelo) == 'O' AND loModelo.obtener('codigo') != ;
-                        THIS.oModelo.obtener('codigo') THEN
-                    loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
-                    RETURN .F.
-                ENDIF
+        IF THIS.nBandera == 2 THEN    && Modificar
+            IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + ;
+                    THIS.oDao.obtener_ultimo_error())
+                RETURN .F.
+            ENDIF
+
+            IF es_objeto(loModelo) AND loModelo.obtener('codigo') != ;
+                    THIS.oModelo.obtener('codigo') THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
+                RETURN .F.
             ENDIF
         ENDIF
     ENDFUNC

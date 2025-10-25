@@ -376,6 +376,9 @@ DEFINE CLASS com_base AS Session
     * @param object toDto DTO que se va a convertir.
     * @return mixed object si la conversión se completa correctamente;
     *               .F. si el parámetro de entrada no es un objeto válido.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
@@ -384,15 +387,15 @@ DEFINE CLASS com_base AS Session
             RETURN .F.
         ENDIF
 
-        LOCAL lnCodigo, lcNombre, llVigente
+        LOCAL m.codigo, m.nombre, m.vigente
 
         WITH toDto
-            lnCodigo = .obtener('codigo')
-            lcNombre = ALLTRIM(.obtener('nombre'))
-            llVigente = .obtener('vigente')
+            m.codigo = .obtener('codigo')
+            m.nombre = .obtener('nombre')
+            m.vigente = .obtener('vigente')
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            lnCodigo, lcNombre, llVigente)
+            m.codigo, m.nombre, m.vigente)
     ENDFUNC
 ENDDEFINE

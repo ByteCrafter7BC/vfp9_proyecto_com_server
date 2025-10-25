@@ -18,7 +18,7 @@
 
 **/
 * @file com_barrios.prg
-* @package modulo\barrios
+* @package modulo\com_barrios
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
@@ -27,7 +27,7 @@
 */
 
 **/
-* Componente COM para la gestión de marcas de artículos.
+* Componente COM para la gestión de barrios.
 *
 * Esta clase actúa como un controlador o una capa de servicio (business object)
 * para la entidad 'barrios'. Se expone como un objeto COM para ser utilizado
@@ -35,7 +35,7 @@
 */
 DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     **/
-     * @var string Nombre de la clase modelo asociado a este componente.
+    * @var string Nombre de la clase modelo asociado a este componente.
     */
     cModelo = 'barrios'
 
@@ -44,10 +44,11 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar([string tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_nombre(string tcNombre)
+    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)
@@ -61,14 +62,14 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Verifica si un nombre ya existe en la tabla; dentro de un departamento
-    * y ciudad específicos.
+    * Verifica la existencia de un barrio por su nombre dentro de un
+    * departamento y ciudad específicos.
     *
-    * @param string tcNombre Nombre a verificar.
+    * @param string tcNombre Nombre del barrio a verificar.
     * @param int tnDepartamen Código del departamento.
     * @param int tnCiudad Código de la ciudad.
-    * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si no existe.
+    * @return bool .T. si el nombre existe o si ocurre un error, o
+    *              .F. si el nombre no existe.
     * @override
     */
     FUNCTION existe_nombre(tcNombre AS String, tnDepartamen AS Integer, ;
@@ -78,13 +79,13 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     ENDFUNC
 
     **/
-    * Devuelve un registro por su nombre; dentro de un departamento y ciudad
-    * específicos.
+    * Realiza la búsqueda de un barrio por su nombre dentro de un
+    * departamento y ciudad específicos.
     *
-    * @param string tcNombre Nombre del registro a buscar.
+    * @param string tcNombre Nombre del barrio a buscar.
     * @param int tnDepartamen Código del departamento.
     * @param int tnCiudad Código de la ciudad.
-    * @return mixed object modelo si el registro se encuentra;
+    * @return mixed object modelo si el barrio se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
     * @override
     */
@@ -106,38 +107,35 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
+    * Convierte un DTO (Data Transfer Object) a su objeto modelo
     * correspondiente.
     *
-    * Extrae los datos de un DTO para instanciar y devolver un nuevo objeto del
-    * modelo.
+    * Extrae los datos de un DTO de tipo 'dto_barrios' para instanciar
+    * y devolver un nuevo objeto del modelo 'barrios'.
     *
-    * @param object toDto DTO que se va a convertir.
-    * @return mixed object si la conversión se completa correctamente;
+    * @param object toDto DTO (dto_barrios) que se va a convertir.
+    * @return mixed object modelo si la conversión se completa correctamente, o
     *               .F. si el parámetro de entrada no es un objeto válido.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
     * @override
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF !es_objeto(toDto) THEN
+        IF VARTYPE(toDto) != 'O' THEN
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente
+        LOCAL lnCodigo, lcNombre, lnDepartamen, lnCiudad, llVigente
 
         WITH toDto
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
+            lnCodigo = .obtener_codigo()
+            lcNombre = ALLTRIM(.obtener_nombre())
+            lnDepartamen = .obtener_departamen()
+            lnCiudad = .obtener_ciudad()
+            llVigente = .esta_vigente()
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente)
+            lnCodigo, lcNombre, lnDepartamen, lnCiudad, llVigente)
     ENDFUNC
 ENDDEFINE

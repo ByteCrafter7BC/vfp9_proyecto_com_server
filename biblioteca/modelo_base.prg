@@ -65,6 +65,14 @@ DEFINE CLASS modelo_base AS Custom
     * @param bool tlVigente Estado de vigencia del modelo.
     * @return bool .T. si la inicialización se completa correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
     * @uses bool campo_cargar()
     *       Para cargar los campos a la propiedad protegida 'oCampos'.
     * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
@@ -73,9 +81,10 @@ DEFINE CLASS modelo_base AS Custom
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tlVigente
 
-        IF VARTYPE(tnCodigo) != 'N' ;
-                OR VARTYPE(tcNombre) != 'C' ;
-                OR VARTYPE(tlVigente) != 'L' THEN
+        IF PARAMETERS() != 3 ;
+                OR !es_numero(tnCodigo, 0) ;
+                OR !es_cadena(tcNombre, 0) ;
+                OR !es_logico(tlVigente) THEN
             RETURN .F.
         ENDIF
 
@@ -136,14 +145,16 @@ DEFINE CLASS modelo_base AS Custom
     *
     * @param object toModelo Modelo con el que se va a comparar.
     * @return bool .T. si los objetos son idénticos, o .F. si no lo son.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @uses mixed campo_obtener_valor(string tcCampo)
     *       Para obtener el valor de un campo.
     */
     FUNCTION es_igual
         LPARAMETERS toModelo
 
-        IF VARTYPE(toModelo) != 'O' ;
-                OR LOWER(toModelo.Class) != LOWER(THIS.Name) THEN
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo, THIS.Name) THEN
             RETURN .F.
         ENDIF
 
@@ -174,6 +185,9 @@ DEFINE CLASS modelo_base AS Custom
     *       'oCampos'.
     * @uses mixed campo_obtener(string tcCampo)
     *       Para obtener un objeto con todas las propiedades de un campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     */
     FUNCTION establecer
         LPARAMETERS tcCampo, tvValor
@@ -185,7 +199,7 @@ DEFINE CLASS modelo_base AS Custom
         LOCAL loCampo
         loCampo = THIS.campo_obtener(tcCampo)
 
-        IF VARTYPE(loCampo) != 'O' ;
+        IF !es_objeto(loCampo) ;
                 OR !loCampo.permitir_setter() ;
                 OR VARTYPE(tvValor) != loCampo.obtener_tipo() THEN
             RETURN .F.
@@ -206,6 +220,9 @@ DEFINE CLASS modelo_base AS Custom
     *       'oCampos'.
     * @uses mixed campo_obtener(string tcCampo)
     *       Para obtener un objeto con todas las propiedades de un campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     */
     FUNCTION obtener
         LPARAMETERS tcCampo
@@ -217,7 +234,7 @@ DEFINE CLASS modelo_base AS Custom
         LOCAL loCampo
         loCampo = THIS.campo_obtener(tcCampo)
 
-        IF VARTYPE(loCampo) != 'O' OR !loCampo.permitir_getter() THEN
+        IF !es_objeto(loCampo) OR !loCampo.permitir_getter() THEN
             RETURN NULL
         ENDIF
 
@@ -243,12 +260,16 @@ DEFINE CLASS modelo_base AS Custom
     *              .F. si ocurre un error.
     * @uses mixed campo_obtener_todos(string tcModelo)
     *       Para cargar los campos del modelo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_cargar
         LOCAL loCampos
-        loCampos = campo_obtener_todos(LOWER(THIS.Name))
+        loCampos = campo_obtener_todos(THIS.Name)
 
-        IF VARTYPE(loCampos) != 'O' OR loCampos.Count == 0 THEN
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
             RETURN .F.
         ENDIF
 
@@ -265,6 +286,8 @@ DEFINE CLASS modelo_base AS Custom
     * @uses bool campo_existe(string tcCampo)
     *       Para verifica si un campo existe en la propiedad protegida
     *       'oCampos'.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_getter
@@ -272,7 +295,7 @@ DEFINE CLASS modelo_base AS Custom
 
         IF PARAMETERS() != 2 ;
                 OR !THIS.campo_existe(tcCampo) ;
-                OR VARTYPE(tlValor) != 'L' THEN
+                OR !es_logico(tlValor) THEN
             RETURN .F.
         ENDIF
 
@@ -285,12 +308,14 @@ DEFINE CLASS modelo_base AS Custom
     * @param tlValor Valor a asignar.
     * @return bool .T. si el valor se asigna correctamente;
     *              .F. en caso contrario.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_getter_todos
         LPARAMETERS tlValor
 
-        IF PARAMETERS() != 1 OR VARTYPE(tlValor) != 'L' THEN
+        IF PARAMETERS() != 1 OR !es_logico(tlValor) THEN
             RETURN .F.
         ENDIF
 
@@ -313,6 +338,8 @@ DEFINE CLASS modelo_base AS Custom
     * @uses bool campo_existe(string tcCampo)
     *       Para verifica si un campo existe en la propiedad protegida
     *       'oCampos'.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_setter
@@ -320,7 +347,7 @@ DEFINE CLASS modelo_base AS Custom
 
         IF PARAMETERS() != 2 ;
                 OR !THIS.campo_existe(tcCampo) ;
-                OR VARTYPE(tlValor) != 'L' THEN
+                OR !es_logico(tlValor) THEN
             RETURN .F.
         ENDIF
 
@@ -333,12 +360,14 @@ DEFINE CLASS modelo_base AS Custom
     * @param tlValor Valor a asignar.
     * @return bool .T. si el valor se asigna correctamente;
     *              .F. en caso contrario.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_establecer_setter_todos
         LPARAMETERS tlValor
 
-        IF PARAMETERS() != 1 OR VARTYPE(tlValor) != 'L' THEN
+        IF PARAMETERS() != 1 OR !es_logico(tlValor) THEN
             RETURN .F.
         ENDIF
 
@@ -381,14 +410,20 @@ DEFINE CLASS modelo_base AS Custom
     * @param string tcCampo Nombre del campo (ej.: 'codigo', 'nombre').
     * @return bool .T. si el campo existe o si ocurre un error;
     *              .F. si el campo no existe.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @uses object oCampos Almacena la estructura de la tabla.
     */
     PROTECTED FUNCTION campo_existe
         LPARAMETERS tcCampo
 
-        IF VARTYPE(tcCampo) != 'C' ;
-                OR EMPTY(tcCampo) ;
-                OR VARTYPE(THIS.oCampos) != 'O' THEN
+        IF PARAMETERS() != 1 ;
+                OR !es_cadena(tcCampo) ;
+                OR !es_objeto(THIS.oCampos) THEN
             RETURN .T.
         ENDIF
 

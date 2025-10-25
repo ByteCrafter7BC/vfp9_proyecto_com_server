@@ -97,6 +97,7 @@
 #DEFINE MSG_MAYOR_O_IGUAL_A_CERO             'Debe ser mayor o igual a cero.'
 #DEFINE MSG_MAYOR_QUE_CERO                   'Debe ser mayor que cero.'
 #DEFINE MSG_MENOR_QUE                        'Debe ser menor que {}.'
+#DEFINE MSG_ERROR_NUMERO_ARGUMENTOS          'El número de argumentos no es válido.'
 #DEFINE MSG_NO_BLANCO                        'No puede quedar en blanco.'
 #DEFINE MSG_NO_BORRA_REGISTRO_RELACIONADO    'No se puede borrar el registro porque figura en otros archivos.'
 #DEFINE MSG_NO_ES_VALIDO                     'No es válido.'

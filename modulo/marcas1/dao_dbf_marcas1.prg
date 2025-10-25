@@ -63,10 +63,22 @@ DEFINE CLASS dao_dbf_marcas1 AS dao_dbf OF dao_dbf.prg
     * @param int tnCodigo Código numérico único a verificar.
     * @return bool .T. si el registro está relacionado o si ocurre un error;
     *              .F. si no está relacionado.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool dao_existe_referencia(string tcModelo, ;
+                                       string tcCondicionFiltro)
+    *       Para verificar la existencia de registros referenciales en una
+    *       tabla.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .T.
+        ENDIF
 
         IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')

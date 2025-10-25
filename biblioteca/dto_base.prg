@@ -88,6 +88,10 @@ DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
     *              .F. si ocurre un error.
     * @uses mixed campo_obtener_todos(string tcModelo)
     *       Para cargar los campos del modelo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oCampos Almacena la estructura de la tabla.
     * @override
     */
     PROTECTED FUNCTION campo_cargar
@@ -96,9 +100,9 @@ DEFINE CLASS dto_base AS modelo_base OF modelo_base.prg
         ENDIF
 
         LOCAL loCampos
-        loCampos = campo_obtener_todos(SUBSTR(LOWER(THIS.Name), 5))
+        loCampos = campo_obtener_todos(SUBSTR(THIS.Name, 5))
 
-        IF VARTYPE(loCampos) != 'O' OR loCampos.Count == 0 THEN
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
             RETURN .F.
         ENDIF
 

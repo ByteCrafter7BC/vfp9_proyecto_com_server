@@ -42,13 +42,14 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar()
     * @method int obtener_nuevo_codigo()
-    * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_codigo()
+    * @method mixed obtener_por_nombre()
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method string obtener_ultimo_error()
     * @method bool borrar(int tnCodigo)
-    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
     * @method bool existe_nombre(string tcNombre, int tnDepartamen, ;
                                  int tnCiudad)
     * @method bool esta_relacionado(int tnCodigo)
@@ -59,67 +60,43 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     */
 
     **/
-    * Verifica si un nombre ya existe en la tabla; dentro de un departamento
-    * y ciudad específicos.
+    * Verifica la existencia de un barrio por su nombre dentro de un
+    * departamento y ciudad específicos.
     *
-    * Realiza una búsqueda no sensible a mayúsculas/minúsculas utilizando el
-    * índice secundario ('indice2').
-    *
-    * @param string tcNombre Nombre a verificar.
+    * @param string tcNombre Nombre del barrio a verificar.
     * @param int tnDepartamen Código del departamento.
     * @param int tnCiudad Código de la ciudad.
-    * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si no existe.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
+    * @return bool .T. si el nombre existe o si ocurre un error, o
+    *              .F. si el nombre no existe.
     * @override
     */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
-        LOCAL llExiste, lnAncho
-
-        IF PARAMETERS() != 3 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_cadena(tcNombre) THEN
+        IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .T.
         ENDIF
 
-        IF !es_numero(tnDepartamen, 1, 999) THEN
-            THIS.cUltimoError = ;
-                STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
+        IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .T.
         ENDIF
 
-        IF !es_numero(tnCiudad) THEN
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCiudad')
             RETURN .T.
         ENDIF
 
-        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
-
-        IF lnAncho == 0 THEN
-            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
-                '{0}', 'nombre'), '{1}', THIS.cModelo)
-            RETURN .T.
-        ENDIF
-
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
+            THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .T.
         ENDIF
+
+        LOCAL llExiste
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3) + STR(ciudad, 5)
@@ -140,31 +117,19 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
         RETURN llExiste
     ENDFUNC
 
-    **/
-    * Verifica si un código está relacionado con otros registros de la base
-    * de datos.
+    **
+    * Verifica si el código de un barrio está relacionado con otros registros
+    * de la base de datos.
     *
-    * @param int tnCodigo Código numérico único a verificar.
-    * @return bool .T. si el registro está relacionado o si ocurre un error;
+    * @param int tnCodigo Código del barrio a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error, o
     *              .F. si no está relacionado.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses bool dao_existe_referencia(string tcModelo, ;
-                                       string tcCondicionFiltro)
-    *       Para verificar la existencia de registros referenciales en una
-    *       tabla.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_numero(tnCodigo) THEN
+        IF !THIS.tnCodigo_Valid(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
@@ -188,59 +153,43 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Devuelve un registro por su nombre; dentro de un departamento y ciudad
-    * específicos.
+    * Realiza la búsqueda de un barrio por su nombre dentro de un
+    * departamento y ciudad específicos.
     *
-    * @param string tcNombre Nombre del registro a buscar.
-    * @return mixed object modelo si el registro se encuentra;
+    * @param string tcNombre Nombre del barrio a buscar.
+    * @param int tnDepartamen Código del departamento.
+    * @param int tnCiudad Código de la ciudad.
+    * @return mixed object modelo si el barrio se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
     * @override
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre, tnDepartamen, tnCiudad
 
-        LOCAL loModelo, lnAncho
-
-        IF PARAMETERS() != 3 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_cadena(tcNombre) THEN
+        IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .F.
         ENDIF
 
-        IF !es_numero(tnDepartamen, 1, 999) THEN
-            THIS.cUltimoError = ;
-                STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
+        IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .F.
         ENDIF
 
-        IF !es_numero(tnCiudad) THEN
+        IF !THIS.tnCiudad_Valid(tnCiudad) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCiudad')
-            RETURN .F.
+            RETURN .T.
         ENDIF
 
-        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
-
-        IF lnAncho == 0 THEN
-            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
-                '{0}', 'nombre'), '{1}', THIS.cModelo)
-            RETURN .F.
-        ENDIF
-
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
+            THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
+
+        LOCAL loModelo
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3) + STR(ciudad, 5)
@@ -265,25 +214,14 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool .T. si el registro se agrega correctamente;
+    * @return bool .T. si el registro se agrega correctamente, o
     *              .F. si ocurre un error.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
-    *       Para verificar si un registro existe en la base de datos buscándolo
-    *       por su código.
     * @override
     */
     FUNCTION agregar
         LPARAMETERS toModelo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
+        IF !THIS.toModelo_Valid(toModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
@@ -291,11 +229,11 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
         LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente
 
         WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
+            m.codigo = .obtener_codigo()
+            m.nombre = .obtener_nombre()
+            m.departamen = .obtener_departamen()
+            m.ciudad = .obtener_ciudad()
+            m.vigente = .esta_vigente()
         ENDWITH
 
         IF THIS.existe_codigo(m.codigo) THEN
@@ -305,7 +243,8 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
         ENDIF
 
         IF THIS.existe_nombre(m.nombre, m.departamen, m.ciudad) THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
+                "' ya existe."
             RETURN .F.
         ENDIF
 
@@ -341,25 +280,14 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool .T. si el registro se modifica correctamente;
+    * @return bool .T. si el registro se modifica correctamente, o
     *              .F. si ocurre un error.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
-    *       Para verificar si un registro existe en la base de datos buscándolo
-    *       por su código.
     * @override
     */
     FUNCTION modificar
         LPARAMETERS toModelo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
+        IF !THIS.toModelo_Valid(toModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
@@ -368,11 +296,11 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
               loModelo
 
         WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
+            m.codigo = .obtener_codigo()
+            m.nombre = .obtener_nombre()
+            m.departamen = .obtener_departamen()
+            m.ciudad = .obtener_ciudad()
+            m.vigente = .esta_vigente()
         ENDWITH
 
         IF !THIS.existe_codigo(m.codigo) THEN
@@ -383,9 +311,12 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
 
         loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen, m.ciudad)
 
-        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
-            RETURN .F.
+        IF VARTYPE(loModelo) == 'O' THEN
+            IF loModelo.obtener_codigo() != m.codigo THEN
+                THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
+                    "' ya existe."
+                RETURN .F.
+            ENDIF
         ENDIF
 
         IF !dao_existe_codigo('depar', m.departamen) THEN
@@ -402,7 +333,7 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
 
         loModelo = THIS.obtener_por_codigo(m.codigo)
 
-        IF !es_objeto(loModelo) THEN
+        IF VARTYPE(loModelo) != 'O' THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -422,7 +353,7 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice1'    && codigo
         IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH m.nombre, ;
+            REPLACE nombre WITH ALLTRIM(m.nombre), ;
                     departamen WITH m.departamen, ;
                     ciudad WITH m.ciudad, ;
                     vigente WITH m.vigente
@@ -439,23 +370,81 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool Init()
     * @method bool configurar()
-    * @method bool conectar(bool [tlModoEscritura])
+    * @method bool conectar([bool tlModoEscritura])
     * @method bool desconectar()
-    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method bool Init()
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
+    * @method bool tnCodigo_Valid(int tnCodigo)
+    * @method bool tcNombre_Valid(string tcNombre)
+    * @method bool tlVigente_Valid(bool tlVigente)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method mixed obtener_modelo()
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tnDepartamen_Valid(int tnDepartamen)
+    * @method bool tnCiudad_Valid(int tnCiudad)
     */
 
     **/
     * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed object modelo si la operación se completa correctamente;
+    * @return mixed object modelo si la operación se completa correctamente, o
     *               .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, nombre, departamen, ciudad, vigente)
+            codigo, ALLTRIM(nombre), departamen, ciudad, vigente)
+    ENDFUNC
+
+    **/
+    * Valida todas las propiedades del objeto modelo. Sobrescribe la validación
+    * base e incluye la validación de los campos 'maquina' y 'marca'.
+    *
+    * @param object toModelo Modelo a validar.
+    * @return bool .T. si el objeto es válido, o .F. si no lo es.
+    * @override
+    */
+    PROTECTED FUNCTION toModelo_Valid
+        LPARAMETERS toModelo
+
+        IF !dao_base::toModelo_Valid(toModelo) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnDepartamen_Valid(toModelo.obtener_departamen()) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnCiudad_Valid(toModelo.obtener_ciudad()) THEN
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Valida el argumento 'tnDepartamen'. Verifica el tipo de dato y el rango del
+    * código referencial.
+    *
+    * @param int tnDepartamen Código del departamento a validar.
+    * @return bool .T. si el código es válido, o .F. si no lo es.
+    */
+    PROTECTED FUNCTION tnDepartamen_Valid
+        LPARAMETERS tnDepartamen
+        RETURN THIS.validar_codigo_referencial('depar', tnDepartamen)
+    ENDFUNC
+
+    **/
+    * Valida el argumento 'tnCiudad'. Verifica el tipo de dato y el rango del
+    * código referencial.
+    *
+    * @param int tnCiudad Código de la ciudad a validar.
+    * @return bool .T. si el código es válido, o .F. si no lo es.
+    */
+    PROTECTED FUNCTION tnCiudad_Valid
+        LPARAMETERS tnCiudad
+        RETURN THIS.validar_codigo_referencial('ciudades', tnCiudad)
     ENDFUNC
 ENDDEFINE
