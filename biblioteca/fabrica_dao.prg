@@ -160,7 +160,7 @@ DEFINE CLASS fabrica_dao AS Custom
     *              .F. en caso contrario.
     */
     PROTECTED FUNCTION Init
-        DIMENSION THIS.aDao[14, 2]
+        DIMENSION THIS.aDao[15, 2]
 
         WITH THIS
             .aDao[01, 1] = 'barrios'
@@ -176,7 +176,8 @@ DEFINE CLASS fabrica_dao AS Custom
             .aDao[11, 1] = 'proceden'
             .aDao[12, 1] = 'rubros1'
             .aDao[13, 1] = 'rubros2'
-            .aDao[14, 1] = 'vendedor'
+            .aDao[14, 1] = 'sifen_ciudades'
+            .aDao[15, 1] = 'vendedor'
         ENDWITH
     ENDFUNC
 
