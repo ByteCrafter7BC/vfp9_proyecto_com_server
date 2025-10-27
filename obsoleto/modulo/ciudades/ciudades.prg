@@ -67,13 +67,16 @@ DEFINE CLASS ciudades AS modelo_base OF modelo_base.prg
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tnDepartamen, tnSifen, tlVigente
 
-        IF PARAMETERS() != 5 ;
-                OR !es_numero(tnDepartamen, 0, 999) ;
+        IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !es_numero(tnDepartamen, 0, 999) ;
                 OR !es_numero(tnSifen, 0) THEN
             RETURN .F.
         ENDIF
 
-        IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
+        IF !THIS.campo_cargar() THEN
             RETURN .F.
         ENDIF
 

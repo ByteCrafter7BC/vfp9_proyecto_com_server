@@ -17,17 +17,17 @@
 */
 
 **/
-* @file prueba_com_depar.prg
+* @file prueba_com_ciudades.prg
 * @package prueba
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @description Programa principal para ejecutar las pruebas de 'com_depar'.
+* @description Programa principal para ejecutar las pruebas de 'com_ciudades'.
 */
 
 **/
 * Programa principal que crea un conjunto de pruebas y ejecuta todas las pruebas
-* definidas en la clase 'prueba_com_depar'.
+* definidas en la clase 'prueba_com_ciudades'.
 *
 * @uses bool es_objeto(object toObjeto, string [tcClase])
 *       Para validar si un valor es un objeto y, opcionalmente, corresponde
@@ -36,14 +36,14 @@
 CLEAR
 
 LOCAL loConjuntoPrueba
-loConjuntoPrueba = CREATEOBJECT('prueba_com_depar')
+loConjuntoPrueba = CREATEOBJECT('prueba_com_ciudades')
 
 IF !es_objeto(loConjuntoPrueba) THEN
     ? 'ERROR: No se pudo crear el conjunto de pruebas.'
     RETURN .F.
 ENDIF
 
-? "Iniciando pruebas de 'com_depar'..."
+? "Iniciando pruebas de 'com_ciudades'..."
 ? REPLICATE('=', 40)
 
 WITH loConjuntoPrueba
@@ -62,11 +62,11 @@ loConjuntoPrueba = .F.
 RELEASE loConjuntoPrueba
 
 **/
-* Clase de pruebas para 'com_depar'.
+* Clase de pruebas para 'com_ciudades'.
 */
-DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
+DEFINE CLASS prueba_com_ciudades AS conjunto_prueba OF conjunto_prueba.prg
     **/
-    * @var object Objeto de la capa de negocio 'com_depar'.
+    * @var object Objeto de la capa de negocio 'com_ciudades'.
     */
     PROTECTED oCom
 
@@ -98,7 +98,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       Para afirmar que un valor es verdadero.
     * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
     *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_existe
         THIS.ejecutar_prueba('Método: existe_codigo | tnCodigo: 3', ;
@@ -109,12 +109,18 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_falso(THIS.oCom.existe_codigo(888), ;
                 'No debe existir el código 888.'))
 
-        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Central'], ;
-            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Central'), ;
-                "Debe existir el nombre 'Central'."))
+        THIS.ejecutar_prueba( ;
+            'Método: existe_nombre | ' + ;
+                "tcNombre: 'Villa Elisa', " + ;
+                'tnDepartamen: 12', ;
+            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Villa Elisa', 12), ;
+                "Debe existir el nombre 'Villa Elisa'."))
 
-        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Monark' ], ;
-            THIS.afirmar_falso(THIS.oCom.existe_nombre('Monark'), ;
+        THIS.ejecutar_prueba( ;
+            'Método: existe_nombre | ' + ;
+                "tcNombre: 'Monark', " + ;
+                'tnDepartamen: 10', ;
+            THIS.afirmar_falso(THIS.oCom.existe_nombre('Monark', 10), ;
                 "No debe existir el nombre 'Monark'."))
     ENDPROC
 
@@ -127,7 +133,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       Para afirmar que un valor es verdadero.
     * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
     *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_vigente
         THIS.ejecutar_prueba('Método: esta_vigente | tnCodigo: 3', ;
@@ -148,7 +154,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       Para afirmar que un valor es verdadero.
     * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
     *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_relacionado
         THIS.ejecutar_prueba('Método: esta_relacionado | tnCodigo: 3', ;
@@ -167,7 +173,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       Para ejecutar una prueba individual y actualiza los contadores.
     * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
     *       Para afirmar que un valor es verdadero.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_contar
         LOCAL lcCondicionFiltro
@@ -176,7 +182,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_verdadero(THIS.oCom.contar() > 0, ;
                 'El resultado de contar() debe ser mayor que cero.'))
 
-        lcCondicionFiltro = 'nombre == [CANINDEYU                     ]'
+        lcCondicionFiltro = 'nombre == [ASUNCION                      ]'
         THIS.ejecutar_prueba('Método: contar | tcCondicionFiltro: ' + ;
             "'" + lcCondicionFiltro + "'", ;
             THIS.afirmar_verdadero(THIS.oCom.contar(lcCondicionFiltro) == 1, ;
@@ -195,10 +201,10 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     * @uses bool es_objeto(object toObjeto, string [tcClase])
     *       Para validar si un valor es un objeto y, opcionalmente, corresponde
     *       a una clase específica.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_obtener
-        LOCAL lcNombre, lcXml
+        LOCAL lcNombre, lnDepartamen, lcXml
 
         THIS.ejecutar_prueba('Método: obtener_nuevo_codigo', ;
             THIS.afirmar_verdadero(THIS.oCom.obtener_nuevo_codigo() > 0, ;
@@ -215,18 +221,26 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
                 es_objeto(THIS.oCom.obtener_por_codigo(888)), ;
                 'No debe existir el código 888.'))
 
-        lcNombre = 'Boqueron'
+        lcNombre = 'Capiata'
+        lnDepartamen = 12
         THIS.ejecutar_prueba( ;
-            "Método: obtener_por_nombre | tcNombre: '" + lcNombre + "'", ;
+            'Método: obtener_por_nombre | ' + ;
+                "tcNombre: '" + lcNombre + "', " + ;
+                'tnDepartamen: 12', ;
             THIS.afirmar_verdadero( ;
-                es_objeto(THIS.oCom.obtener_por_nombre(lcNombre)), ;
+                es_objeto(THIS.oCom.obtener_por_nombre( ;
+                    lcNombre, lnDepartamen)), ;
                 "Debe existir el nombre '" + lcNombre + "'."))
 
         lcNombre = 'Monark'
+        lnDepartamen = 10
         THIS.ejecutar_prueba( ;
-            "Método: obtener_por_nombre | tcNombre: '" + lcNombre + "'", ;
+            'Método: obtener_por_nombre | ' + ;
+                "tcNombre: '" + lcNombre + "', " + ;
+                'tnDepartamen: 10', ;
             THIS.afirmar_falso( ;
-                es_objeto(THIS.oCom.obtener_por_nombre(lcNombre)), ;
+                es_objeto(THIS.oCom.obtener_por_nombre(;
+                    lcNombre, lnDepartamen)), ;
                 "Nos debe existir el nombre '" + lcNombre + "'."))
 
         lcXml = THIS.oCom.obtener_todos()
@@ -279,7 +293,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       a una clase específica.
     * @uses bool es_logico(bool tlLogico)
     *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_agregar
         LOCAL llAgregado
@@ -290,6 +304,8 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
                 .establecer('codigo', THIS.oCom.obtener_nuevo_codigo())
                 .establecer('nombre', 'Nombre ' + ;
                     ALLTRIM(STR(.obtener('codigo'))))
+                .establecer('departamen', 12)
+                .establecer('sifen', 6428)
                 .establecer('vigente', .T.)
             ENDWITH
         ENDIF
@@ -298,6 +314,10 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
         THIS.ejecutar_prueba('Método: agregar', ;
             THIS.afirmar_verdadero(es_logico(llAgregado) AND llAgregado, ;
                 'No se pudo agregar el nuevo registro.'))
+
+        IF !llAgregado THEN
+            ? 'Mensaje de error DAO: ' + THIS.oCom.obtener_ultimo_error()
+        ENDIF
     ENDPROC
 
     **/
@@ -312,7 +332,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       a una clase específica.
     * @uses bool es_logico(bool tlLogico)
     *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_modificar
         LOCAL llModificado
@@ -321,6 +341,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             WITH THIS.oDto
                 .establecer('nombre', 'Nombre ' + ;
                     ALLTRIM(STR(.obtener('codigo'))) + ' (modificado)')
+                .establecer('sifen', 3570)
                 .establecer('vigente', .F.)
             ENDWITH
         ENDIF
@@ -330,6 +351,10 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_verdadero( ;
                 es_logico(llModificado) AND llModificado, ;
                 'No se pudo modificar el nuevo registro.'))
+
+        IF !llModificado THEN
+            ? 'Mensaje de error DAO: ' + THIS.oCom.obtener_ultimo_error()
+        ENDIF
     ENDPROC
 
     **/
@@ -341,7 +366,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *       Para afirmar que un valor es falso.
     * @uses bool es_logico(bool tlLogico)
     *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     */
     PROCEDURE prueba_borrar
         LOCAL llBorrado
@@ -368,19 +393,19 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero y el objeto de la capa de
-    * negocio 'com_depar'.
+    * negocio 'com_ciudades'.
     *
     * @return .T. si la inicialización se realizó correctamente
     * @uses bool es_objeto(object toObjeto, string [tcClase])
     *       Para validar si un valor es un objeto y, opcionalmente, corresponde
     *       a una clase específica.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    * @uses object oCom Objeto de la capa de negocio 'com_ciudades'.
     * @override
     */
     PROTECTED FUNCTION Init
         DODEFAULT()    && Llama al Init de la clase padre.
 
-        THIS.oCom = NEWOBJECT('com_depar', 'com_depar.prg')
+        THIS.oCom = NEWOBJECT('com_ciudades', 'com_ciudades.prg')
 
         IF !es_objeto(THIS.oCom) THEN
             RETURN .F.
@@ -392,7 +417,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *
     * Libera los recursos utilizados por la instancia, en particular el objeto
     * de la capa de negocio 'oCom'.
-    * @uses oCom object Objeto de la capa de negocio 'com_depar'.
+    * @uses oCom object Objeto de la capa de negocio 'com_ciudades'.
     */
     PROTECTED PROCEDURE Destroy
         THIS.oCom = NULL

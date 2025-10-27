@@ -18,7 +18,7 @@
 
 **/
 * @file com_ciudades.prg
-* @package modulo\ciudades
+* @package modulo\com_ciudades
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
@@ -27,7 +27,7 @@
 */
 
 **/
-* Componente COM para la gestión de marcas de artículos.
+* Componente COM para la gestión de ciudades.
 *
 * Esta clase actúa como un controlador o una capa de servicio (business object)
 * para la entidad 'ciudades'. Se expone como un objeto COM para ser utilizado
@@ -35,7 +35,7 @@
 */
 DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     **/
-     * @var string Nombre de la clase modelo asociado a este componente.
+    * @var string Nombre de la clase modelo asociado a este componente.
     */
     cModelo = 'ciudades'
 
@@ -44,10 +44,11 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar([string tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_nombre(string tcNombre)
+    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)
@@ -61,13 +62,13 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Verifica si un nombre ya existe en la tabla; dentro de un departamento
-    * específico.
+    * Verifica la existencia de una ciudad por su nombre dentro de un
+    * departamento específico.
     *
-    * @param string tcNombre Nombre a verificar.
+    * @param string tcNombre Nombre de la ciudad a verificar.
     * @param int tnDepartamen Código del departamento.
-    * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si no existe.
+    * @return bool .T. si el nombre existe o si ocurre un error, o
+    *              .F. si el nombre no existe.
     * @override
     */
     FUNCTION existe_nombre(tcNombre AS String, tnDepartamen AS Integer) ;
@@ -77,11 +78,11 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     ENDFUNC
 
     **/
-    * Verifica si un código del SIFEN ya existe en la tabla.
+    * Verifica la existencia de un código del SIFEN.
     *
-    * @param int tnSifen Código numérico único del SIFEN a verificar.
-    * @return bool .T. si código del SIFEN existe o si ocurre un error;
-    *              .F. si no existe.
+    * @param int tnSifen Código del SIFEN a verificar.
+    * @return bool .T. si el código del SIFEN existe o si ocurre un error, o
+    *              .F. si el código del SIFEN no existe.
     */
     FUNCTION existe_sifen(tnSifen AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si el código del SIFEN existe u ocurre un error; de lo contrario, devuelve falso (.F.).'
@@ -89,11 +90,12 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     ENDFUNC
 
     **/
-    * Devuelve un registro por su nombre; dentro de un departamento específico.
+    * Realiza la búsqueda de una ciudad por su nombre dentro de un departamento
+    * específico.
     *
-    * @param string tcNombre Nombre del registro a buscar.
+    * @param string tcNombre Nombre de la ciudad a buscar.
     * @param int tnDepartamen Código del departamento.
-    * @return mixed object modelo si el registro se encuentra;
+    * @return mixed object modelo si la ciudad se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
     * @override
     */
@@ -101,6 +103,18 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
             AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
         RETURN THIS.oDao.obtener_por_nombre(tcNombre, tnDepartamen)
+    ENDFUNC
+
+    **/
+    * Realiza la búsqueda de una ciudad por su código del SIFEN.
+    *
+    * @param int tnSifen Código del SIFEN a buscar.
+    * @return mixed object modelo si el código del SIFEN se encuentra, o
+    *               .F. si no se encuentra o si ocurre un error.
+    */
+    FUNCTION obtener_por_sifen(tnSifen AS Integer) AS Object ;
+        HELPSTRING 'Devuelve un objeto (Object) si el código del SIFEN existe; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
+        RETURN THIS.oDao.obtener_por_sifen(tnSifen)
     ENDFUNC
 
     **/
@@ -114,38 +128,35 @@ DEFINE CLASS com_ciudades AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
+    * Convierte un DTO (Data Transfer Object) a su objeto modelo
     * correspondiente.
     *
-    * Extrae los datos de un DTO para instanciar y devolver un nuevo objeto del
-    * modelo.
+    * Extrae los datos de un DTO de tipo 'dto_ciudades' para instanciar
+    * y devolver un nuevo objeto del modelo 'ciudades'.
     *
-    * @param object toDto DTO que se va a convertir.
-    * @return mixed object si la conversión se completa correctamente;
+    * @param object toDto DTO (dto_ciudades) que se va a convertir.
+    * @return mixed object modelo si la conversión se completa correctamente, o
     *               .F. si el parámetro de entrada no es un objeto válido.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
     * @override
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF !es_objeto(toDto) THEN
+        IF VARTYPE(toDto) != 'O' THEN
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente
+        LOCAL lnCodigo, lcNombre, lnDepartamen, lnSifen, llVigente
 
         WITH toDto
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.sifen = .obtener('sifen')
-            m.vigente = .obtener('vigente')
+            lnCodigo = .obtener_codigo()
+            lcNombre = ALLTRIM(.obtener_nombre())
+            lnDepartamen = .obtener_departamen()
+            lnSifen = .obtener_sifen()
+            llVigente = .esta_vigente()
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            m.codigo, m.nombre, m.departamen, m.sifen, m.vigente)
+            lnCodigo, lcNombre, lnDepartamen, lnSifen, llVigente)
     ENDFUNC
 ENDDEFINE

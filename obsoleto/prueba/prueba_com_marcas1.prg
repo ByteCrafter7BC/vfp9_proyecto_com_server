@@ -17,33 +17,29 @@
 */
 
 **/
-* @file prueba_com_depar.prg
+* @file prueba_com_marcas1.prg
 * @package prueba
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @description Programa principal para ejecutar las pruebas de 'com_depar'.
+* @description Programa principal para ejecutar las pruebas de 'com_marcas1'.
 */
 
 **/
 * Programa principal que crea un conjunto de pruebas y ejecuta todas las pruebas
-* definidas en la clase 'prueba_com_depar'.
-*
-* @uses bool es_objeto(object toObjeto, string [tcClase])
-*       Para validar si un valor es un objeto y, opcionalmente, corresponde
-*       a una clase específica.
+* definidas en la clase 'prueba_com_marcas1'.
 */
 CLEAR
 
 LOCAL loConjuntoPrueba
-loConjuntoPrueba = CREATEOBJECT('prueba_com_depar')
+loConjuntoPrueba = CREATEOBJECT('prueba_com_marcas1')
 
-IF !es_objeto(loConjuntoPrueba) THEN
+IF VARTYPE(loConjuntoPrueba) != 'O' THEN
     ? 'ERROR: No se pudo crear el conjunto de pruebas.'
     RETURN .F.
 ENDIF
 
-? "Iniciando pruebas de 'com_depar'..."
+? "Iniciando pruebas de 'com_marcas1'..."
 ? REPLICATE('=', 40)
 
 WITH loConjuntoPrueba
@@ -62,11 +58,11 @@ loConjuntoPrueba = .F.
 RELEASE loConjuntoPrueba
 
 **/
-* Clase de pruebas para 'com_depar'.
+* Clase de pruebas para 'com_marcas1'.
 */
-DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
+DEFINE CLASS prueba_com_marcas1 AS conjunto_prueba OF conjunto_prueba.prg
     **/
-    * @var object Objeto de la capa de negocio 'com_depar'.
+    * @var object Objeto de la capa de negocio 'com_marcas1'.
     */
     PROTECTED oCom
 
@@ -78,27 +74,18 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method void obtener_informe()
-    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
-    * @method void prueba_existe()
-    * @method void prueba_vigente()
-    * @method void prueba_relacionado()
-    * @method void prueba_contar()
-    * @method void prueba_obtener()
-    * @method void prueba_agregar()
-    * @method void prueba_modificar()
-    * @method void prueba_borrar()
+    * @method void prueba_existe() !
+    * @method void prueba_vigente() !
+    * @method void prueba_relacionado() !
+    * @method void prueba_contar() !
+    * @method void prueba_obtener() !
+    * @method void prueba_agregar() !
+    * @method void prueba_modificar() !
+    * @method void prueba_borrar() !
     */
 
     **/
     * Ejecuta las pruebas sobre el método 'existe_codigo' y 'existe_nombre'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_existe
         THIS.ejecutar_prueba('Método: existe_codigo | tnCodigo: 3', ;
@@ -109,9 +96,9 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_falso(THIS.oCom.existe_codigo(888), ;
                 'No debe existir el código 888.'))
 
-        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Central'], ;
-            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Central'), ;
-                "Debe existir el nombre 'Central'."))
+        THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Husqvarna'], ;
+            THIS.afirmar_verdadero(THIS.oCom.existe_nombre('Husqvarna'), ;
+                "Debe existir el nombre 'Husqvarna'."))
 
         THIS.ejecutar_prueba([Método: existe_nombre | tcNombre: 'Monark' ], ;
             THIS.afirmar_falso(THIS.oCom.existe_nombre('Monark'), ;
@@ -120,14 +107,6 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'esta_vigente'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_vigente
         THIS.ejecutar_prueba('Método: esta_vigente | tnCodigo: 3', ;
@@ -141,14 +120,6 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'esta_relacionado'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es falso.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_relacionado
         THIS.ejecutar_prueba('Método: esta_relacionado | tnCodigo: 3', ;
@@ -162,12 +133,6 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre el método 'contar'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_contar
         LOCAL lcCondicionFiltro
@@ -176,7 +141,7 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
             THIS.afirmar_verdadero(THIS.oCom.contar() > 0, ;
                 'El resultado de contar() debe ser mayor que cero.'))
 
-        lcCondicionFiltro = 'nombre == [CANINDEYU                     ]'
+        lcCondicionFiltro = 'nombre == [CALOI                         ]'
         THIS.ejecutar_prueba('Método: contar | tcCondicionFiltro: ' + ;
             "'" + lcCondicionFiltro + "'", ;
             THIS.afirmar_verdadero(THIS.oCom.contar(lcCondicionFiltro) == 1, ;
@@ -185,17 +150,6 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
     **/
     * Ejecuta las pruebas sobre métodos de obtención de datos.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es falso.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_obtener
         LOCAL lcNombre, lcXml
@@ -207,26 +161,26 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
         THIS.ejecutar_prueba('Método: obtener_por_codigo | tnCodigo: 3', ;
             THIS.afirmar_verdadero( ;
-                es_objeto(THIS.oCom.obtener_por_codigo(3)), ;
+                VARTYPE(THIS.oCom.obtener_por_codigo(3)) == 'O', ;
                 'Debe existir el código 3.'))
 
         THIS.ejecutar_prueba('Método: obtener_por_codigo | tnCodigo: 888', ;
             THIS.afirmar_falso( ;
-                es_objeto(THIS.oCom.obtener_por_codigo(888)), ;
+                VARTYPE(THIS.oCom.obtener_por_codigo(888)) == 'O', ;
                 'No debe existir el código 888.'))
 
-        lcNombre = 'Boqueron'
+        lcNombre = 'Briggs & Stratton'
         THIS.ejecutar_prueba( ;
             "Método: obtener_por_nombre | tcNombre: '" + lcNombre + "'", ;
             THIS.afirmar_verdadero( ;
-                es_objeto(THIS.oCom.obtener_por_nombre(lcNombre)), ;
+                VARTYPE(THIS.oCom.obtener_por_nombre(lcNombre)) == 'O', ;
                 "Debe existir el nombre '" + lcNombre + "'."))
 
         lcNombre = 'Monark'
         THIS.ejecutar_prueba( ;
             "Método: obtener_por_nombre | tcNombre: '" + lcNombre + "'", ;
             THIS.afirmar_falso( ;
-                es_objeto(THIS.oCom.obtener_por_nombre(lcNombre)), ;
+                VARTYPE(THIS.oCom.obtener_por_nombre(lcNombre)) == 'O', ;
                 "Nos debe existir el nombre '" + lcNombre + "'."))
 
         lcXml = THIS.oCom.obtener_todos()
@@ -263,29 +217,18 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
         USE IN cur_resultado
 
         THIS.ejecutar_prueba('Método: obtener_dto', ;
-            THIS.afirmar_verdadero(es_objeto(THIS.oCom.obtener_dto()), ;
+            THIS.afirmar_verdadero(VARTYPE(THIS.oCom.obtener_dto()) == 'O', ;
                 'El resultado de obtener_dto() debe ser un objeto.'))
     ENDPROC
 
     **/
     * Ejecuta las pruebas sobre el método 'agregar'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool es_logico(bool tlLogico)
-    *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_agregar
         LOCAL llAgregado
         THIS.oDto = THIS.oCom.obtener_dto()
 
-        IF es_objeto(THIS.oDto) THEN
+        IF VARTYPE(THIS.oDto) == 'O' THEN
             WITH THIS.oDto
                 .establecer('codigo', THIS.oCom.obtener_nuevo_codigo())
                 .establecer('nombre', 'Nombre ' + ;
@@ -296,28 +239,17 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
 
         llAgregado = THIS.oCom.agregar(THIS.oDto)
         THIS.ejecutar_prueba('Método: agregar', ;
-            THIS.afirmar_verdadero(es_logico(llAgregado) AND llAgregado, ;
+            THIS.afirmar_verdadero(VARTYPE(llAgregado) == 'L' AND llAgregado, ;
                 'No se pudo agregar el nuevo registro.'))
     ENDPROC
 
     **/
     * Ejecuta las pruebas sobre el método 'modificar'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_verdadero(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es verdadero.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool es_logico(bool tlLogico)
-    *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_modificar
         LOCAL llModificado
 
-        IF es_objeto(THIS.oDto) THEN
+        IF VARTYPE(THIS.oDto) == 'O' THEN
             WITH THIS.oDto
                 .establecer('nombre', 'Nombre ' + ;
                     ALLTRIM(STR(.obtener('codigo'))) + ' (modificado)')
@@ -328,61 +260,49 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
         llModificado = THIS.oCom.modificar(THIS.oDto)
         THIS.ejecutar_prueba('Método: modificar', ;
             THIS.afirmar_verdadero( ;
-                es_logico(llModificado) AND llModificado, ;
-                'No se pudo modificar el nuevo registro.'))
+                VARTYPE(llModificado) == 'L' AND llModificado, ;
+                'No se pudo agregar el nuevo registro.'))
     ENDPROC
 
     **/
     * Ejecuta las pruebas sobre el método 'borrar'.
-    *
-    * @uses void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
-    *       Para ejecutar una prueba individual y actualiza los contadores.
-    * @uses bool afirmar_falso(bool tlValor, string tcMensaje)
-    *       Para afirmar que un valor es falso.
-    * @uses bool es_logico(bool tlLogico)
-    *       Para validar si un valor es de tipo lógico.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
     */
     PROCEDURE prueba_borrar
         LOCAL llBorrado
 
         llBorrado = THIS.oCom.borrar(3)
         THIS.ejecutar_prueba('Método: borrar', ;
-            THIS.afirmar_falso(es_logico(llBorrado) AND llBorrado, ;
+            THIS.afirmar_falso(VARTYPE(llBorrado) == 'L' AND llBorrado, ;
                 'Se pudo borrar el registro con código 3.'))
     ENDPROC
 
     **/
     * @section MÉTODOS PROTEGIDOS
+    * @method void Init() !!
     * @method void ejecutar_prueba(string tcNombrePrueba, bool tlResultado)
     * @method bool afirmar_igual(mixed tvEsperado, mixed tvObtenido, ;
                                  string tcMensaje)
     * @method bool afirmar_verdadero(bool tlValor, string tcMensaje)
     * @method bool afirmar_falso(bool tlValor, string tcMensaje)
     * @method void Destroy()
-    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
-    * @method void Init()
     */
 
     **/
     * Constructor de la clase.
     *
     * Inicializa los contadores de pruebas en cero y el objeto de la capa de
-    * negocio 'com_depar'.
+    * negocio 'com_marcas1'.
     *
     * @return .T. si la inicialización se realizó correctamente
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses object oCom Objeto de la capa de negocio 'com_depar'.
+    *
     * @override
     */
     PROTECTED FUNCTION Init
         DODEFAULT()    && Llama al Init de la clase padre.
 
-        THIS.oCom = NEWOBJECT('com_depar', 'com_depar.prg')
+        THIS.oCom = NEWOBJECT('com_marcas1', 'com_marcas1.prg')
 
-        IF !es_objeto(THIS.oCom) THEN
+        IF VARTYPE(THIS.oCom) != 'O' THEN
             RETURN .F.
         ENDIF
     ENDFUNC
@@ -392,7 +312,6 @@ DEFINE CLASS prueba_com_depar AS conjunto_prueba OF conjunto_prueba.prg
     *
     * Libera los recursos utilizados por la instancia, en particular el objeto
     * de la capa de negocio 'oCom'.
-    * @uses oCom object Objeto de la capa de negocio 'com_depar'.
     */
     PROTECTED PROCEDURE Destroy
         THIS.oCom = NULL

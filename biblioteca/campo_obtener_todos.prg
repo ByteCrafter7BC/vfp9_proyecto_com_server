@@ -55,6 +55,8 @@ FUNCTION campo_obtener_todos
     DO CASE
     CASE tcModelo == 'barrios'
         campo_obtener_barrios()
+    CASE tcModelo == 'ciudades'
+        campo_obtener_ciudades()
     CASE tcModelo == 'depar'
         campo_obtener_depar()
      CASE tcModelo == 'marcas1'
@@ -321,6 +323,54 @@ FUNCTION campo_obtener_barrios
             OR !campo_establecer_requerido('nombre', .T.) ;
             OR !campo_establecer_requerido('departamen', .T.) ;
             OR !campo_establecer_requerido('ciudad', .T.) ;
+            OR !campo_establecer_requerido('vigente', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los getter a verdadero (.T.).
+    IF !campo_establecer_getter_todos(.T.) THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC
+
+**/
+* Carga los campos del modelo 'ciudades'.
+*
+* @return bool .T. si la carga se completa correctamente;
+*              .F. si ocurre un error.
+* @uses bool campo_agregar(string tcCampo, string tcTipo, int tnAncho, ;
+                            int tnDecimales, string tcEtiqueta)
+*       Para agregar un campo a la variable privada 'poCampos'.
+* @uses bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
+*       Para establecer si un campo de tipo numérico acepta números
+*       negativos.
+* @uses bool campo_establecer_requerido(string tcCampo, bool tlValor)
+*       Para establecer si un campo es requerido.
+* @uses bool campo_establecer_getter_todos(bool tlValor)
+*       Para establecer el estado getter de todos los campos.
+*/
+FUNCTION campo_obtener_ciudades
+    * Agrega todos los campos.
+    IF !campo_agregar('codigo', 'N', 5, , 'Código: ') ;
+            OR !campo_agregar('nombre', 'C', 30, , 'Nombre: ') ;
+            OR !campo_agregar('departamen', 'N', 3, , 'Depart.: ') ;
+            OR !campo_agregar('sifen', 'N', 5, , 'Ciudad: ') ;
+            OR !campo_agregar('vigente', 'L', 1, , 'Vigente: ') THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos sin signo (unsigned).
+    IF !campo_establecer_sin_signo('codigo', .T.) ;
+            OR !campo_establecer_sin_signo('departamen', .T.) ;
+            OR !campo_establecer_sin_signo('sifen', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos requeridos.
+    IF !campo_establecer_requerido('codigo', .T.) ;
+            OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('departamen', .T.) ;
+            OR !campo_establecer_requerido('sifen', .T.) ;
             OR !campo_establecer_requerido('vigente', .T.) THEN
         RETURN .F.
     ENDIF

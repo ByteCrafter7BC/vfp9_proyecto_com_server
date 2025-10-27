@@ -67,16 +67,13 @@ DEFINE CLASS barrios AS modelo_base OF modelo_base.prg
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tnDepartamen, tnCiudad, tlVigente
 
-        IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
-            RETURN .F.
-        ENDIF
-
-        IF !es_numero(tnDepartamen, 0, 999) ;
+        IF PARAMETERS() != 5 ;
+                OR !es_numero(tnDepartamen, 0, 999) ;
                 OR !es_numero(tnCiudad, 0) THEN
             RETURN .F.
         ENDIF
 
-        IF !THIS.campo_cargar() THEN
+        IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
             RETURN .F.
         ENDIF
 

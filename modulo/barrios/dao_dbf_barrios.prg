@@ -192,6 +192,8 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * específicos.
     *
     * @param string tcNombre Nombre del registro a buscar.
+    * @param int tnDepartamen Código del departamento.
+    * @param int tnCiudad Código de la ciudad.
     * @return mixed object modelo si el registro se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
     * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])

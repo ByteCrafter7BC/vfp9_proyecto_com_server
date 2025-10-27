@@ -42,10 +42,10 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar()
     * @method int obtener_nuevo_codigo()
-    * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_codigo()
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method string obtener_ultimo_error()
     * @method bool borrar(int tnCodigo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
@@ -59,61 +59,37 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     */
 
     **/
-    * Verifica si un nombre ya existe en la tabla; dentro de un departamento
-    * específico.
+    * Verifica la existencia de una ciudad por su nombre dentro de un
+    * departamento específico.
     *
-    * Realiza una búsqueda no sensible a mayúsculas/minúsculas utilizando el
-    * índice secundario ('indice2').
-    *
-    * @param string tcNombre Nombre a verificar.
+    * @param string tcNombre Nombre de la ciudad a verificar.
     * @param int tnDepartamen Código del departamento.
-    * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si no existe.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
+    * @return bool .T. si el nombre existe o si ocurre un error, o
+    *              .F. si el nombre no existe.
     * @override
     */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre, tnDepartamen
 
-        LOCAL llExiste, lnAncho
-
-        IF PARAMETERS() != 2 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_cadena(tcNombre) THEN
+        IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .T.
         ENDIF
 
-        IF !es_numero(tnDepartamen, 1, 999) THEN
-            THIS.cUltimoError = ;
-                STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
+        IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .T.
         ENDIF
 
-        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
-
-        IF lnAncho == 0 THEN
-            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
-                '{0}', 'nombre'), '{1}', THIS.cModelo)
-            RETURN .T.
-        ENDIF
-
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
+            THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .T.
         ENDIF
+
+        LOCAL llExiste
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3)
@@ -135,29 +111,16 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Verifica si un código del SIFEN ya existe en la tabla.
+    * Verifica la existencia de un código del SIFEN.
     *
-    * @param int tnSifen Código numérico único del SIFEN a verificar.
-    * @return bool .T. si código del SIFEN existe o si ocurre un error;
-    *              .F. si no existe.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
+    * @param int tnSifen Código del SIFEN a verificar.
+    * @return bool .T. si el código del SIFEN existe o si ocurre un error, o
+    *              .F. si el código del SIFEN no existe.
     */
     FUNCTION existe_sifen
         LPARAMETERS tnSifen
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_numero(tnSifen) THEN
+        IF !THIS.tnSifen_Valid(tnSifen) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnSifen')
             RETURN .T.
         ENDIF
@@ -182,31 +145,19 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
         RETURN llExiste
     ENDFUNC
 
-    **/
-    * Verifica si un código está relacionado con otros registros de la base
-    * de datos.
+    **
+    * Verifica si el código de una ciudad está relacionado con otros registros
+    * de la base de datos.
     *
-    * @param int tnCodigo Código numérico único a verificar.
-    * @return bool .T. si el registro está relacionado o si ocurre un error;
+    * @param int tnCodigo Código de la ciudad a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error, o
     *              .F. si no está relacionado.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses bool dao_existe_referencia(string tcModelo, ;
-                                       string tcCondicionFiltro)
-    *       Para verificar la existencia de registros referenciales en una
-    *       tabla.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_numero(tnCodigo) THEN
+        IF !THIS.tnCodigo_Valid(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
@@ -234,54 +185,37 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Devuelve un registro por su nombre; dentro de un departamento específico.
+    * Realiza la búsqueda de una ciudad por su nombre dentro de un departamento
+    * específico.
     *
-    * @param string tcNombre Nombre del registro a buscar.
+    * @param string tcNombre Nombre de la ciudad a buscar.
     * @param int tnDepartamen Código del departamento.
-    * @return mixed object modelo si el registro se encuentra;
+    * @return mixed object modelo si la ciudad se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
     * @override
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre, tnDepartamen
 
-        LOCAL loModelo, lnAncho
-
-        IF PARAMETERS() != 2 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_cadena(tcNombre) THEN
+        IF !THIS.tcNombre_Valid(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .F.
         ENDIF
 
-        IF !es_numero(tnDepartamen, 1, 999) THEN
-            THIS.cUltimoError = ;
-                STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
+        IF !THIS.tnDepartamen_Valid(tnDepartamen) THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnDepartamen')
             RETURN .F.
         ENDIF
 
-        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
-
-        IF lnAncho == 0 THEN
-            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
-                '{0}', 'nombre'), '{1}', THIS.cModelo)
-            RETURN .F.
-        ENDIF
-
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
+            THIS.nAnchoNombre)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
+
+        LOCAL loModelo
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(departamen, 3)
@@ -303,25 +237,16 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Devuelve un registro por su código del SIFEN.
+    * Realiza la búsqueda de una ciudad por su código del SIFEN.
     *
-    * @param int tnSifen Código numérico único del SIFEN a buscar.
-    * @return mixed object modelo si el registro se encuentra;
+    * @param int tnSifen Código del SIFEN a buscar.
+    * @return mixed object modelo si el código del SIFEN se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @override
     */
     FUNCTION obtener_por_sifen
         LPARAMETERS tnSifen
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_numero(tnSifen) THEN
+        IF !THIS.tnSifen_Valid(tnSifen) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnSifen')
             RETURN .F.
         ENDIF
@@ -352,37 +277,27 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * Agrega un nuevo registro a la tabla.
     *
     * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool .T. si el registro se agrega correctamente;
+    * @return bool .T. si el registro se agrega correctamente, o
     *              .F. si ocurre un error.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
-    *       Para verificar si un registro existe en la base de datos buscándolo
-    *       por su código.
     * @override
     */
     FUNCTION agregar
         LPARAMETERS toModelo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
+        IF !THIS.toModelo_Valid(toModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente
+        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
+              loModelo
 
         WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.sifen = .obtener('sifen')
-            m.vigente = .obtener('vigente')
+            m.codigo = .obtener_codigo()
+            m.nombre = .obtener_nombre()
+            m.departamen = .obtener_departamen()
+            m.sifen = .obtener_sifen()
+            m.vigente = .esta_vigente()
         ENDWITH
 
         IF THIS.existe_codigo(m.codigo) THEN
@@ -392,7 +307,8 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
         ENDIF
 
         IF THIS.existe_nombre(m.nombre, m.departamen) THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
+                "' ya existe."
             RETURN .F.
         ENDIF
 
@@ -408,20 +324,11 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
             RETURN .F.
         ENDIF
 
-        loModelo = NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', ;
-            m.sifen)
+        loModelo = NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
 
-        IF !es_objeto(loModelo) THEN
+        IF VARTYPE(loModelo) != 'O' THEN
             THIS.cUltimoError = "El código del SIFEN '" + ;
                 ALLTRIM(STR(m.sifen)) + "' no existe."
-            RETURN .F.
-        ENDIF
-
-        IF loModelo.obtener_departamento() != m.departamen THEN
-            THIS.cUltimoError = "El código de departamento '" + ;
-                ALLTRIM(STR(m.departamen)) + ;
-                "' no coincide con el código '" + ;
-                ALLTRIM(STR(loModelo.obtener_departamento()))  + "' del SIFEN."
             RETURN .F.
         ENDIF
 
@@ -445,25 +352,14 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * Modifica un registro existente en la tabla.
     *
     * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool .T. si el registro se modifica correctamente;
+    * @return bool .T. si el registro se modifica correctamente, o
     *              .F. si ocurre un error.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
-    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
-    *       Para verificar si un registro existe en la base de datos buscándolo
-    *       por su código.
     * @override
     */
     FUNCTION modificar
         LPARAMETERS toModelo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
+        IF !THIS.toModelo_Valid(toModelo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
@@ -472,11 +368,11 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
               loModelo
 
         WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.sifen = .obtener('sifen')
-            m.vigente = .obtener('vigente')
+            m.codigo = .obtener_codigo()
+            m.nombre = .obtener_nombre()
+            m.departamen = .obtener_departamen()
+            m.sifen = .obtener_sifen()
+            m.vigente = .esta_vigente()
         ENDWITH
 
         IF !THIS.existe_codigo(m.codigo) THEN
@@ -487,17 +383,22 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
 
         loModelo = THIS.obtener_por_nombre(m.nombre, m.departamen)
 
-        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
-            RETURN .F.
+        IF VARTYPE(loModelo) == 'O' THEN
+            IF loModelo.obtener_codigo() != m.codigo THEN
+                THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
+                    "' ya existe."
+                RETURN .F.
+            ENDIF
         ENDIF
 
         loModelo = THIS.obtener_por_sifen(m.sifen)
 
-        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
-            THIS.cUltimoError = "El código del SIFEN '" + ;
-                ALLTRIM(STR(m.sifen)) + "' ya existe."
-            RETURN .F.
+        IF VARTYPE(loModelo) == 'O' THEN
+            IF loModelo.obtener_codigo() != m.codigo THEN
+                THIS.cUltimoError = "El código del SIFEN '" + ;
+                    ALLTRIM(STR(m.sifen)) + "' ya existe."
+                RETURN .F.
+            ENDIF
         ENDIF
 
         IF !dao_existe_codigo('depar', m.departamen) THEN
@@ -506,26 +407,17 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
             RETURN .F.
         ENDIF
 
-        loModelo = NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', ;
-            m.sifen)
+        loModelo = NEWOBJECT('sifen_ciudades', 'sifen_ciudades.prg', '', m.sifen)
 
-        IF !es_objeto(loModelo) THEN
+        IF VARTYPE(loModelo) != 'O' THEN
             THIS.cUltimoError = "El código del SIFEN '" + ;
                 ALLTRIM(STR(m.sifen)) + "' no existe."
             RETURN .F.
         ENDIF
 
-        IF loModelo.obtener_departamento() != m.departamen THEN
-            THIS.cUltimoError = "El código de departamento '" + ;
-                ALLTRIM(STR(m.departamen)) + ;
-                "' no coincide con el código '" + ;
-                ALLTRIM(STR(loModelo.obtener_departamento()))  + "' del SIFEN."
-            RETURN .F.
-        ENDIF
-
         loModelo = THIS.obtener_por_codigo(m.codigo)
 
-        IF !es_objeto(loModelo) THEN
+        IF VARTYPE(loModelo) != 'O' THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
                 "' no existe."
             RETURN .F.
@@ -545,7 +437,7 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice1'    && codigo
         IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH m.nombre, ;
+            REPLACE nombre WITH ALLTRIM(m.nombre), ;
                     departamen WITH m.departamen, ;
                     sifen WITH m.sifen, ;
                     vigente WITH m.vigente
@@ -562,23 +454,81 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool Init()
     * @method bool configurar()
-    * @method bool conectar(bool [tlModoEscritura])
+    * @method bool conectar([bool tlModoEscritura])
     * @method bool desconectar()
-    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method bool Init()
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
+    * @method bool tnCodigo_Valid(int tnCodigo)
+    * @method bool tcNombre_Valid(string tcNombre)
+    * @method bool tlVigente_Valid(bool tlVigente)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method mixed obtener_modelo()
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tnDepartamen_Valid(int tnDepartamen)
+    * @method bool tnSifen_Valid(int tnSifen)
     */
 
     **/
     * Crea un objeto modelo a partir del registro actual de la tabla.
     *
-    * @return mixed object modelo si la operación se completa correctamente;
+    * @return mixed object modelo si la operación se completa correctamente, o
     *               .F. si ocurre un error.
     * @override
     */
     PROTECTED FUNCTION obtener_modelo
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, nombre, departamen, sifen, vigente)
+            codigo, ALLTRIM(nombre), departamen, sifen, vigente)
+    ENDFUNC
+
+    **/
+    * Valida todas las propiedades del objeto modelo. Sobrescribe la validación
+    * base e incluye la validación de los campos 'departamen' y 'sifen'.
+    *
+    * @param object toModelo Modelo a validar.
+    * @return bool .T. si el objeto es válido, o .F. si no lo es.
+    * @override
+    */
+    PROTECTED FUNCTION toModelo_Valid
+        LPARAMETERS toModelo
+
+        IF !dao_base::toModelo_Valid(toModelo) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnDepartamen_Valid(toModelo.obtener_departamen()) THEN
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.tnSifen_Valid(toModelo.obtener_sifen()) THEN
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Valida el argumento 'tnDepartamen'. Verifica el tipo de dato y el rango del
+    * código referencial.
+    *
+    * @param int tnDepartamen Código del departamento a validar.
+    * @return bool .T. si el código es válido, o .F. si no lo es.
+    */
+    PROTECTED FUNCTION tnDepartamen_Valid
+        LPARAMETERS tnDepartamen
+        RETURN THIS.validar_codigo_referencial('depar', tnDepartamen)
+    ENDFUNC
+
+    **/
+    * Valida el argumento 'tnSifen'. Verifica el tipo de dato y el rango del
+    * código referencial.
+    *
+    * @param int tnSifen Código del SIFEN a validar.
+    * @return bool .T. si el código es válido, o .F. si no lo es.
+    */
+    PROTECTED FUNCTION tnSifen_Valid
+        LPARAMETERS tnSifen
+        RETURN THIS.validar_codigo_referencial('sifen', tnSifen)
     ENDFUNC
 ENDDEFINE
