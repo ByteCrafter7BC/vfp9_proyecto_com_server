@@ -70,6 +70,7 @@ DEFINE CLASS dao_dbf_depar AS dao_dbf OF dao_dbf.prg
                                        string tcCondicionFiltro)
     *       Para verificar la existencia de registros referenciales en una
     *       tabla.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION esta_relacionado

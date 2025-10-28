@@ -30,9 +30,9 @@
 * Clase de transferencia de datos (DTO) para la entidad 'ciudades'.
 *
 * Esta clase se utiliza para transportar datos de ciudades entre diferentes
-* capas de la aplicación. Hereda de 'dto_base' y añade propiedades para dos
-* parámetros numéricos específicos ('departamen' y 'sifen') con sus
-* respectivos getters y setters para validación.
+* capas de la aplicación. Hereda de 'dto_base' y añade dos campos numéricos
+* específicos ('departamen' y 'sifen') con sus respectivos getters y setters
+* para validación.
 */
 DEFINE CLASS dto_ciudades AS dto_base OF dto_base.prg
     **/

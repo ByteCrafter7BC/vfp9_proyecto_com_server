@@ -37,14 +37,34 @@
 #DEFINE INDENT    SPACE(4)
 
 DEFINE CLASS sifen_ciudades AS Custom
-    * Definición de propiedades.
+    **/
+    * @var int Código numérico único de la ciudad.
+    */
     PROTECTED nCodigo
+
+    **/
+    * @var string Nombre descriptivo de la ciudad.
+    */
     PROTECTED cNombre
+
+    **/
+    * @var int Código numérico del departamento.
+    */
     PROTECTED nDepartamento
+
+    **/
+    * @var int Código numérico del distrito.
+    */
     PROTECTED nDistrito
+
+    **/
+    * @var array Almacena el arreglo de ciudades.
+    */
     PROTECTED aCiudades[6419, 4]
 
+    **/
     * Inicialización de propiedades.
+    */
     nCodigo = 0
     cNombre = ''
     nDepartamento = 0
@@ -25730,14 +25750,23 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Constructor de la clase.
     *
-    * @param int [tnCodigo] Código de ciudad a buscar.
-    * @return bool .T. si puede crear la instancia, o .F. en caso contrario.
+    * Inicializa las propiedades del objeto con el valor proporcionado,
+    * validando que el tipo de dato sea correcto.
+    *
+    * @param int [tnCodigo] Código numérico único de la ciudad a buscar.
+    * @return bool .T. si la inicialización se completa correctamente;
+    *              .F. en caso contrario.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses mixed obtener_por_codigo(int tnCodigo)
+    *       Para obtener una ciudad por su código.
     */
     FUNCTION Init
         LPARAMETERS tnCodigo
 
         IF PARAMETERS() == 1 THEN
-            IF VARTYPE(tnCodigo) == 'N' AND BETWEEN(tnCodigo, 1, 6435) THEN
+            IF es_numero(tnCodigo, 1, 6435) THEN
                 THIS.obtener_por_codigo(tnCodigo)
             ELSE
                 RETURN .F.
@@ -25746,20 +25775,26 @@ DEFINE CLASS sifen_ciudades AS Custom
     ENDFUNC
 
     **/
-    * Realiza una búsqueda por código de ciudad.
+    * Devuelve una ciudad por su código.
     *
-    * @param int tnCodigo Código de ciudad a buscar.
-    * @return mixed object si el registro existe, o
-    *               .F. si el registro no existe o si ocurre un error.
+    * @param int tnCodigo Código numérico único de la ciudad a buscar.
+    * @return mixed object modelo si la ciudad se encuentra;
+    *               .F. si no se encuentra o si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses array aCiudades Almacena el arreglo de ciudades.
+    * @uses int nCodigo Código numérico único de la ciudad.
+    * @uses string cNombre Nombre descriptivo de la ciudad.
+    * @uses int nDepartamento Código numérico del departamento.
+    * @uses int nDistrito Código numérico del distrito.
     */
     FUNCTION obtener_por_codigo
         LPARAMETERS tnCodigo
 
-        * inicio { validaciones del parámetro }
-        IF VARTYPE(tnCodigo) != 'N' OR !BETWEEN(tnCodigo, 1, 6435) THEN
+        IF PARAMETERS() != 1 OR !es_numero(tnCodigo, 1, 6435) THEN
             RETURN .F.
         ENDIF
-        * fin { validaciones del parámetro }
 
         LOCAL lnPos
         lnPos = ASCAN(THIS.aCiudades, tnCodigo, -1, -1, 1, 9)
@@ -25781,7 +25816,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código de la ciudad.
     *
-    * @return int
+    * @return int Código numérico único de la ciudad.
     */
     FUNCTION obtener_codigo
         RETURN THIS.nCodigo
@@ -25790,7 +25825,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el nombre de la ciudad.
     *
-    * @return string
+    * @return string Nombre descriptivo de la ciudad.
     */
     FUNCTION obtener_nombre
         RETURN THIS.cNombre
@@ -25799,7 +25834,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código del departamento.
     *
-    * @return int
+    * @return int Código numérico del departamento.
     */
     FUNCTION obtener_departamento
         RETURN THIS.nDepartamento
@@ -25808,7 +25843,7 @@ DEFINE CLASS sifen_ciudades AS Custom
     **/
     * Devuelve el código del distrito.
     *
-    * @return int
+    * @return int Código numérico del distrito.
     */
     FUNCTION obtener_distrito
         RETURN THIS.nDistrito
@@ -25819,16 +25854,21 @@ DEFINE CLASS sifen_ciudades AS Custom
     * https://docs.openstack.org/doc-contrib-guide/json-conv.html
     *
     * @param string [tcIndent] Especifica sangría adicional si es necesario.
-    * @return string
+    * @return string Cadena de caracteres en formato JSON.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses int nCodigo Código numérico único de la ciudad.
+    * @uses string cNombre Nombre descriptivo de la ciudad.
+    * @uses int nDepartamento Código numérico del departamento.
+    * @uses int nDistrito Código numérico del distrito.
     */
     FUNCTION obtener_json
         LPARAMETERS tcIndent
 
-        * inicio { validaciones del parámetro }
-        IF VARTYPE(tcIndent) != 'C' OR !EMPTY(tcIndent) THEN
+        IF !es_cadena(tcIndent) THEN
             tcIndent = ''
         ENDIF
-        * fin { validaciones del parámetro }
 
         RETURN tcIndent + ;
             '{' + CRLF + INDENT + tcIndent + ;

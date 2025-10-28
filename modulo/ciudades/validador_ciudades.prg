@@ -30,8 +30,8 @@
 **
 * Clase de validación para el modelo 'ciudades'.
 *
-* Hereda de la clase 'validador_base' y añade dos propiedades numéricas
-* específicas: 'departamen' y 'sifen'.
+* Hereda de la clase 'validador_base' y añade dos campos numéricos específicos:
+* 'departamen' y 'sifen'.
 */
 #INCLUDE 'constantes.h'
 

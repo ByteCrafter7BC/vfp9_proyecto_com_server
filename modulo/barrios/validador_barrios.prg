@@ -24,14 +24,17 @@
 * @since 1.0.0
 * @class validador_barrios
 * @extends biblioteca\validador_base
+* @uses constantes.h
 */
 
 **
 * Clase de validación para el modelo 'barrios'.
 *
-* Hereda de la clase 'validador_base' y añade dos propiedades numéricas
-* específicas: 'departamen' y 'ciudad'.
+* Hereda de la clase 'validador_base' y añade dos campos numéricos específicos:
+* 'departamen' y 'ciudad'.
 */
+#INCLUDE 'constantes.h'
+
 DEFINE CLASS validador_barrios AS validador_base OF validador_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
@@ -98,6 +101,7 @@ DEFINE CLASS validador_barrios AS validador_base OF validador_base.prg
     * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
     *       Para obtener un objeto modelo utilizando su código único.
     * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_departamen
         LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
@@ -200,6 +204,13 @@ DEFINE CLASS validador_barrios AS validador_base OF validador_base.prg
 
         IF !loModelo.obtener('vigente') THEN
             loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_VIGENTE)
+            RETURN .F.
+        ENDIF
+
+        IF loModelo.obtener('departamen') != ;
+                THIS.oModelo.obtener('departamen') THEN
+            loCampo.establecer_ultimo_error(lcEtiqueta + ;
+                'Código de departamento no coincide.')
             RETURN .F.
         ENDIF
 

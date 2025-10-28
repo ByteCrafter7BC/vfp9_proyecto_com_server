@@ -25,6 +25,10 @@
 * @class sifen_ciudad
 * @extends Custom
 */
+
+**/
+* Clase para modelos de datos.
+*/
 DEFINE CLASS sifen_ciudad AS Custom
     **/
     * @var int Código numérico único de la ciudad.
@@ -51,7 +55,7 @@ DEFINE CLASS sifen_ciudad AS Custom
     * @method bool Init(int tnCodigo, string tcNombre, int tnDepartamento, ;
                         int tnDistrito)
     * @method int obtener_codigo()
-    * @method int obtener_nombre()
+    * @method string obtener_nombre()
     * @method int obtener_departamento()
     * @method int obtener_distrito()
     */
@@ -74,6 +78,10 @@ DEFINE CLASS sifen_ciudad AS Custom
     * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
     *       Para validar si un valor es una cadena de caracteres y su longitud
     *       está dentro de un rango específico.
+    * @uses int nCodigo Código numérico único de la ciudad.
+    * @uses string cNombre Nombre descriptivo de la ciudad.
+    * @uses int nDepartamento Código numérico del departamento.
+    * @uses int nDistrito Código numérico del distrito.
     */
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tnDepartamento, tnDistrito
@@ -142,6 +150,18 @@ ENDDEFINE
 * @since 1.0.0
 * @class dao_dbf_sifen_ciudades
 * @extends Custom
+*/
+
+**/
+* Esta lista contiene las ciudades oficiales según la DNIT, así como sus
+* descripciones.
+*
+* Enlace: https://www.dnit.gov.py/documents/20123/420592/CODIGO+DE+REFERENCIA+GEOGRAFICA.xlsx/c70aedc2-42c0-c846-16fa-46ac49d5524d?t=1687266715158
+* Archivo: CODIGO DE REFERENCIA GEOGRAFICA.xlsx
+*/
+
+**/
+* Clase de acceso a datos (DAO).
 */
 DEFINE CLASS dao_dbf_sifen_ciudades AS Custom
     **/

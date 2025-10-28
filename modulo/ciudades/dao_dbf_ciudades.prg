@@ -77,6 +77,12 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     *       rango específico.
     * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
     *       Para obtener el ancho del campo de un modelo.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION existe_nombre
@@ -140,14 +146,15 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * @param int tnSifen Código numérico único del SIFEN a verificar.
     * @return bool .T. si código del SIFEN existe o si ocurre un error;
     *              .F. si no existe.
-    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es una cadena de caracteres y su longitud
-    *       está dentro de un rango específico.
     * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
     *       Para validar si un valor es numérico y se encuentra dentro de un
     *       rango específico.
-    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
-    *       Para obtener el ancho del campo de un modelo.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     */
     FUNCTION existe_sifen
         LPARAMETERS tnSifen
@@ -196,6 +203,7 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
                                        string tcCondicionFiltro)
     *       Para verificar la existencia de registros referenciales en una
     *       tabla.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION esta_relacionado
@@ -245,6 +253,12 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     *       está dentro de un rango específico.
     * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
     *       Para obtener el ancho del campo de un modelo.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION obtener_por_nombre
@@ -311,6 +325,12 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
     *       Para validar si un valor es numérico y se encuentra dentro de un
     *       rango específico.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION obtener_por_sifen
@@ -360,6 +380,12 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
     *       Para verificar si un registro existe en la base de datos buscándolo
     *       por su código.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION agregar
@@ -375,7 +401,8 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente
+        LOCAL m.codigo, m.nombre, m.departamen, m.sifen, m.vigente, ;
+              loModelo
 
         WITH toModelo
             m.codigo = .obtener('codigo')
@@ -453,6 +480,12 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
     *       Para verificar si un registro existe en la base de datos buscándolo
     *       por su código.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION modificar
@@ -575,6 +608,7 @@ DEFINE CLASS dao_dbf_ciudades AS dao_dbf OF dao_dbf.prg
     *
     * @return mixed object modelo si la operación se completa correctamente;
     *               .F. si ocurre un error.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
     * @override
     */
     PROTECTED FUNCTION obtener_modelo

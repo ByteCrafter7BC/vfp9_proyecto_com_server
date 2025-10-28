@@ -58,8 +58,6 @@ DEFINE CLASS barrios AS modelo_base OF modelo_base.prg
     * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
     *       Para validar si un valor es numérico y se encuentra dentro de un
     *       rango específico.
-    * @uses bool campo_cargar()
-    *       Para cargar los campos a la propiedad protegida 'oCampos'.
     * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
     *       Para establecer el valor de un campo.
     * @override
