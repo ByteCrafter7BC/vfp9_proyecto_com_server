@@ -65,6 +65,8 @@ FUNCTION campo_obtener_todos
         campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'proveedo'
         campo_obtener_proveedo()
+    CASE tcModelo == 'rubros1'
+        campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'vendedor'
         campo_obtener_depar()    && Duplicado.
     ENDCASE
