@@ -60,11 +60,13 @@ FUNCTION campo_obtener_todos
     CASE tcModelo == 'depar'
         campo_obtener_depar()
      CASE tcModelo == 'marcas1'
-        campo_obtener_base()
+        campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'marcas2'
-        campo_obtener_base()
+        campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'proveedo'
         campo_obtener_proveedo()
+    CASE tcModelo == 'vendedor'
+        campo_obtener_depar()    && Duplicado.
     ENDCASE
 
     RETURN poCampos
