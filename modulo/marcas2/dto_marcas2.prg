@@ -29,8 +29,8 @@
 **/
 * Clase de transferencia de datos (DTO) para la entidad 'marcas2'.
 *
-* Esta clase se utiliza para transportar datos de marcas de artículos entre
-* diferentes capas de la aplicación. Hereda de 'dto_base'.
+* Esta clase se utiliza para transportar datos de marcas para órdenes de
+* trabajo entre diferentes capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_marcas2 AS dto_base OF dto_base.prg
     **/

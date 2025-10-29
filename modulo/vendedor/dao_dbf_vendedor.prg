@@ -123,5 +123,11 @@ DEFINE CLASS dao_dbf_vendedor AS dao_dbf OF dao_dbf.prg
     * @method mixed obtener_modelo()
     * @method bool conectar(bool [tlModoEscritura])
     * @method bool desconectar()
+    * @method string obtener_comando_insertar(object toModelo)
+    * @method string obtener_comando_reemplazar(object toModelo)
+    * @method string obtener_lista_campos(object toModelo)
+    * @method bool cargar_valores_a_variables(object toModelo)
+    * @method bool validar_agregar()
+    * @method bool validar_modificar()
     */
 ENDDEFINE

@@ -29,8 +29,8 @@
 **/
 * Clase de transferencia de datos (DTO) para la entidad 'vendedor'.
 *
-* Esta clase se utiliza para transportar datos de marcas de artículos entre
-* diferentes capas de la aplicación. Hereda de 'dto_base'.
+* Esta clase se utiliza para transportar datos de vendedores entre diferentes
+* capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_vendedor AS dto_base OF dto_base.prg
     **/

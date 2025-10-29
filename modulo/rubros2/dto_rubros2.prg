@@ -29,7 +29,7 @@
 **/
 * Clase de transferencia de datos (DTO) para la entidad 'rubros2'.
 *
-* Esta clase se utiliza para transportar datos de marcas de artículos entre
+* Esta clase se utiliza para transportar datos de subrubros de artículos entre
 * diferentes capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_rubros2 AS dto_base OF dto_base.prg

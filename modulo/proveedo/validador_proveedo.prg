@@ -46,6 +46,7 @@ DEFINE CLASS validador_proveedo AS validador_base OF validador_base.prg
     * @method bool validar()
     * @method bool validar_codigo()
     * @method bool validar_nombre()
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool validar_e_mail()
     * @method bool validar_ruc()
     */
@@ -53,10 +54,14 @@ DEFINE CLASS validador_proveedo AS validador_base OF validador_base.prg
     **/
     * Valida el correo electrónico del modelo.
     *
-    * @return bool .T. si el correo electrónico es válido;
+    * @return bool .T. si el correo electrónico del modelo es válido;
     *              .F. en caso contrario.
     * @uses string campo_obtener_ultimo_error(string tcCampo)
     *       Para obtener el último mensaje de error del campo.
+    * @uses bool es_email(string tcEmail)
+    *       Para determinar si una expresión de cadena de caracteres es una
+    *       dirección de correo electrónico válida.
+    * @uses object oModelo Modelo que contiene los datos a validar.
     */
     PROTECTED FUNCTION validar_e_mail
         LOCAL lcCampo, loCampo, lcEtiqueta, lcValor
@@ -89,6 +94,11 @@ DEFINE CLASS validador_proveedo AS validador_base OF validador_base.prg
     * @uses bool campo_establecer_ultimo_error(string tcCampo, ;
                                                string tcUltimoError)
     *       Para establecer el último mensaje de error del campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_ruc
         LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
@@ -119,23 +129,23 @@ DEFINE CLASS validador_proveedo AS validador_base OF validador_base.prg
                 RETURN .F.
             ENDIF
 
-            IF VARTYPE(loModelo) == 'O' THEN
+            IF es_objeto(loModelo) THEN
                 loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
                 RETURN .F.
             ENDIF
-        ELSE
-            IF THIS.nBandera == 2 THEN    && Modificar
-                IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
-                    loCampo.establecer_ultimo_error(lcEtiqueta + ;
-                        THIS.oDao.obtener_ultimo_error())
-                    RETURN .F.
-                ENDIF
+        ENDIF
 
-                IF VARTYPE(loModelo) == 'O' AND loModelo.obtener('codigo') != ;
-                        THIS.oModelo.obtener('codigo') THEN
-                    loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
-                    RETURN .F.
-                ENDIF
+        IF THIS.nBandera == 2 THEN    && Modificar
+            IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + ;
+                    THIS.oDao.obtener_ultimo_error())
+                RETURN .F.
+            ENDIF
+
+            IF es_objeto(loModelo) AND loModelo.obtener('codigo') != ;
+                    THIS.oModelo.obtener('codigo') THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + MSG_YA_EXISTE)
+                RETURN .F.
             ENDIF
         ENDIF
     ENDFUNC

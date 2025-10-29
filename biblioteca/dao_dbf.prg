@@ -443,6 +443,25 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @uses bool es_objeto(object toObjeto, string [tcClase])
     *       Para validar si un valor es un objeto y, opcionalmente, corresponde
     *       a una clase específica.
+    * @uses string obtener_lista_campos(object toModelo)
+    *       Para obtener una cadena de caracteres que contiene la lista de
+    *       campos del modelo, donde cada campo está precedido por el prefijo
+    *       'm.'.
+    * @uses string obtener_comando_insertar(object toModelo)
+    *       Para obtener una cadena de caracteres con la instrucción INSERT -
+    *       SQL para agregar un nuevo registro a la tabla.
+    * @uses bool cargar_valores_a_variables(object toModelo)
+    *       Para recuperar los datos de un modelo y los almacena en variables
+    *       de memoria.
+    * @uses bool validar_agregar()
+    *       Para realizar las validaciones de datos para el método protegido
+    *       'agregar'.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION agregar
@@ -458,22 +477,37 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.vigente
+        LOCAL lcListaCampos, lcSql, lcDeclararVariablePrivada, ;
+              lcInicializarVariablePrivada, lcLiberarVariablePrivada
+        lcListaCampos = THIS.obtener_lista_campos(toModelo)
+        lcSql = THIS.obtener_comando_insertar(toModelo)
 
-        WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.vigente = .obtener('vigente')
-        ENDWITH
-
-        IF THIS.existe_codigo(m.codigo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' ya existe."
+        IF EMPTY(lcListaCampos) THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la lista de campos del modelo.'
             RETURN .F.
         ENDIF
 
-        IF THIS.existe_nombre(m.nombre) THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+        IF EMPTY(lcSql) THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la instrucción INSERT - SQL.'
+            RETURN .F.
+        ENDIF
+
+        lcDeclararVariablePrivada = 'PRIVATE ' + lcListaCampos
+        lcInicializarVariablePrivada = 'STORE .F. TO ' + lcListaCampos
+        lcLiberarVariablePrivada = 'RELEASE ' + lcListaCampos
+
+        &lcDeclararVariablePrivada
+        &lcInicializarVariablePrivada
+
+        IF !THIS.cargar_valores_a_variables(toModelo) THEN
+            THIS.cUltimoError = ;
+                'No se pudo cargar los valores a las variables privadas.'
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.validar_agregar() THEN
             RETURN .F.
         ENDIF
 
@@ -482,10 +516,8 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             RETURN .F.
         ENDIF
 
-        INSERT INTO (THIS.cModelo) ;
-            (codigo, nombre, vigente) ;
-        VALUES ;
-            (m.codigo, m.nombre, m.vigente)
+        &lcSql
+        &lcLiberarVariablePrivada
 
         WITH THIS
             .cUltimoError = ''
@@ -502,6 +534,25 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @uses bool es_objeto(object toObjeto, string [tcClase])
     *       Para validar si un valor es un objeto y, opcionalmente, corresponde
     *       a una clase específica.
+    * @uses string obtener_lista_campos(object toModelo)
+    *       Para obtener una cadena de caracteres que contiene la lista de
+    *       campos del modelo, donde cada campo está precedido por el prefijo
+    *       'm.'.
+    * @uses string obtener_comando_reemplazar(object toModelo)
+    *       Para obtener una cadena de caracteres con la instrucción REPLACE
+    *       para actualizar un registro existente en la tabla.
+    * @uses bool cargar_valores_a_variables(object toModelo)
+    *       Para recuperar los datos de un modelo y los almacena en variables
+    *       de memoria.
+    * @uses bool validar_modificar(object toModelo)
+    *       Para realizar las validaciones de datos para el método protegido
+    *       'modificar'.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION modificar
@@ -517,39 +568,36 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.vigente, ;
-              loModelo
+        LOCAL lcListaCampos, lcComando, lcDeclararVariablePrivada, ;
+              lcInicializarVariablePrivada, lcLiberarVariablePrivada
+        lcListaCampos = THIS.obtener_lista_campos(toModelo)
+        lcComando = THIS.obtener_comando_reemplazar(toModelo)
 
-        WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.vigente = .obtener('vigente')
-        ENDWITH
-
-        IF !THIS.existe_codigo(m.codigo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no existe."
+        IF EMPTY(lcListaCampos) THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la lista de campos del modelo.'
             RETURN .F.
         ENDIF
 
-        loModelo = THIS.obtener_por_nombre(m.nombre)
-
-        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
-            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+        IF EMPTY(lcComando) THEN
+            THIS.cUltimoError = 'No se pudo obtener la instrucción REPLACE.'
             RETURN .F.
         ENDIF
 
-        loModelo = THIS.obtener_por_codigo(m.codigo)
+        lcDeclararVariablePrivada = 'PRIVATE ' + lcListaCampos
+        lcInicializarVariablePrivada = 'STORE .F. TO ' + lcListaCampos
+        lcLiberarVariablePrivada = 'RELEASE ' + lcListaCampos
 
-        IF !es_objeto(loModelo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no existe."
+        &lcDeclararVariablePrivada
+        &lcInicializarVariablePrivada
+
+        IF !THIS.cargar_valores_a_variables(toModelo) THEN
+            THIS.cUltimoError = ;
+                'No se pudo cargar los valores a las variables privadas.'
             RETURN .F.
         ENDIF
 
-        IF loModelo.es_igual(toModelo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no tiene cambios que guardar."
+        IF !THIS.validar_modificar(toModelo) THEN
             RETURN .F.
         ENDIF
 
@@ -561,13 +609,14 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice1'    && codigo
         IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH m.nombre, ;
-                    vigente WITH m.vigente
+            &lcComando
             THIS.cUltimoError = ''
         ELSE
             THIS.cUltimoError = ;
-                "No se pudo modificar el registro porque no existe."
+                'No se pudo modificar el registro porque no existe.'
         ENDIF
+
+        &lcLiberarVariablePrivada
 
         THIS.desconectar()
 
@@ -600,7 +649,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
 
         IF THIS.esta_relacionado(tnCodigo) THEN
             THIS.cUltimoError = ;
-                "El registro figura en otros archivos; no se puede borrar."
+                'El registro figura en otros archivos; no se puede borrar.'
             RETURN .F.
         ENDIF
 
@@ -616,7 +665,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             THIS.cUltimoError = ''
         ELSE
             THIS.cUltimoError = ;
-                "No se pudo borrar el registro porque no existe."
+                'No se pudo borrar el registro porque no existe.'
         ENDIF
 
         THIS.desconectar()
@@ -632,6 +681,12 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @method mixed obtener_modelo()
     * @method bool conectar(bool [tlModoEscritura])
     * @method bool desconectar()
+    * @method string obtener_comando_insertar(object toModelo)
+    * @method string obtener_comando_reemplazar(object toModelo)
+    * @method string obtener_lista_campos(object toModelo)
+    * @method bool cargar_valores_a_variables(object toModelo)
+    * @method bool validar_agregar()
+    * @method bool validar_modificar()
     */
 
     **/
@@ -689,11 +744,26 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     *
     * @return mixed object modelo si la operación se completa correctamente;
     *               .F. si ocurre un error.
+    * @uses campo_obtener_lista(string tcModelo)
+    *       Para obtener una cadena de caracteres que contiene la lista de
+    *       campos del modelo.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
     * @override
     */
     PROTECTED FUNCTION obtener_modelo
-        RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, nombre, vigente)
+        LOCAL lcListaCampos, lcComando
+        lcListaCampos = campo_obtener_lista(THIS.cModelo)
+        lcComando = "NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', {})"
+
+        IF EMPTY(lcListaCampos) THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la lista de campos del modelo.'
+            RETURN .F.
+        ENDIF
+
+        lcComando = STRTRAN(lcComando, '{}', lcListaCampos)
+
+        RETURN &lcComando
     ENDFUNC
 
     **/
@@ -736,5 +806,250 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     */
     PROTECTED FUNCTION desconectar
         cerrar_dbf(THIS.cModelo)
+    ENDFUNC
+
+    **/
+    * Devuelve una cadena de caracteres con la instrucción INSERT - SQL para
+    * agregar un nuevo registro a la tabla.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return string Si se ejecuta correctamente, devuelve la cadena INSERT -
+    *                SQL. En caso contrario, devuelve una cadena vacía.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    */
+    PROTECTED FUNCTION obtener_comando_insertar
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 ;
+                OR !es_objeto(toModelo) ;
+                OR !es_cadena(THIS.cModelo) THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        LOCAL loCampos, lcSql, lcCampos, lcValores, loCampo, lcNombre
+        loCampos = toModelo.campo_obtener_todos()
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        lcSql = 'INSERT INTO ' + THIS.cModelo + ' ({0}) VALUES ({1})'
+        STORE '' TO lcCampos, lcValores
+
+        FOR EACH loCampo IN loCampos
+            lcNombre = loCampo.obtener_nombre()
+
+            IF !EMPTY(lcCampos) THEN
+                lcCampos = lcCampos + ', '
+                lcValores = lcValores + ', '
+            ENDIF
+
+            lcCampos = lcCampos + lcNombre
+            lcValores = lcValores + 'm.' + lcNombre
+        ENDFOR
+
+        RETURN STRTRAN(STRTRAN(lcSql, '{0}', lcCampos), '{1}', lcValores)
+    ENDFUNC
+
+    **/
+    * Devuelve una cadena de caracteres con la instrucción REPLACE para
+    * actualizar un registro existente en la tabla.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return string Si se ejecuta correctamente, devuelve la cadena REPLACE.
+    *                En caso contrario, devuelve una cadena vacía.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    */
+    PROTECTED FUNCTION obtener_comando_reemplazar
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo) THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        LOCAL loCampos, lcComando, loCampo, lcNombre
+        loCampos = toModelo.campo_obtener_todos()
+        lcComando = ''
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        FOR EACH loCampo IN loCampos
+            lcNombre = loCampo.obtener_nombre()
+
+            IF lcNombre == 'codigo' THEN
+                LOOP
+            ENDIF
+
+            IF !EMPTY(lcComando) THEN
+                lcComando = lcComando + ', '
+            ENDIF
+
+            lcComando = lcComando + lcNombre + ' WITH m.' + lcNombre
+        ENDFOR
+
+        RETURN 'REPLACE ' + lcComando
+    ENDFUNC
+
+    **/
+    * Devuelve una cadena de caracteres que contiene la lista de campos del
+    * modelo, donde cada campo está precedido por el prefijo 'm.'.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return string Si se ejecuta correctamente, devuelve la lista de campos.
+    *                En caso contrario, devuelve una cadena vacía.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    */
+    PROTECTED FUNCTION obtener_lista_campos
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo)  THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        LOCAL loCampos, lcLista, loCampo
+        loCampos = toModelo.campo_obtener_todos()
+        lcLista = ''
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            RETURN SPACE(0)
+        ENDIF
+
+        FOR EACH loCampo IN loCampos
+            IF !EMPTY(lcLista) THEN
+                lcLista = lcLista + ', '
+            ENDIF
+
+            lcLista = lcLista + 'm.' + loCampo.obtener_nombre()
+        ENDFOR
+
+        RETURN lcLista
+    ENDFUNC
+
+    **/
+    * Recupera los datos de un modelo y los almacena en variables de memoria.
+    * Las variables de memoria ya deben estar declaradas e inicializadas con
+    * .F. en la función llamadora para no tener problemas en la alcance de
+    * las variables.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    */
+    PROTECTED FUNCTION cargar_valores_a_variables
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo)  THEN
+            RETURN .F.
+        ENDIF
+
+        LOCAL loCampos, loCampo, lcComando
+        loCampos = toModelo.campo_obtener_todos()
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            RETURN .F.
+        ENDIF
+
+        FOR EACH loCampo IN loCampos
+            lcComando = 'm.' + loCampo.obtener_nombre() + ;
+                ' = loCampo.obtener_valor()'
+            &lcComando
+        ENDFOR
+    ENDFUNC
+
+    **/
+    * Realiza las validaciones de datos para el método protegido 'agregar'.
+    *
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verificar si un código ya existe en la tabla.
+    * @uses bool existe_nombre(string tcNombre)
+    *       Para verificar si un nombre ya existe en la tabla.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
+    */
+    PROTECTED FUNCTION validar_agregar
+        IF THIS.existe_codigo(m.codigo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' ya existe."
+            RETURN .F.
+        ENDIF
+
+        IF THIS.existe_nombre(m.nombre) THEN
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Realiza las validaciones de datos para el método protegido 'modificar'.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verificar si un código ya existe en la tabla.
+    * @uses mixed obtener_por_nombre(string tcNombre)
+    *       Para obtener un registro por su nombre.
+    * @uses mixed obtener_por_codigo(int tnCodigo)
+    *       Para obtener un registro por su código.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
+    */
+    PROTECTED FUNCTION validar_modificar
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo)  THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
+            RETURN .F.
+        ENDIF
+
+        LOCAL loModelo
+
+        IF !THIS.existe_codigo(m.codigo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no existe."
+            RETURN .F.
+        ENDIF
+
+        loModelo = THIS.obtener_por_nombre(m.nombre)
+
+        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            RETURN .F.
+        ENDIF
+
+        loModelo = THIS.obtener_por_codigo(m.codigo)
+
+        IF !es_objeto(loModelo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no existe."
+            RETURN .F.
+        ENDIF
+
+        IF loModelo.es_igual(toModelo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no tiene cambios que guardar."
+            RETURN .F.
+        ENDIF
     ENDFUNC
 ENDDEFINE

@@ -47,6 +47,8 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * @method mixed obtener_por_codigo(int tnCodigo)
     * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     * @method string obtener_ultimo_error()
+    * @method bool agregar(object toModelo)
+    * @method bool modificar(object toModelo)
     * @method bool borrar(int tnCodigo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool existe_nombre(string tcNombre, int tnDepartamen, ;
@@ -54,8 +56,6 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * @method bool esta_relacionado(int tnCodigo)
     * @method mixed obtener_por_nombre(string tcNombre, int tnDepartamen, ;
                                        int tnCiudad)
-    * @method bool agregar(object toModelo)
-    * @method bool modificar(object toModelo)
     */
 
     **/
@@ -277,50 +277,44 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Agrega un nuevo registro a la tabla.
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool Init()
+    * @method bool configurar()
+    * @method mixed obtener_modelo()
+    * @method bool conectar(bool [tlModoEscritura])
+    * @method bool desconectar()
+    * @method string obtener_comando_insertar(object toModelo)
+    * @method string obtener_comando_reemplazar(object toModelo)
+    * @method string obtener_lista_campos(object toModelo)
+    * @method bool cargar_valores_a_variables(object toModelo)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool validar_agregar()
+    * @method bool validar_modificar()
+    */
+
+    **/
+    * Realiza las validaciones de datos para el método protegido 'agregar'.
     *
-    * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool .T. si el registro se agrega correctamente;
-    *              .F. si ocurre un error.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verifica si un código ya existe en la tabla.
+    * @uses bool existe_nombre(string tcNombre, int tnDepartamen, int tnCiudad)
+    *       Para verificar si un nombre ya existe en la tabla; dentro de un
+    *       departamento y ciudad específicos.
     * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
     *       Para verificar si un registro existe en la base de datos buscándolo
     *       por su código.
     * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
     *       Para obtener un objeto modelo utilizando su código único.
-    * @uses bool conectar(bool [tlModoEscritura])
-    *       Para establecer conexión con la base de datos.
-    * @uses bool desconectar()
-    *       Para cerrar la conexión con la base de datos.
-    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
-    FUNCTION agregar
-        LPARAMETERS toModelo
-
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
-            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
-            RETURN .F.
-        ENDIF
-
-        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente, ;
-              loModelo
-
-        WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
-        ENDWITH
+    PROTECTED FUNCTION validar_agregar
+        LOCAL loModelo
 
         IF THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
@@ -353,66 +347,42 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
                 ALLTRIM(STR(loModelo.obtener('departamen'))) + "' de la ciudad."
             RETURN .F.
         ENDIF
-
-        IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        INSERT INTO (THIS.cModelo) ;
-            (codigo, nombre, departamen, ciudad, vigente) ;
-        VALUES ;
-            (m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente)
-
-        WITH THIS
-            .cUltimoError = ''
-            .desconectar()
-        ENDWITH
     ENDFUNC
 
     **/
-    * Modifica un registro existente en la tabla.
+    * Realiza las validaciones de datos para el método protegido 'modificar'.
     *
-    * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool .T. si el registro se modifica correctamente;
-    *              .F. si ocurre un error.
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
     * @uses bool es_objeto(object toObjeto, string [tcClase])
     *       Para validar si un valor es un objeto y, opcionalmente, corresponde
     *       a una clase específica.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verifica si un código ya existe en la tabla.
+    * @uses mixed obtener_por_nombre(string tcNombre, int tnDepartamen, ;
+                                     int tnCiudad)
+    *       Para obtener un registro por su nombre; dentro de un departamento y
+    *       ciudad específicos.
     * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
     *       Para verificar si un registro existe en la base de datos buscándolo
     *       por su código.
-    * @uses bool conectar(bool [tlModoEscritura])
-    *       Para establecer conexión con la base de datos.
-    * @uses bool desconectar()
-    *       Para cerrar la conexión con la base de datos.
-    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
+    *       Para obtener un objeto modelo utilizando su código único.
+    * @uses mixed obtener_por_codigo(int tnCodigo)
+    *       Para obtener un registro por su código.
     * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
-    FUNCTION modificar
+    PROTECTED FUNCTION validar_modificar
         LPARAMETERS toModelo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .F.
-        ENDIF
-
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo)  THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente, ;
-              loModelo
-
-        WITH toModelo
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
-        ENDWITH
+        LOCAL loModelo
 
         IF !THIS.existe_codigo(m.codigo) THEN
             THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
@@ -461,50 +431,5 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
                 "' no tiene cambios que guardar."
             RETURN .F.
         ENDIF
-
-        IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        SELECT (THIS.cModelo)
-        SET ORDER TO TAG 'indice1'    && codigo
-        IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH m.nombre, ;
-                    departamen WITH m.departamen, ;
-                    ciudad WITH m.ciudad, ;
-                    vigente WITH m.vigente
-            THIS.cUltimoError = ''
-        ELSE
-            THIS.cUltimoError = ;
-                "No se pudo modificar el registro porque no existe."
-        ENDIF
-
-        THIS.desconectar()
-
-        RETURN EMPTY(THIS.cUltimoError)
-    ENDFUNC
-
-    **/
-    * @section MÉTODOS PROTEGIDOS
-    * @method bool Init()
-    * @method bool configurar()
-    * @method bool conectar(bool [tlModoEscritura])
-    * @method bool desconectar()
-    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
-    * @method mixed obtener_modelo()
-    */
-
-    **/
-    * Crea un objeto modelo a partir del registro actual de la tabla.
-    *
-    * @return mixed object modelo si la operación se completa correctamente;
-    *               .F. si ocurre un error.
-    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
-    * @override
-    */
-    PROTECTED FUNCTION obtener_modelo
-        RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, nombre, departamen, ciudad, vigente)
     ENDFUNC
 ENDDEFINE
