@@ -494,6 +494,8 @@ DEFINE CLASS campo AS Custom
     * @return string
     */
     PROTECTED FUNCTION validar_ancho
+        LOCAL lnAncho
+
         IF THIS.cTipo == 'C' THEN
             IF LEN(THIS.vValor) > THIS.nAncho THEN
                 RETURN THIS.cEtiqueta + STRTRAN(MSG_LONGITUD_MAXIMA, '{}', ;
@@ -502,9 +504,11 @@ DEFINE CLASS campo AS Custom
         ENDIF
 
         IF THIS.cTipo == 'N' THEN
-            IF THIS.vValor > THIS.nAncho THEN
+            lnAncho = VAL(REPLICATE('9', THIS.nAncho))
+
+            IF THIS.vValor > lnAncho THEN
                 RETURN THIS.cEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
-                    ALLTRIM(STR(THIS.nAncho + 1)))
+                    ALLTRIM(STR(lnAncho + 1)))
             ENDIF
         ENDIF
 

@@ -42,7 +42,6 @@ DEFINE CLASS dao_dbf_proveedo AS dao_dbf OF dao_dbf.prg
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool existe_nombre(string tcNombre)
-    * @method bool esta_vigente(int tnCodigo)
     * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
@@ -53,10 +52,57 @@ DEFINE CLASS dao_dbf_proveedo AS dao_dbf OF dao_dbf.prg
     * @method bool modificar(object toModelo)
     * @method bool borrar(int tnCodigo)
     * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method bool esta_vigente(int tnCodigo)
     * @method bool existe_ruc(string tcRuc)
     * @method bool esta_relacionado(int tnCodigo)
     * @method mixed obtener_por_ruc(string tcRuc)
     */
+
+    **/
+    * Verifica si un registro está vigente.
+    *
+    * @param int tnCodigo Código numérico único a verificar.
+    * @return bool .T. si el registro existe y su estado es vigente.
+    *              .F. si el registro no existe, no está vigente o si ocurre un
+    *              error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @override
+    */
+    FUNCTION esta_vigente
+        LPARAMETERS tnCodigo
+
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
+
+        IF !es_numero(tnCodigo) THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
+            RETURN .F.
+        ENDIF
+
+        IF !THIS.conectar() THEN
+            THIS.cUltimoError = MSG_ERROR_CONEXION
+            RETURN .F.
+        ENDIF
+
+        LOCAL llVigente
+
+        SELECT (THIS.cModelo)
+        SET ORDER TO TAG 'indice1'    && codigo
+        IF SEEK(tnCodigo) THEN
+            llVigente = vigente == 'S'
+        ENDIF
+
+        WITH THIS
+            .cUltimoError = ''
+            .desconectar()
+        ENDWITH
+
+        RETURN llVigente
+    ENDFUNC
 
     **/
     * Verifica si un RUC ya existe en la tabla.
@@ -272,9 +318,53 @@ DEFINE CLASS dao_dbf_proveedo AS dao_dbf OF dao_dbf.prg
     * @method string obtener_lista_campos(object toModelo)
     * @method bool cargar_valores_a_variables(object toModelo)
     * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
+    * @method mixed obtener_modelo()
     * @method bool validar_agregar()
     * @method bool validar_modificar()
     */
+
+    **/
+    * Crea un objeto modelo a partir del registro actual de la tabla.
+    *
+    * @return mixed object modelo si la operación se completa correctamente;
+    *               .F. si ocurre un error.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @override
+    */
+    PROTECTED FUNCTION obtener_modelo
+        LOCAL lcDto, loDto, loCampos, loCampo, lcNombre
+        lcDto = 'dto_' + THIS.cModelo
+        loDto = NEWOBJECT(lcDto, lcDto + '.prg')
+
+        IF !es_objeto(loDto) THEN
+            THIS.cUltimoError = STRTRAN(MSG_ERROR_INSTANCIA_CLASE, '{}', lcDto)
+            RETURN .F.
+        ENDIF
+
+        loCampos = loDto.campo_obtener_todos()
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la colección de campos del DTO.'
+            RETURN .F.
+        ENDIF
+
+        FOR EACH loCampo IN loCampos
+            lcNombre = loCampo.obtener_nombre()
+
+            IF !loCampo.establecer_valor(EVALUATE(lcNombre)) THEN
+                THIS.cUltimoError = ;
+                    "No se pudo establecer el valor del campo '" + lcNombre + ;
+                    "' del DTO."
+                RETURN .F.
+            ENDIF
+        ENDFOR
+
+        RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', loDto)
+    ENDFUNC
 
     **/
     * Realiza las validaciones de datos para el método protegido 'agregar'.

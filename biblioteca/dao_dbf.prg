@@ -472,8 +472,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             RETURN .F.
         ENDIF
 
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
-            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
+        IF !THIS.validar_modelo(toModelo) THEN
             RETURN .F.
         ENDIF
 
@@ -563,8 +562,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
             RETURN .F.
         ENDIF
 
-        IF !es_objeto(toModelo, THIS.cModelo) THEN
-            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
+        IF !THIS.validar_modelo(toModelo) THEN
             RETURN .F.
         ENDIF
 
@@ -687,6 +685,7 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
     * @method bool cargar_valores_a_variables(object toModelo)
     * @method bool validar_agregar()
     * @method bool validar_modificar()
+    * @method bool validar_modelo(object toModelo)
     */
 
     **/
@@ -1051,5 +1050,44 @@ DEFINE CLASS dao_dbf AS dao OF dao.prg
                 "' no tiene cambios que guardar."
             RETURN .F.
         ENDIF
+    ENDFUNC
+
+    **/
+    * Valida el modelo buscando errores en cada uno de los campos.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return bool .T. si el modelo no presenta ningún error;
+    *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
+    */
+    PROTECTED FUNCTION validar_modelo
+        LPARAMETERS toModelo
+
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo, THIS.cModelo)  THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
+            RETURN .F.
+        ENDIF
+
+        LOCAL loCampos, loCampo, lcUltimoError
+        loCampos = toModelo.campo_obtener_todos()
+
+        IF !es_objeto(loCampos) OR loCampos.Count == 0 THEN
+            THIS.cUltimoError = ;
+                'No se pudo obtener la colección de campos del modelo.'
+            RETURN .F.
+        ENDIF
+
+        FOR EACH loCampo IN loCampos
+            lcUltimoError = loCampo.obtener_ultimo_error()
+
+            IF !EMPTY(lcUltimoError) THEN
+                THIS.cUltimoError = lcUltimoError
+                RETURN .F.
+            ENDIF
+        ENDFOR
     ENDFUNC
 ENDDEFINE
