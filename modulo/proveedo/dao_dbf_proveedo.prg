@@ -317,6 +317,7 @@ DEFINE CLASS dao_dbf_proveedo AS dao_dbf OF dao_dbf.prg
     * @method string obtener_comando_reemplazar(object toModelo)
     * @method string obtener_lista_campos(object toModelo)
     * @method bool cargar_valores_a_variables(object toModelo)
+    * @method bool validar_modelo(object toModelo)
     * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
     * @method mixed obtener_modelo()
     * @method bool validar_agregar()

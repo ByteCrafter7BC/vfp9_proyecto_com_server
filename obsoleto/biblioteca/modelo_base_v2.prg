@@ -384,7 +384,7 @@ DEFINE CLASS modelo_base AS Custom
         ENDCASE
 
         lnFila = IIF(VARTYPE(THIS.aCampo) != 'L', ALEN(THIS.aCampo, 1) + 1, 1)
-        DIMENSION THIS.aCampo[lnFila, 11]
+         THIS.aCampo[lnFila, 11]
         **/
         * Estructura de la propiedad protegida de tipo arreglo 'aCampo'.
         *

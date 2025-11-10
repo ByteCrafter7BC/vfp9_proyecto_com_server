@@ -26,29 +26,16 @@
 * @extends biblioteca\modelo_base
 */
 
-**/
+**
 * Clase modelo de datos para la entidad 'proceden'.
 */
 DEFINE CLASS proceden AS modelo_base OF modelo_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool Init(int tnCodigo, string tcNombre, bool tlVigente)
-    * @method mixed campo_obtener(string tcCampo)
-    * @method object campo_obtener_todos()
+    * @method int obtener_codigo()
+    * @method string obtener_nombre()
+    * @method bool esta_vigente()
     * @method bool es_igual(object toModelo)
-    * @method bool establecer(string tcCampo)
-    * @method mixed obtener(string tcCampo)
-    */
-
-    **/
-    * @section MÉTODOS PROTEGIDOS
-    * @method bool campo_cargar()
-    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
-    * @method bool campo_establecer_getter_todos(bool tlValor)
-    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
-    * @method bool campo_establecer_setter_todos(bool tlValor)
-    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
-    * @method bool campo_existe(string tcCampo)
-    * @method mixed campo_obtener_valor(string tcCampo)
     */
 ENDDEFINE

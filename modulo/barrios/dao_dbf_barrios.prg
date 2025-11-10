@@ -287,6 +287,7 @@ DEFINE CLASS dao_dbf_barrios AS dao_dbf OF dao_dbf.prg
     * @method string obtener_comando_reemplazar(object toModelo)
     * @method string obtener_lista_campos(object toModelo)
     * @method bool cargar_valores_a_variables(object toModelo)
+    * @method bool validar_modelo(object toModelo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool validar_agregar()
     * @method bool validar_modificar()

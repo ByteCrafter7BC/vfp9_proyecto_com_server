@@ -27,7 +27,7 @@
 */
 
 **/
-* Componente COM para la gestión de marcas de artículos.
+* Componente COM para la gestión de países.
 *
 * Esta clase actúa como un controlador o una capa de servicio (business object)
 * para la entidad 'proceden'. Se expone como un objeto COM para ser utilizado
@@ -45,11 +45,11 @@ DEFINE CLASS com_proceden AS com_base OF com_base.prg OLEPUBLIC
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar([string tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
     * @method mixed obtener_por_nombre(string tcNombre)
-    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)

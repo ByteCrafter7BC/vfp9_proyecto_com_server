@@ -129,5 +129,6 @@ DEFINE CLASS dao_dbf_vendedor AS dao_dbf OF dao_dbf.prg
     * @method bool cargar_valores_a_variables(object toModelo)
     * @method bool validar_agregar()
     * @method bool validar_modificar()
+    * @method bool validar_modelo(object toModelo)
     */
 ENDDEFINE

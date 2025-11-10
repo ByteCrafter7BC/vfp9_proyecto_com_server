@@ -1,0 +1,3 @@
+file: nfJson-master.zip
+url: https://github.com/VFPX/nfJson
+clone: https://github.com/VFPX/nfJson.git

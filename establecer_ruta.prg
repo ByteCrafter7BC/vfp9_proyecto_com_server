@@ -55,5 +55,6 @@ FUNCTION establecer_ruta
                 modulo\vendedor, ;
                 prog, ;
                 proyecto, ;
-                prueba
+                prueba, ;
+                vendor\src\nfJson-master\nfJson
 ENDFUNC

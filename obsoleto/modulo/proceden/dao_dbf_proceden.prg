@@ -17,12 +17,12 @@
 */
 
 **/
-* @file dao_dbf_rubros2.prg
-* @package modulo\rubros2
+* @file dao_dbf_proceden.prg
+* @package modulo\proceden
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @class dao_dbf_rubros2
+* @class dao_dbf_proceden
 * @extends biblioteca\dao_dbf
 * @uses constantes.h
 */
@@ -31,23 +31,23 @@
 * Clase de acceso a datos (DAO).
 *
 * Esta clase hereda la funcionalidad básica de la clase 'dao_dbf' y la
-* especializa para la tabla 'rubros2'. Su propósito es manejar las operaciones
+* especializa para la tabla 'proceden'. Su propósito es manejar las operaciones
 * de persistencia (crear, leer, actualizar, borrar) y validaciones específicas
 * de esta tabla.
 */
 #INCLUDE 'constantes.h'
 
-DEFINE CLASS dao_dbf_rubros2 AS dao_dbf OF dao_dbf.prg
+DEFINE CLASS dao_dbf_proceden AS dao_dbf OF dao_dbf.prg
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool existe_nombre(string tcNombre)
     * @method bool esta_vigente(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar()
     * @method int obtener_nuevo_codigo()
-    * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method mixed obtener_por_nombre(string tcNombre)
-    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_codigo()
+    * @method mixed obtener_por_nombre()
+    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toModelo)
     * @method bool modificar(object toModelo)
@@ -56,38 +56,25 @@ DEFINE CLASS dao_dbf_rubros2 AS dao_dbf OF dao_dbf.prg
     * @method bool esta_relacionado(int tnCodigo)
     */
 
-    **/
-    * Verifica si un código está relacionado con otros registros de la base
-    * de datos.
+    **
+    * Verifica si el código de un país está relacionado con otros registros
+    * de la base de datos.
     *
-    * @param int tnCodigo Código numérico único a verificar.
-    * @return bool .T. si el registro está relacionado o si ocurre un error;
+    * @param int tnCodigo Código del país a verificar.
+    * @return bool .T. si el registro está relacionado o si ocurre un error, o
     *              .F. si no está relacionado.
-    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
-    *       Para validar si un valor es numérico y se encuentra dentro de un
-    *       rango específico.
-    * @uses bool dao_existe_referencia(string tcModelo, ;
-                                       string tcCondicionFiltro)
-    *       Para verificar la existencia de registros referenciales en una
-    *       tabla.
-    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
 
-        IF PARAMETERS() != 1 THEN
-            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
-            RETURN .T.
-        ENDIF
-
-        IF !es_numero(tnCodigo) THEN
+        IF !THIS.tnCodigo_Valid(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
 
         LOCAL lcCondicionFiltro, llRelacionado
-        lcCondicionFiltro = 'marca == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'proceden == ' + ALLTRIM(STR(tnCodigo))
 
         IF !llRelacionado THEN    && Artículos.
             llRelacionado = dao_existe_referencia('maesprod', lcCondicionFiltro)
@@ -102,17 +89,18 @@ DEFINE CLASS dao_dbf_rubros2 AS dao_dbf OF dao_dbf.prg
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool Init()
     * @method bool configurar()
     * @method mixed obtener_modelo()
-    * @method bool conectar(bool [tlModoEscritura])
+    * @method bool conectar([bool tlModoEscritura])
     * @method bool desconectar()
-    * @method string obtener_comando_insertar(object toModelo)
-    * @method string obtener_comando_reemplazar(object toModelo)
-    * @method string obtener_lista_campos(object toModelo)
-    * @method bool cargar_valores_a_variables(object toModelo)
-    * @method bool validar_agregar()
-    * @method bool validar_modificar()
-    * @method bool validar_modelo(object toModelo)
+    * @method bool Init()
+    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
+    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
+    * @method bool tnCodigo_Valid(int tnCodigo)
+    * @method bool tcNombre_Valid(string tcNombre)
+    * @method bool tlVigente_Valid(bool tlVigente)
+    * @method bool toModelo_Valid(object toModelo)
+    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
+    * @method bool tcOrden_Valid(string tcOrden)
     */
 ENDDEFINE
