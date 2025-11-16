@@ -26,32 +26,21 @@
 * @extends biblioteca\dto_base
 */
 
-**/
+**
 * Clase de transferencia de datos (DTO) para la entidad 'maquinas'.
 *
-* Esta clase se utiliza para transportar datos de marcas de artículos entre
-* diferentes capas de la aplicación. Hereda de 'dto_base'.
+* Esta clase se utiliza para transportar datos de máquinas entre diferentes
+* capas de la aplicación. Hereda de 'dto_base'.
 */
 DEFINE CLASS dto_maquinas AS dto_base OF dto_base.prg
     **/
     * @section MÉTODOS PÚBLICOS
-    * @method mixed campo_obtener(string tcCampo)
-    * @method object campo_obtener_todos()
-    * @method bool es_igual(object toModelo)
-    * @method bool establecer(string tcCampo)
-    * @method mixed obtener(string tcCampo)
-    */
-
-    **/
-    * @section MÉTODOS PROTEGIDOS
-    * @method bool Init()
-    * @method bool campo_cargar()
-    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
-    * @method bool campo_establecer_getter_todos(bool tlValor)
-    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
-    * @method bool campo_establecer_setter_todos(bool tlValor)
-    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
-    * @method bool campo_existe(string tcCampo)
-    * @method mixed campo_obtener_valor(string tcCampo)
+    * @method bool Init([int tnCodigo], [string tcNombre], [bool tlVigente])
+    * @method int obtener_codigo()
+    * @method string obtener_nombre()
+    * @method bool esta_vigente()
+    * @method bool establecer_codigo(int tnCodigo)
+    * @method bool establecer_nombre(string tcNombre)
+    * @method bool establecer_vigente(bool tlVigente)
     */
 ENDDEFINE

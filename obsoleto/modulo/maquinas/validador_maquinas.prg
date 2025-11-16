@@ -34,17 +34,17 @@ DEFINE CLASS validador_maquinas AS validador_base OF validador_base.prg
     * @section MÉTODOS PÚBLICOS
     * @method bool Init(int tnBandera, object toModelo, object toDao)
     * @method bool es_valido()
-    * @method string obtener_error(string tcCampo)
+    * @method string obtener_error_codigo()
+    * @method string obtener_error_nombre()
+    * @method string obtener_error_vigente()
     */
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool campo_establecer_ultimo_error(string tcCampo, ;
-                                                 string tcUltimoError)
-    * @method bool campo_existe_error()
-    * @method string campo_obtener_ultimo_error()
-    * @method bool validar()
-    * @method bool validar_codigo()
-    * @method bool validar_nombre()
+    * @method bool configurar()
+    * @method void validar()
+    * @method string validar_codigo()
+    * @method string validar_nombre()
+    * @method string validar_vigente()
     */
 ENDDEFINE

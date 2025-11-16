@@ -59,7 +59,9 @@ FUNCTION campo_obtener_todos
         campo_obtener_ciudades()
     CASE tcModelo == 'depar'
         campo_obtener_depar()
-     CASE tcModelo == 'marcas1'
+    CASE tcModelo == 'maquinas'
+        campo_obtener_depar()    && Duplicado.
+    CASE tcModelo == 'marcas1'
         campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'marcas2'
         campo_obtener_base()     && Duplicado.
