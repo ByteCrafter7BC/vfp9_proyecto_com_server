@@ -18,7 +18,7 @@
 
 **/
 * @file com_modelos.prg
-* @package modulo\com_modelos
+* @package modulo\modelos
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
@@ -35,7 +35,7 @@
 */
 DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     **/
-    * @var string Nombre de la clase modelo asociado a este componente.
+     * @var string Nombre de la clase modelo asociado a este componente.
     */
     cModelo = 'modelos'
 
@@ -44,11 +44,10 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar([string tcCondicionFiltro])
+    * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method mixed obtener_por_nombre(string tcNombre)
-    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
+    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)
@@ -61,13 +60,14 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Verifica la existencia de un modelo por su nombre, máquina y marca.
+    * Verifica si un nombre ya existe en la tabla; dentro de una máquina y
+    * marca específicos.
     *
-    * @param string tcNombre Nombre del modelo a verificar.
+    * @param string tcNombre Nombre a verificar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
-    * @return bool .T. si el nombre existe o si ocurre un error, o
-    *              .F. si el nombre no existe.
+    * @return bool .T. si el nombre existe o si ocurre un error;
+    *              .F. si no existe.
     * @override
     */
     FUNCTION existe_nombre(tcNombre AS String, tnMaquina AS Integer, ;
@@ -77,12 +77,13 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     ENDFUNC
 
     **/
-    * Realiza la búsqueda de un modelo por su nombre, máquina y marca.
+    * Devuelve un registro por su nombre; dentro de una máquina y marca
+    * específicos.
     *
-    * @param string tcNombre Nombre del modelo a buscar.
+    * @param string tcNombre Nombre del registro a buscar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
-    * @return mixed object modelo si el modelo se encuentra, o
+    * @return mixed object modelo si el registro se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
     * @override
     */
@@ -103,35 +104,38 @@ DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Convierte un DTO (Data Transfer Object) a su objeto modelo
+    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
     * correspondiente.
     *
-    * Extrae los datos de un DTO de tipo 'dto_modelos' para instanciar
-    * y devolver un nuevo objeto del modelo 'modelos'.
+    * Extrae los datos de un DTO para instanciar y devolver un nuevo objeto del
+    * modelo.
     *
-    * @param object toDto DTO (dto_modelos) que se va a convertir.
-    * @return mixed object modelo si la conversión se completa correctamente, o
+    * @param object toDto DTO que se va a convertir.
+    * @return mixed object si la conversión se completa correctamente;
     *               .F. si el parámetro de entrada no es un objeto válido.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
     * @override
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF VARTYPE(toDto) != 'O' THEN
+        IF !es_objeto(toDto) THEN
             RETURN .F.
         ENDIF
 
-        LOCAL lnCodigo, lcNombre, lnMaquina, lnMarca, llVigente
+        LOCAL m.codigo, m.nombre, m.maquina, m.marca, m.vigente
 
         WITH toDto
-            lnCodigo = .obtener_codigo()
-            lcNombre = ALLTRIM(.obtener_nombre())
-            lnMaquina = .obtener_maquina()
-            lnMarca = .obtener_marca()
-            llVigente = .esta_vigente()
+            m.codigo = .obtener('codigo')
+            m.nombre = .obtener('nombre')
+            m.maquina = .obtener('maquina')
+            m.marca = .obtener('marca')
+            m.vigente = .obtener('vigente')
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            lnCodigo, lcNombre, lnMaquina, lnMarca, llVigente)
+            m.codigo, m.nombre, m.maquina, m.marca, m.vigente)
     ENDFUNC
 ENDDEFINE

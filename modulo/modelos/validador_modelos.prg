@@ -30,244 +30,219 @@
 **
 * Clase de validación para el modelo 'modelos'.
 *
-* Hereda de la clase 'validador_base' y añade dos propiedades numéricas
-* específicas: 'maquina' y 'marca'.
+* Hereda de la clase 'validador_base' y añade dos campos numéricos específicos:
+* 'maquina' y 'marca'.
 */
 #INCLUDE 'constantes.h'
 
 DEFINE CLASS validador_modelos AS validador_base OF validador_base.prg
     **/
-    * @var string Mensaje de error para la propiedad 'maquina'.
-    */
-    PROTECTED cErrorMaquina
-
-    **/
-    * @var string Mensaje de error para la propiedad 'marca'.
-    */
-    PROTECTED cErrorMarca
-
-    **/
     * @section MÉTODOS PÚBLICOS
     * @method bool Init(int tnBandera, object toModelo, object toDao)
-    * @method string obtener_error_codigo()
-    * @method string obtener_error_nombre()
-    * @method string obtener_error_vigente()
-    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool es_valido()
-    * @method string obtener_error_maquina()
-    * @method string obtener_error_marca()
+    * @method string obtener_error(string tcCampo)
     */
-
-    **/
-    * Verifica si el modelo es válido según el contexto (bandera).
-    *
-    * - Para banderas 1 y 2 (agregar/modificar), comprueba si existe algún
-    *   mensaje de error en las propiedades de la clase.
-    * - Para otras banderas (borrar), verifica que el modelo no esté
-    *   relacionada con otros registros de la base de datos.
-    *
-    * @return bool .T. si el modelo es válido, o .F. si no lo es.
-    * @override
-    */
-    FUNCTION es_valido
-        IF BETWEEN(THIS.nBandera, 1, 2) THEN
-            IF !EMPTY(THIS.cErrorCodigo) ;
-                    OR !EMPTY(THIS.cErrorNombre) ;
-                    OR !EMPTY(THIS.cErrorMaquina) ;
-                    OR !EMPTY(THIS.cErrorMarca) ;
-                    OR !EMPTY(THIS.cErrorVigente) THEN
-                RETURN .F.
-            ENDIF
-        ELSE
-            RETURN !THIS.oDao.esta_relacionado(THIS.oModelo.obtener_codigo())
-        ENDIF
-    ENDFUNC
-
-    **
-    * Devuelve el mensaje de error de la propiedad 'maquina',
-    * o una cadena vacía si no hay error.
-    *
-    * @return string
-    */
-    FUNCTION obtener_error_maquina
-        RETURN IIF(VARTYPE(THIS.cErrorMaquina) == 'C', THIS.cErrorMaquina, '')
-    ENDFUNC
-
-    **
-    * Devuelve el mensaje de error de la propiedad 'marca',
-    * o una cadena vacía si no hay error.
-    *
-    * @return string
-    */
-    FUNCTION obtener_error_marca
-        RETURN IIF(VARTYPE(THIS.cErrorMarca) == 'C', THIS.cErrorMarca, '')
-    ENDFUNC
 
     **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool configurar()
-    * @method string validar_codigo()
-    * @method string validar_vigente()
+    * @method bool campo_establecer_ultimo_error(string tcCampo, ;
+                                                 string tcUltimoError)
+    * @method bool campo_existe_error()
+    * @method string campo_obtener_ultimo_error()
+    * @method bool validar()
+    * @method bool validar_codigo()
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
-    * @method void validar()
-    * @method string validar_nombre()
-    * @method string validar_maquina()
-    * @method string validar_marca()
+    * @method bool validar_nombre()
+    * @method bool validar_maquina()
+    * @method bool validar_marca()
     */
-
-    **
-    * Ejecuta todas las reglas de validación para el modelo.
-    *
-    * Llama al método de validación de la clase base y luego ejecuta las
-    * validaciones específicas para las propiedades 'maquina' y 'marca'.
-    *
-    * Este método es invocado por el constructor ('Init') para las operaciones
-    * de agregar (bandera 1) y modificar (bandera 2).
-    *
-    * Almacena los mensajes de error devueltos por los métodos de validación
-    * en las propiedades de error de la clase.
-    *
-    * @override
-    */
-    PROTECTED FUNCTION validar
-        validador_base::validar()
-
-        WITH THIS
-            .cErrorMaquina = .validar_maquina()
-            .cErrorMarca = .validar_marca()
-        ENDWITH
-    ENDFUNC
 
     **/
-    * Valida la propiedad 'nombre' del modelo.
+    * Valida el nombre del modelo.
     *
-    * @return string Si la propiedad es válida, devuelve una cadena vacía;
-    *                de lo contrario, devuelve un mensaje de error.
+    * @return bool .T. si el nombre del modelo es válido;
+    *              .F. en caso contrario.
+    * @uses string campo_obtener_ultimo_error(string tcCampo)
+    *       Para obtener el último mensaje de error del campo.
+    * @uses bool campo_establecer_ultimo_error(string tcCampo, ;
+                                               string tcUltimoError)
+    *       Para establecer el último mensaje de error del campo.
     * @override
     */
     PROTECTED FUNCTION validar_nombre
-        LOCAL lcEtiqueta, lcNombre, loModelo
-        lcEtiqueta = 'Nombre: '
-        lcNombre = THIS.oModelo.obtener_nombre()
+        LOCAL lcCampo
+        lcCampo = 'nombre'
 
-        IF EMPTY(lcNombre) THEN
-            RETURN lcEtiqueta + MSG_NO_BLANCO
+        IF !EMPTY(THIS.campo_obtener_ultimo_error(lcCampo)) THEN
+            RETURN .F.
         ENDIF
 
-        IF LEN(lcNombre) > THIS.nAnchoNombre THEN
-            RETURN lcEtiqueta + ;
-                STRTRAN(MSG_LONGITUD_MAXIMA, '{}', ;
-                ALLTRIM(STR(THIS.nAnchoNombre)))
+        * Verifica que el campo 'codigo' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('codigo')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('codigo'))
+            RETURN .F.
         ENDIF
-
-        RETURN SPACE(0)
     ENDFUNC
 
     **/
     * Valida la propiedad 'maquina' del modelo.
     *
-    * @return string Si la propiedad es válida, devuelve una cadena vacía;
-    *                de lo contrario, devuelve un mensaje de error.
+    * @return bool .T. si a propiedad 'maquina' del modelo es válido;
+    *              .F. en caso contrario.
+    * @uses string campo_obtener_ultimo_error(string tcCampo)
+    *       Para obtener el último mensaje de error del campo.
+    * @uses bool campo_establecer_ultimo_error(string tcCampo, ;
+                                               string tcUltimoError)
+    *       Para establecer el último mensaje de error del campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
+    *       Para obtener un objeto modelo utilizando su código único.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_maquina
-        LOCAL lcEtiqueta, lnMaquina, loModelo
-        lcEtiqueta = 'Máquina: '
+        LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
+        lcCampo = 'maquina'
 
-        IF !EMPTY(THIS.cErrorNombre) THEN
-            RETURN THIS.cErrorNombre
+        IF !EMPTY(THIS.campo_obtener_ultimo_error(lcCampo)) THEN
+            RETURN .F.
         ENDIF
 
-        lnMaquina = THIS.oModelo.obtener_maquina()
-
-        IF lnMaquina < 0 THEN
-            RETURN lcEtiqueta + MSG_MAYOR_O_IGUAL_A_CERO
+        * Verifica que el campo 'codigo' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('codigo')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('codigo'))
+            RETURN .F.
         ENDIF
 
-        IF lnMaquina > 9999 THEN
-            RETURN lcEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
-                ALLTRIM(STR(9999 + 1)))
+        * Verifica que el campo 'nombre' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('nombre')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('nombre'))
+            RETURN .F.
         ENDIF
 
-        IF lnMaquina > 0 THEN
-            loModelo = dao_obtener_por_codigo('maquinas', lnMaquina)
+        loCampo = THIS.oModelo.campo_obtener(lcCampo)
 
-            IF VARTYPE(loModelo) != 'O' THEN
-                RETURN lcEtiqueta + ;
-                    STRTRAN(MSG_NO_EXISTE, '{}', ALLTRIM(STR(lnMaquina)))
-            ENDIF
-
-            IF !loModelo.esta_vigente() THEN
-                RETURN lcEtiqueta + ;
-                    STRTRAN(MSG_NO_VIGENTE, '{}', ALLTRIM(STR(lnMaquina)))
-            ENDIF
+        IF loCampo.obtener_valor() == 0 AND !loCampo.es_requerido() THEN
+            RETURN .T.
         ENDIF
 
-        RETURN SPACE(0)
+        WITH loCampo
+            lcEtiqueta = .obtener_etiqueta()
+            loModelo = dao_obtener_por_codigo('maquinas', .obtener_valor())
+        ENDWITH
+
+        IF !es_objeto(loModelo) THEN
+            loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_EXISTE)
+            RETURN .F.
+        ENDIF
+
+        IF !loModelo.obtener('vigente') THEN
+            loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_VIGENTE)
+            RETURN .F.
+        ENDIF
     ENDFUNC
 
     **/
     * Valida la propiedad 'marca' del modelo.
     *
-    * @return string Si la propiedad es válida, devuelve una cadena vacía;
-    *                de lo contrario, devuelve un mensaje de error.
+    * @return bool .T. si a propiedad 'marca' del modelo es válido;
+    *              .F. en caso contrario.
+    * @uses string campo_obtener_ultimo_error(string tcCampo)
+    *       Para obtener el último mensaje de error del campo.
+    * @uses bool campo_establecer_ultimo_error(string tcCampo, ;
+                                               string tcUltimoError)
+    *       Para establecer el último mensaje de error del campo.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
+    *       Para obtener un objeto modelo utilizando su código único.
+    * @uses object oModelo Modelo que contiene los datos a validar.
+    * @uses object oDao DAO para la interacción con la base de datos.
     */
     PROTECTED FUNCTION validar_marca
-        LOCAL lcEtiqueta, lcNombre, lnMaquina, lnMarca, loModelo
-        lcEtiqueta = 'Marca: '
+        LOCAL lcCampo, loCampo, lcEtiqueta, loModelo
+        lcCampo = 'marca'
 
-        IF !EMPTY(THIS.cErrorNombre) THEN
-            RETURN THIS.cErrorNombre
+        IF !EMPTY(THIS.campo_obtener_ultimo_error(lcCampo)) THEN
+            RETURN .F.
         ENDIF
 
-        IF !EMPTY(THIS.cErrorMaquina) THEN
-            RETURN THIS.cErrorMaquina
+        * Verifica que el campo 'codigo' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('codigo')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('codigo'))
+            RETURN .F.
         ENDIF
 
-        WITH THIS.oModelo
-            lcNombre = .obtener_nombre()
-            lnMaquina = .obtener_maquina()
-            lnMarca = .obtener_marca()
-        ENDWITH
-
-        IF lnMarca < 0 THEN
-            RETURN lcEtiqueta + MSG_MAYOR_O_IGUAL_A_CERO
+        * Verifica que el campo 'nombre' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('nombre')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('nombre'))
+            RETURN .F.
         ENDIF
 
-        IF lnMarca > 9999 THEN
-            RETURN lcEtiqueta + STRTRAN(MSG_MENOR_QUE, '{}', ;
-                ALLTRIM(STR(9999 + 1)))
+        * Verifica que el campo 'maquina' no contenga errores.
+        IF !EMPTY(THIS.campo_obtener_ultimo_error('maquina')) THEN
+            THIS.campo_establecer_ultimo_error(lcCampo, ;
+                THIS.campo_obtener_ultimo_error('maquina'))
+            RETURN .F.
         ENDIF
 
-        IF lnMarca > 0 THEN
-            loModelo = dao_obtener_por_codigo('marcas2', lnMarca)
+        loCampo = THIS.oModelo.campo_obtener(lcCampo)
 
-            IF VARTYPE(loModelo) != 'O' THEN
-                RETURN lcEtiqueta + ;
-                    STRTRAN(MSG_NO_EXISTE, '{}', ALLTRIM(STR(lnMarca)))
+        IF loCampo.obtener_valor() > 0 THEN
+            WITH loCampo
+                lcEtiqueta = .obtener_etiqueta()
+                loModelo = dao_obtener_por_codigo('marcas2', .obtener_valor())
+            ENDWITH
+
+            IF !es_objeto(loModelo) THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_EXISTE)
+                RETURN .F.
             ENDIF
 
-            IF !loModelo.esta_vigente() THEN
-                RETURN lcEtiqueta + ;
-                    STRTRAN(MSG_NO_VIGENTE, '{}', ALLTRIM(STR(lnMarca)))
+            IF !loModelo.obtener('vigente') THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + MSG_NO_VIGENTE)
+                RETURN .F.
             ENDIF
         ENDIF
 
-        loModelo = THIS.oDao.obtener_por_nombre(lcNombre, lnMaquina, lnMarca)
+        loModelo = THIS.oDao.obtener_por_nombre( ;
+            THIS.oModelo.obtener('nombre'), ;
+            THIS.oModelo.obtener('maquina'), ;
+            THIS.oModelo.obtener('marca'))
 
         IF THIS.nBandera == 1 THEN    && Agregar
-            IF VARTYPE(loModelo) == 'O' THEN
-                RETURN 'Nombre: ' + MSG_YA_EXISTE
+            IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + ;
+                    THIS.oDao.obtener_ultimo_error())
+                RETURN .F.
             ENDIF
-        ELSE
-            IF THIS.nBandera == 2 THEN    && Modificar
-                IF VARTYPE(loModelo) == 'O' ;
-                        AND loModelo.obtener_codigo() != ;
-                            THIS.oModelo.obtener_codigo() THEN
-                    RETURN 'Nombre: ' + MSG_YA_EXISTE
-                ENDIF
+
+            IF es_objeto(loModelo) THEN
+                loCampo.establecer_ultimo_error('Nombre: ' + MSG_YA_EXISTE)
+                RETURN .F.
             ENDIF
         ENDIF
 
-        RETURN SPACE(0)
+        IF THIS.nBandera == 2 THEN    && Modificar
+            IF !EMPTY(THIS.oDao.obtener_ultimo_error()) THEN
+                loCampo.establecer_ultimo_error(lcEtiqueta + ;
+                    THIS.oDao.obtener_ultimo_error())
+                RETURN .F.
+            ENDIF
+
+            IF es_objeto(loModelo) AND loModelo.obtener('codigo') != ;
+                    THIS.oModelo.obtener('codigo') THEN
+                loCampo.establecer_ultimo_error('Nombre: ' + MSG_YA_EXISTE)
+                RETURN .F.
+            ENDIF
+        ENDIF
     ENDFUNC
 ENDDEFINE

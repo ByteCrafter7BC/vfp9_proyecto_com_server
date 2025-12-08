@@ -26,101 +26,71 @@
 * @extends biblioteca\modelo_base
 */
 
-**
+**/
 * Clase modelo de datos para la entidad 'modelos'.
-*
-* Hereda de la clase 'modelo_base' y añade dos propiedades numéricas
-* específicas: 'maquina' y 'marca'.
 */
 DEFINE CLASS modelos AS modelo_base OF modelo_base.prg
     **/
-    * @var int Código numérico de la máquina.
-    */
-    PROTECTED nMaquina
-
-    **/
-    * @var int Código numérico de la marca.
-    */
-    PROTECTED nMarca
-
-    **/
     * @section MÉTODOS PÚBLICOS
-    * @method int obtener_codigo()
-    * @method string obtener_nombre()
-    * @method bool esta_vigente()
+    * @method mixed campo_obtener(string tcCampo)
+    * @method object campo_obtener_todos()
+    * @method bool establecer(string tcCampo)
+    * @method mixed obtener(string tcCampo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
     * @method bool Init(int tnCodigo, string tcNombre, int tnMaquina, ;
                         int tnMarca, bool tlVigente)
-    * @method int obtener_maquina()
-    * @method int obtener_marca()
     * @method bool es_igual(object toModelo)
     */
 
     **/
     * Constructor de la clase.
     *
-    * Inicializa una nueva instancia de la clase 'modelos'.
-    *
-    * Además de los parámetros de la clase base, inicializa los dos parámetros
-    * numéricos específicos de esta clase.
+    * Inicializa las propiedades del objeto con los valores proporcionados,
+    * validando que los tipos de datos sean correctos.
     *
     * @param int tnCodigo Código numérico único del modelo.
-    * @param string tcNombre Nombre o descripción del modelo.
-    * @param int tnMaquina Código numérico de la máquina.
+    * @param string tcNombre Nombre descriptivo del modelo.
+    * @param int tnMaquina Código numérico del máquina.
     * @param int tnMarca Código numérico de la marca.
-    * @param bool tlVigente Indica si el modelo está vigente.
-    * @return bool .T. si la inicialización se completa correctamente, o
+    * @param bool tlVigente Estado de vigencia del modelo.
+    * @return bool .T. si la inicialización se completa correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    *       Para establecer el valor de un campo.
     * @override
     */
     FUNCTION Init
         LPARAMETERS tnCodigo, tcNombre, tnMaquina, tnMarca, tlVigente
 
+        IF PARAMETERS() != 5 ;
+                OR !es_numero(tnMaquina, 0, 9999) ;
+                OR !es_numero(tnMarca, 0, 9999) THEN
+            RETURN .F.
+        ENDIF
+
         IF !modelo_base::Init(tnCodigo, tcNombre, tlVigente) THEN
             RETURN .F.
         ENDIF
 
-        IF VARTYPE(tnMaquina) != 'N' THEN
+        IF !THIS.campo_establecer_valor('maquina', tnMaquina) ;
+                OR !THIS.campo_establecer_valor('marca', tnMarca) THEN
             RETURN .F.
         ENDIF
-
-        IF VARTYPE(tnMarca) != 'N' THEN
-            RETURN .F.
-        ENDIF
-
-        WITH THIS
-            .nMaquina = tnMaquina
-            .nMarca = tnMarca
-        ENDWITH
     ENDFUNC
 
     **/
-    * Devuelve el código de la máquina.
-    *
-    * @return int Código numérico de la máquina.
-    */
-    FUNCTION obtener_maquina
-        RETURN THIS.nMaquina
-    ENDFUNC
-
-    **/
-    * Devuelve el código de la marca.
-    *
-    * @return int Código numérico de la marca.
-    */
-    FUNCTION obtener_marca
-        RETURN THIS.nMarca
-    ENDFUNC
-
-    **/
-    * Compara la instancia actual con otro objeto para determinar si son
-    * iguales.
+    * Compara si dos objetos modelo son idénticos.
     *
     * Compara las propiedades de la clase base y las propiedades específicas
     * ('maquina' y 'marca') de la clase 'modelos'.
     *
-    * @param object toModelo Objeto de tipo 'modelos' con el que se comparará.
-    * @return bool .T. si los objetos son iguales, o .F. si no lo son.
+    * @param object toModelo Modelo con el que se va a comparar.
+    * @return bool .T. si los objetos son idénticos, o .F. si no lo son.
+    * @uses mixed campo_obtener_valor(string tcCampo)
+    *       Para obtener el valor de un campo.
     * @override
     */
     FUNCTION es_igual
@@ -130,9 +100,28 @@ DEFINE CLASS modelos AS modelo_base OF modelo_base.prg
             RETURN .F.
         ENDIF
 
-        IF toModelo.obtener_maquina() != THIS.nMaquina ;
-                OR toModelo.obtener_marca() != THIS.nMarca THEN
+        LOCAL lnMaquina, lnMarca
+
+        WITH THIS
+            lnMaquina = .campo_obtener_valor('maquina')
+            lnMarca = .campo_obtener_valor('marca')
+        ENDWITH
+
+        IF toModelo.obtener('maquina') != lnMaquina ;
+                OR toModelo.obtener('marca') != lnMarca THEN
             RETURN .F.
         ENDIF
     ENDFUNC
+
+    **/
+    * @section MÉTODOS PROTEGIDOS
+    * @method bool campo_cargar()
+    * @method bool campo_establecer_getter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_getter_todos(bool tlValor)
+    * @method bool campo_establecer_setter(string tcCampo, bool tlValor)
+    * @method bool campo_establecer_setter_todos(bool tlValor)
+    * @method bool campo_establecer_valor(string tcCampo, mixed tvValor)
+    * @method bool campo_existe(string tcCampo)
+    * @method mixed campo_obtener_valor(string tcCampo)
+    */
 ENDDEFINE

@@ -65,6 +65,8 @@ FUNCTION campo_obtener_todos
         campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'marcas2'
         campo_obtener_base()     && Duplicado.
+    CASE tcModelo == 'modelos'
+        campo_obtener_modelos()
     CASE tcModelo == 'proceden'
         campo_obtener_base()     && Duplicado.
     CASE tcModelo == 'proveedo'
@@ -91,7 +93,11 @@ ENDFUNC
 * @function bool campo_establecer_setter_todos(bool tlValor)
 * @function bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
 * @function bool campo_existe(string tcCampo)
-* @function bool cargar_campos_base()
+* @function bool campo_obtener_barrios()
+* @function bool campo_obtener_base()
+* @function bool campo_obtener_ciudades()
+* @function bool campo_obtener_depar()
+* @function bool campo_obtener_proveedo()
 */
 
 **/
@@ -344,6 +350,48 @@ FUNCTION campo_obtener_barrios
 ENDFUNC
 
 **/
+* Carga los campos del modelo base.
+*
+* @return bool .T. si la carga se completa correctamente;
+*              .F. si ocurre un error.
+* @uses bool campo_agregar(string tcCampo, string tcTipo, int tnAncho, ;
+                            int tnDecimales, string tcEtiqueta)
+*       Para agregar un campo a la variable privada 'poCampos'.
+* @uses bool campo_establecer_sin_signo(string tcCampo, bool tlValor)
+*       Para establecer si un campo de tipo numérico acepta números
+*       negativos.
+* @uses bool campo_establecer_requerido(string tcCampo, bool tlValor)
+*       Para establecer si un campo es requerido.
+* @uses bool campo_establecer_getter_todos(bool tlValor)
+*       Para establecer el estado getter de todos los campos.
+*/
+FUNCTION campo_obtener_base
+    * Agrega todos los campos.
+    IF !campo_agregar('codigo', 'N', 4, , 'Código: ') ;
+            OR !campo_agregar('nombre', 'C', 30, , 'Nombre: ') ;
+            OR !campo_agregar('vigente', 'L', 1, , 'Vigente: ') THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos sin signo (unsigned).
+    IF !campo_establecer_sin_signo('codigo', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los campos requeridos.
+    IF !campo_establecer_requerido('codigo', .T.) ;
+            OR !campo_establecer_requerido('nombre', .T.) ;
+            OR !campo_establecer_requerido('vigente', .T.) THEN
+        RETURN .F.
+    ENDIF
+
+    * Establece todos los getter a verdadero (.T.).
+    IF !campo_establecer_getter_todos(.T.) THEN
+        RETURN .F.
+    ENDIF
+ENDFUNC
+
+**/
 * Carga los campos del modelo 'ciudades'.
 *
 * @return bool .T. si la carga se completa correctamente;
@@ -434,7 +482,7 @@ FUNCTION campo_obtener_depar
 ENDFUNC
 
 **/
-* Carga los campos del modelo base.
+* Carga los campos del modelo 'modelos'.
 *
 * @return bool .T. si la carga se completa correctamente;
 *              .F. si ocurre un error.
@@ -449,16 +497,20 @@ ENDFUNC
 * @uses bool campo_establecer_getter_todos(bool tlValor)
 *       Para establecer el estado getter de todos los campos.
 */
-FUNCTION campo_obtener_base
+FUNCTION campo_obtener_modelos
     * Agrega todos los campos.
     IF !campo_agregar('codigo', 'N', 4, , 'Código: ') ;
             OR !campo_agregar('nombre', 'C', 30, , 'Nombre: ') ;
+            OR !campo_agregar('maquina', 'N', 4, , 'Máquina: ') ;
+            OR !campo_agregar('marca', 'N', 4, , 'Marca: ') ;
             OR !campo_agregar('vigente', 'L', 1, , 'Vigente: ') THEN
         RETURN .F.
     ENDIF
 
     * Establece todos los campos sin signo (unsigned).
-    IF !campo_establecer_sin_signo('codigo', .T.) THEN
+    IF !campo_establecer_sin_signo('codigo', .T.) ;
+            OR !campo_establecer_sin_signo('maquina', .T.) ;
+            OR !campo_establecer_sin_signo('marca', .T.) THEN
         RETURN .F.
     ENDIF
 

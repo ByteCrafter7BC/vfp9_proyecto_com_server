@@ -42,57 +42,88 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
-    * @method int contar()
+    * @method int contar(string [tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
-    * @method mixed obtener_por_codigo()
+    * @method mixed obtener_por_codigo(int tnCodigo)
     * @method string obtener_ultimo_error()
-    * @method bool borrar(int tnCodigo)
-    * -- MÉTODO ESPECÍFICO DE ESTA CLASE --
-    * @method bool existe_nombre(string tcNombre)
-    * @method bool esta_relacionado(int tnCodigo)
-    * @method mixed obtener_por_nombre()
-    * @method bool obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method bool agregar(object toModelo)
     * @method bool modificar(object toModelo)
+    * @method bool borrar(int tnCodigo)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool existe_nombre(string tcNombre, int tnMaquina, int tnMarca)
+    * @method bool esta_relacionado(int tnCodigo)
+    * @method mixed obtener_por_nombre(string tcNombre, int tnMaquina, ;
+                                       int tnMarca)
+    * @method bool obtener_todos(string [tcCondicionFiltro], string [tcOrden])
     */
 
     **/
-    * Verifica la existencia de un modelo por su nombre, máquina y marca.
+    * Verifica si un nombre ya existe en la tabla; dentro de una máquina y
+    * marca específicos.
     *
-    * @param string tcNombre Nombre del modelo a verificar.
+    * Realiza una búsqueda no sensible a mayúsculas/minúsculas utilizando el
+    * índice secundario ('indice2').
+    *
+    * @param string tcNombre Nombre a verificar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
     * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si el nombre no existe.
+    *              .F. si no existe.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
+    *       Para obtener el ancho del campo de un modelo.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION existe_nombre
         LPARAMETERS tcNombre, tnMaquina, tnMarca
 
-        IF !THIS.tcNombre_Valid(tcNombre) THEN
+        LOCAL llExiste, lnAncho
+
+        IF PARAMETERS() != 3 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .T.
+        ENDIF
+
+        IF !es_cadena(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .T.
         ENDIF
 
-        IF !THIS.tnMaquina_Valid(tnMaquina) THEN
+        IF !es_numero(tnMaquina, 0, 9999) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnMaquina')
             RETURN .T.
         ENDIF
 
-        IF !THIS.tnMarca_Valid(tnMarca) THEN
+        IF !es_numero(tnMarca, 0, 9999) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnMarca')
             RETURN .T.
         ENDIF
 
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
-            THIS.nAnchoNombre)
+        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
+
+        IF lnAncho == 0 THEN
+            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
+                '{0}', 'nombre'), '{1}', THIS.cModelo)
+            RETURN .T.
+        ENDIF
+
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .T.
         ENDIF
-
-        LOCAL llExiste
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(maquina, 4) + STR(marca, 4)
@@ -113,19 +144,32 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
         RETURN llExiste
     ENDFUNC
 
-    **
-    * Verifica si el código de un modelo está relacionado con otros registros
-    * de la base de datos.
+    **/
+    * Verifica si un código está relacionado con otros registros de la base
+    * de datos.
     *
-    * @param int tnCodigo Código del modelo a verificar.
+    * @param int tnCodigo Código numérico único a verificar.
     * @return bool .T. si el registro está relacionado o si ocurre un error;
     *              .F. si no está relacionado.
+    * @uses bool es_numero(int tnNumero, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es numérico y se encuentra dentro de un
+    *       rango específico.
+    * @uses bool dao_existe_referencia(string tcModelo, ;
+                                       string tcCondicionFiltro)
+    *       Para verificar la existencia de registros referenciales en una
+    *       tabla.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION esta_relacionado
         LPARAMETERS tnCodigo
 
-        IF !THIS.tnCodigo_Valid(tnCodigo) THEN
+        IF PARAMETERS() != 1 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .T.
+        ENDIF
+
+        IF !es_numero(tnCodigo) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnCodigo')
             RETURN .T.
         ENDIF
@@ -133,7 +177,7 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
         LOCAL lcCondicionFiltro, llRelacionado
         lcCondicionFiltro = 'modelo == ' + ALLTRIM(STR(tnCodigo))
 
-        IF !llRelacionado THEN    && Órdenes de trabajo (OT).
+        IF !llRelacionado THEN    && Órdenes de trabajo.
             llRelacionado = dao_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
@@ -145,42 +189,66 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Realiza la búsqueda de un modelo por su nombre, máquina y marca.
+    * Devuelve un registro por su nombre; dentro de una maquina y marca
+    * específicos.
     *
-    * @param string tcNombre Nombre del modelo a buscar.
+    * @param string tcNombre Nombre del registro a buscar.
     * @param int tnMaquina Código de la máquina.
     * @param int tnMarca Código de la marca.
-    * @return mixed object modelo si el modelo se encuentra;
+    * @return mixed object modelo si el registro se encuentra;
     *               .F. si no se encuentra o si ocurre un error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
+    * @uses int campo_obtener_ancho(string tcModelo, string tcCampo)
+    *       Para obtener el ancho del campo de un modelo.
+    * @uses bool conectar(bool [tlModoEscritura])
+    *       Para establecer conexión con la base de datos.
+    * @uses bool desconectar()
+    *       Para cerrar la conexión con la base de datos.
+    * @uses string cModelo Nombre de la clase que representa el modelo de datos.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
     FUNCTION obtener_por_nombre
         LPARAMETERS tcNombre, tnMaquina, tnMarca
 
-        IF !THIS.tcNombre_Valid(tcNombre) THEN
+        LOCAL loModelo, lnAncho
+
+        IF PARAMETERS() != 3 THEN
+            THIS.cUltimoError = MSG_ERROR_NUMERO_ARGUMENTOS
+            RETURN .F.
+        ENDIF
+
+        IF !es_cadena(tcNombre) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tcNombre')
             RETURN .F.
         ENDIF
 
-        IF !THIS.tnMaquina_Valid(tnMaquina) THEN
+        IF !es_numero(tnMaquina, 0, 9999) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnMaquina')
             RETURN .F.
         ENDIF
 
-        IF !THIS.tnMarca_Valid(tnMarca) THEN
+        IF !es_numero(tnMarca, 0, 9999) THEN
             THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'tnMarca')
             RETURN .F.
         ENDIF
 
-        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(THIS.nAnchoNombre), ;
-            THIS.nAnchoNombre)
+        lnAncho = campo_obtener_ancho(THIS.cModelo, 'nombre')
+
+        IF lnAncho == 0 THEN
+            THIS.cUltimoError = STRTRAN(STRTRAN(MSG_ERROR_ANCHO_CAMPO, ;
+                '{0}', 'nombre'), '{1}', THIS.cModelo)
+            RETURN .F.
+        ENDIF
+
+        tcNombre = LEFT(UPPER(ALLTRIM(tcNombre)) + SPACE(lnAncho), lnAncho)
 
         IF !THIS.conectar() THEN
             THIS.cUltimoError = MSG_ERROR_CONEXION
             RETURN .F.
         ENDIF
-
-        LOCAL loModelo
 
         SELECT (THIS.cModelo)
         SET ORDER TO TAG 'indice2'    && UPPER(nombre) + STR(maquina, 4) + STR(marca, 4)
@@ -211,16 +279,19 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     * @param string [tcOrden] Cláusula ORDER BY de la consulta.
     * @return bool .T. si la consulta se ejecuta correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_cadena(string tcCadena, int [tnMinimo], int [tnMaximo])
+    *       Para validar si un valor es una cadena de caracteres y su longitud
+    *       está dentro de un rango específico.
     * @override
     */
     FUNCTION obtener_todos
         LPARAMETERS tcCondicionFiltro, tcOrden
 
-        IF !THIS.tcCondicionFiltro_Valid(tcCondicionFiltro) THEN
+        IF !es_cadena(tcCondicionFiltro, 5, 150) THEN
             tcCondicionFiltro = ''
         ENDIF
 
-        IF !THIS.tcOrden_Valid(tcOrden) THEN
+        IF !es_cadena(tcOrden) OR !INLIST(tcOrden, 'a.codigo', 'a.nombre') THEN
             tcOrden = THIS.cSqlOrder
         ENDIF
 
@@ -250,209 +321,41 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Agrega un nuevo registro a la tabla.
-    *
-    * @param object toModelo Modelo que contiene los datos del registro.
-    * @return bool .T. si el registro se agrega correctamente;
-    *              .F. si ocurre un error.
-    * @override
-    */
-    FUNCTION agregar
-        LPARAMETERS toModelo
-
-        IF !THIS.toModelo_Valid(toModelo) THEN
-            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
-            RETURN .F.
-        ENDIF
-
-        LOCAL m.codigo, m.nombre, m.maquina, m.marca, m.vigente
-
-        WITH toModelo
-            m.codigo = .obtener_codigo()
-            m.nombre = .obtener_nombre()
-            m.maquina = .obtener_maquina()
-            m.marca = .obtener_marca()
-            m.vigente = .esta_vigente()
-        ENDWITH
-
-        IF THIS.existe_codigo(m.codigo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' ya existe."
-            RETURN .F.
-        ENDIF
-
-        IF THIS.existe_nombre(m.nombre, m.maquina, m.marca) THEN
-            THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
-                "' ya existe."
-            RETURN .F.
-        ENDIF
-
-        IF m.maquina > 0 AND !dao_existe_codigo('maquinas', m.maquina) THEN
-            THIS.cUltimoError = "El código de máquina '" + ;
-                ALLTRIM(STR(m.maquina)) + "' no existe."
-            RETURN .F.
-        ENDIF
-
-        IF m.marca > 0 AND !dao_existe_codigo('marcas2', m.marca) THEN
-            THIS.cUltimoError = "El código de marca '" + ;
-                ALLTRIM(STR(m.marca)) + "' no existe."
-            RETURN .F.
-        ENDIF
-
-        IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        INSERT INTO (THIS.cModelo) ;
-            (codigo, nombre, maquina, marca, vigente) ;
-        VALUES ;
-            (m.codigo, m.nombre, m.maquina, m.marca, m.vigente)
-
-        WITH THIS
-            .cUltimoError = ''
-            .desconectar()
-        ENDWITH
-    ENDFUNC
-
-    **/
-    * Modifica un registro existente en la tabla.
-    *
-    * @param object toModelo Modelo con los datos actualizados del registro.
-    * @return bool .T. si el registro se modifica correctamente;
-    *              .F. si ocurre un error.
-    * @override
-    */
-    FUNCTION modificar
-        LPARAMETERS toModelo
-
-        IF !THIS.toModelo_Valid(toModelo) THEN
-            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
-            RETURN .F.
-        ENDIF
-
-        LOCAL m.codigo, m.nombre, m.maquina, m.marca, m.vigente, ;
-              loModelo
-
-        WITH toModelo
-            m.codigo = .obtener_codigo()
-            m.nombre = .obtener_nombre()
-            m.maquina = .obtener_maquina()
-            m.marca = .obtener_marca()
-            m.vigente = .esta_vigente()
-        ENDWITH
-
-        IF !THIS.existe_codigo(m.codigo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no existe."
-            RETURN .F.
-        ENDIF
-
-        loModelo = THIS.obtener_por_nombre(m.nombre, m.maquina, m.marca)
-
-        IF VARTYPE(loModelo) == 'O' THEN
-            IF loModelo.obtener_codigo() != m.codigo THEN
-                THIS.cUltimoError = "El nombre '" + ALLTRIM(m.nombre) + ;
-                    "' ya existe."
-                RETURN .F.
-            ENDIF
-        ENDIF
-
-        IF m.maquina > 0 AND !dao_existe_codigo('maquinas', m.maquina) THEN
-            THIS.cUltimoError = "El código de máquina '" + ;
-                ALLTRIM(STR(m.maquina)) + "' no existe."
-            RETURN .F.
-        ENDIF
-
-        IF m.marca > 0 AND !dao_existe_codigo('marcas2', m.marca) THEN
-            THIS.cUltimoError = "El código de marca '" + ;
-                ALLTRIM(STR(m.marca)) + "' no existe."
-            RETURN .F.
-        ENDIF
-
-        loModelo = THIS.obtener_por_codigo(m.codigo)
-
-        IF VARTYPE(loModelo) != 'O' THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no existe."
-            RETURN .F.
-        ENDIF
-
-        IF loModelo.es_igual(toModelo) THEN
-            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
-                "' no tiene cambios que guardar."
-            RETURN .F.
-        ENDIF
-
-        IF !THIS.conectar(.T.) THEN
-            THIS.cUltimoError = MSG_ERROR_CONEXION
-            RETURN .F.
-        ENDIF
-
-        SELECT (THIS.cModelo)
-        SET ORDER TO TAG 'indice1'    && codigo
-        IF SEEK(m.codigo) THEN
-            REPLACE nombre WITH ALLTRIM(m.nombre), ;
-                    maquina WITH m.maquina, ;
-                    marca WITH m.marca, ;
-                    vigente WITH m.vigente
-            THIS.cUltimoError = ''
-        ELSE
-            THIS.cUltimoError = ;
-                "No se pudo modificar el registro porque no existe."
-        ENDIF
-
-        THIS.desconectar()
-
-        RETURN EMPTY(THIS.cUltimoError)
-    ENDFUNC
-
-    **/
     * @section MÉTODOS PROTEGIDOS
-    * @method bool configurar()
     * @method bool Init()
-    * @method string obtener_nombre_referencial(string tcModelo, int tnCodigo)
-    * @method bool validar_codigo_referencial(string tcModelo, int tnCodigo)
-    * @method bool tnCodigo_Valid(int tnCodigo)
-    * @method bool tcNombre_Valid(string tcNombre)
-    * @method bool tlVigente_Valid(bool tlVigente)
-    * @method bool tcCondicionFiltro_Valid(string tcCondicionFiltro)
-    * @method bool tcOrden_Valid(string tcOrden)
-    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool configurar()
     * @method mixed obtener_modelo()
-    * @method bool conectar([bool tlModoEscritura])
+    * @method string obtener_comando_insertar(object toModelo)
+    * @method string obtener_comando_reemplazar(object toModelo)
+    * @method string obtener_lista_campos(object toModelo)
+    * @method bool cargar_valores_a_variables(object toModelo)
+    * @method bool validar_modelo(object toModelo)
+    * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
+    * @method bool conectar(bool [tlModoEscritura])
     * @method bool desconectar()
-    * @method bool toModelo_Valid(object toModelo)
-    * @method bool tnMaquina_Valid(int tnMaquina)
-    * @method bool tnMarca_Valid(int tnMarca)
+    * @method bool validar_agregar()
+    * @method bool validar_modificar()
     */
-
-    **/
-    * Crea un objeto modelo a partir del registro actual de la tabla.
-    *
-    * @return mixed object modelo si la operación se completa correctamente;
-    *               .F. si ocurre un error.
-    * @override
-    */
-    PROTECTED FUNCTION obtener_modelo
-        RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            codigo, ALLTRIM(nombre), maquina, marca, vigente)
-    ENDFUNC
 
     **/
     * Establece conexión con la base de datos.
     *
     * @param bool [tlModoEscritura] .T. para abrir en modo lectura/escritura;
     *                               .F. para abrir en modo solo lectura.
-    *                               Si no se especifica, predeterminado .F.
+    *                               Si no se especifica, por defecto .F.
     * @return bool .T. si la conexión se establece correctamente;
     *              .F. si ocurre un error.
+    * @uses bool es_logico(bool tlLogico)
+    *       Para validar si un valor es de tipo lógico.
+    * @uses bool abrir_dbf(string tcTabla, bool [tlModoEscritura])
+    *       Para abrir un archivo DBF ubicado en la carpeta definida por
+    *       la constante CARPETA_DATOS.
     * @override
     */
     PROTECTED FUNCTION conectar
         LPARAMETERS tlModoEscritura
 
-        IF VARTYPE(tlModoEscritura) != 'L' THEN
+        IF !es_logico(tlModoEscritura) THEN
             tlModoEscritura = .F.
         ENDIF
 
@@ -479,6 +382,9 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     *
     * @return bool .T. si la conexión se cierra correctamente;
     *              .F. si ocurre un error.
+    * @uses bool cerrar_dbf(string tcTabla)
+    *       Para cerrar una tabla DBF previamente abierta en el entorno de
+    *       trabajo.
     * @override
     */
     PROTECTED FUNCTION desconectar
@@ -488,50 +394,123 @@ DEFINE CLASS dao_dbf_modelos AS dao_dbf OF dao_dbf.prg
     ENDFUNC
 
     **/
-    * Valida todas las propiedades del objeto modelo. Sobrescribe la validación
-    * base e incluye la validación de los campos 'maquina' y 'marca'.
+    * Realiza las validaciones de datos para el método protegido 'agregar'.
     *
-    * @param object toModelo Modelo a validar.
-    * @return bool .T. si el objeto es válido; .F. si no lo es.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verifica si un código ya existe en la tabla.
+    * @uses bool existe_nombre(string tcNombre, int tnMaquina, int tnMarca)
+    *       Para verificar si un nombre ya existe en la tabla; dentro de un
+    *       máquina y marca específicos.
+    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
+    *       Para verificar si un registro existe en la base de datos buscándolo
+    *       por su código.
+    * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
+    *       Para obtener un objeto modelo utilizando su código único.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
     * @override
     */
-    PROTECTED FUNCTION toModelo_Valid
+    PROTECTED FUNCTION validar_agregar
+        IF THIS.existe_codigo(m.codigo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' ya existe."
+            RETURN .F.
+        ENDIF
+
+        IF THIS.existe_nombre(m.nombre, m.maquina, m.marca) THEN
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
+            RETURN .F.
+        ENDIF
+
+        IF m.maquina > 0 AND !dao_existe_codigo('maquinas', m.maquina) THEN
+            THIS.cUltimoError = "El código de máquina '" + ;
+                ALLTRIM(STR(m.maquina)) + "' no existe."
+            RETURN .F.
+        ENDIF
+
+        IF m.marca > 0 AND !dao_existe_codigo('marcas2', m.marca) THEN
+            THIS.cUltimoError = "El código de marca '" + ;
+                ALLTRIM(STR(m.marca)) + "' no existe."
+            RETURN .F.
+        ENDIF
+    ENDFUNC
+
+    **/
+    * Realiza las validaciones de datos para el método protegido 'modificar'.
+    *
+    * @param object toModelo Modelo que contiene los datos del registro.
+    * @return bool .T. si se ejecuta correctamente;
+    *              .F. en caso contrario.
+    * @uses bool es_objeto(object toObjeto, string [tcClase])
+    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
+    *       a una clase específica.
+    * @uses bool existe_codigo(int tnCodigo)
+    *       Para verifica si un código ya existe en la tabla.
+    * @uses mixed obtener_por_nombre(string tcNombre, int tnMaquina, ;
+                                     int tnMarca)
+    *       Para obtener un registro por su nombre; dentro de una máquina y
+    *       marca específicos.
+    * @uses bool dao_existe_codigo(string tcModelo, int tnCodigo)
+    *       Para verificar si un registro existe en la base de datos buscándolo
+    *       por su código.
+    * @uses mixed dao_obtener_por_codigo(string tcModelo, int tnCodigo)
+    *       Para obtener un objeto modelo utilizando su código único.
+    * @uses mixed obtener_por_codigo(int tnCodigo)
+    *       Para obtener un registro por su código.
+    * @uses string cUltimoError Almacena el último mensaje de error ocurrido.
+    * @override
+    */
+    PROTECTED FUNCTION validar_modificar
         LPARAMETERS toModelo
 
-        IF !dao_base::toModelo_Valid(toModelo) THEN
+        IF PARAMETERS() != 1 OR !es_objeto(toModelo)  THEN
+            THIS.cUltimoError = STRTRAN(MSG_PARAM_INVALIDO, '{}', 'toModelo')
             RETURN .F.
         ENDIF
 
-        IF !THIS.tnMaquina_Valid(toModelo.obtener_maquina()) THEN
+        LOCAL loModelo
+
+        IF !THIS.existe_codigo(m.codigo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no existe."
             RETURN .F.
         ENDIF
 
-        IF !THIS.tnMarca_Valid(toModelo.obtener_marca()) THEN
+        loModelo = THIS.obtener_por_nombre(m.nombre, m.maquina, m.marca)
+
+        IF es_objeto(loModelo) AND loModelo.obtener('codigo') != m.codigo THEN
+            THIS.cUltimoError = "El nombre '" + m.nombre + "' ya existe."
             RETURN .F.
         ENDIF
-    ENDFUNC
 
-    **/
-    * Valida el argumento 'tnMaquina'. Verifica el tipo de dato y el rango del
-    * código referencial.
-    *
-    * @param int tnMaquina Código de la máquina a validar.
-    * @return bool .T. si el código es válido; .F. si no lo es.
-    */
-    PROTECTED FUNCTION tnMaquina_Valid
-        LPARAMETERS tnMaquina
-        RETURN THIS.validar_codigo_referencial('maquinas', tnMaquina)
-    ENDFUNC
+        IF m.maquina > 0 AND !dao_existe_codigo('maquinas', m.maquina) THEN
+            THIS.cUltimoError = "El código de máquina '" + ;
+                ALLTRIM(STR(m.maquina)) + "' no existe."
+            RETURN .F.
+        ENDIF
 
-    **/
-    * Valida el argumento 'tnMarca'. Verifica el tipo de dato y el rango del
-    * código referencial.
-    *
-    * @param int tnMarca Código de la marca a validar.
-    * @return bool .T. si el código es válido; .F. si no lo es.
-    */
-    PROTECTED FUNCTION tnMarca_Valid
-        LPARAMETERS tnMarca
-        RETURN THIS.validar_codigo_referencial('marcas2', tnMarca)
+        IF m.marca > 0 AND !dao_existe_codigo('marcas2', m.marca) THEN
+            THIS.cUltimoError = "El código de marca '" + ;
+                ALLTRIM(STR(m.marca)) + "' no existe."
+            RETURN .F.
+        ENDIF
+
+        loModelo = THIS.obtener_por_codigo(m.codigo)
+
+        IF !es_objeto(loModelo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no existe."
+            RETURN .F.
+        ENDIF
+
+        IF loModelo.es_igual(toModelo) THEN
+            THIS.cUltimoError = "El código '" + ALLTRIM(STR(m.codigo)) + ;
+                "' no tiene cambios que guardar."
+            RETURN .F.
+        ENDIF
     ENDFUNC
 ENDDEFINE

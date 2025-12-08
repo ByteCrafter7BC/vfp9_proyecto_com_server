@@ -17,82 +17,79 @@
 */
 
 **/
-* @file com_barrios.prg
-* @package modulo\barrios
+* @file com_modelos.prg
+* @package modulo\com_modelos
 * @author ByteCrafter7BC <bytecrafter7bc@gmail.com>
 * @version 1.0.0
 * @since 1.0.0
-* @class com_barrios
+* @class com_modelos
 * @extends biblioteca\com_base
 */
 
 **/
-* Componente COM para la gestión de barrios.
+* Componente COM para la gestión de modelos para órdenes de trabajo.
 *
 * Esta clase actúa como un controlador o una capa de servicio (business object)
-* para la entidad 'barrios'. Se expone como un objeto COM para ser utilizado
+* para la entidad 'modelos'. Se expone como un objeto COM para ser utilizado
 * por otras aplicaciones.
 */
-DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
+DEFINE CLASS com_modelos AS com_base OF com_base.prg OLEPUBLIC
     **/
-     * @var string Nombre de la clase modelo asociado a este componente.
+    * @var string Nombre de la clase modelo asociado a este componente.
     */
-    cModelo = 'barrios'
+    cModelo = 'modelos'
 
     **/
     * @section MÉTODOS PÚBLICOS
     * @method bool existe_codigo(int tnCodigo)
     * @method bool esta_vigente(int tnCodigo)
     * @method bool esta_relacionado(int tnCodigo)
-    * @method int contar(string [tcCondicionFiltro])
+    * @method int contar([string tcCondicionFiltro])
     * @method int obtener_nuevo_codigo()
     * @method mixed obtener_por_codigo(int tnCodigo)
-    * @method string obtener_todos(string [tcCondicionFiltro], string [tcOrden])
+    * @method mixed obtener_por_nombre(string tcNombre)
+    * @method string obtener_todos([string tcCondicionFiltro], [string tcOrden])
     * @method mixed obtener_dto()
     * @method string obtener_ultimo_error()
     * @method bool agregar(object toDto)
     * @method bool modificar(object toDto)
     * @method bool borrar(int tnCodigo)
     * -- MÉTODOS ESPECÍFICOS DE ESTA CLASE --
-    * @method bool existe_nombre(string tcNombre, int tnDepartamen, ;
-                                 int tnCiudad)
-    * @method mixed obtener_por_nombre(string tcNombre, int tnDepartamen, ;
-                                       int tnCiudad)
+    * @method bool existe_nombre(string tcNombre, int tnMaquina, int tnMarca)
+    * @method mixed obtener_por_nombre(string tcNombre, int tnMaquina, ;
+                                       int tnMarca)
     */
 
     **/
-    * Verifica si un nombre ya existe en la tabla; dentro de un departamento
-    * y ciudad específicos.
+    * Verifica la existencia de un modelo por su nombre, máquina y marca.
     *
-    * @param string tcNombre Nombre a verificar.
-    * @param int tnDepartamen Código del departamento.
-    * @param int tnCiudad Código de la ciudad.
-    * @return bool .T. si el nombre existe o si ocurre un error;
-    *              .F. si no existe.
+    * @param string tcNombre Nombre del modelo a verificar.
+    * @param int tnMaquina Código de la máquina.
+    * @param int tnMarca Código de la marca.
+    * @return bool .T. si el nombre existe o si ocurre un error, o
+    *              .F. si el nombre no existe.
     * @override
     */
-    FUNCTION existe_nombre(tcNombre AS String, tnDepartamen AS Integer, ;
-            tnCiudad AS Integer) AS Logical ;
+    FUNCTION existe_nombre(tcNombre AS String, tnMaquina AS Integer, ;
+            tnMarca AS Integer) AS Logical ;
         HELPSTRING 'Devuelve verdadero (.T.) si existe el nombre u ocurre un error; de lo contrario, devuelve falso (.F.).'
-        RETURN THIS.oDao.existe_nombre(tcNombre, tnDepartamen, tnCiudad)
+        RETURN THIS.oDao.existe_nombre(tcNombre, tnMaquina, tnMarca)
     ENDFUNC
 
     **/
-    * Devuelve un registro por su nombre; dentro de un departamento y ciudad
-    * específicos.
+    * Realiza la búsqueda de un modelo por su nombre, máquina y marca.
     *
-    * @param string tcNombre Nombre del registro a buscar.
-    * @param int tnDepartamen Código del departamento.
-    * @param int tnCiudad Código de la ciudad.
-    * @return mixed object modelo si el registro se encuentra;
+    * @param string tcNombre Nombre del modelo a buscar.
+    * @param int tnMaquina Código de la máquina.
+    * @param int tnMarca Código de la marca.
+    * @return mixed object modelo si el modelo se encuentra, o
     *               .F. si no se encuentra o si ocurre un error.
     * @override
     */
-    FUNCTION obtener_por_nombre(tcNombre AS String, tnDepartamen AS Integer, ;
-            tnCiudad AS Integer) AS Object ;
+    FUNCTION obtener_por_nombre(tcNombre AS String, tnMaquina AS Integer, ;
+            tnMarca AS Integer) AS Object ;
         HELPSTRING 'Devuelve un objeto (Object) si existe el nombre; de lo contrario, devuelve falso (.F.). En caso de error, devuelve falso (.F.).'
-        RETURN THIS.oDao.obtener_por_nombre(tcNombre, tnDepartamen, ;
-            tnCiudad)
+        RETURN THIS.oDao.obtener_por_nombre(tcNombre, tnMaquina, tnMarca)
     ENDFUNC
 
     **/
@@ -106,38 +103,35 @@ DEFINE CLASS com_barrios AS com_base OF com_base.prg OLEPUBLIC
     */
 
     **/
-    * Convierte un objeto DTO (Data Transfer Object) a su objeto modelo
+    * Convierte un DTO (Data Transfer Object) a su objeto modelo
     * correspondiente.
     *
-    * Extrae los datos de un DTO para instanciar y devolver un nuevo objeto del
-    * modelo.
+    * Extrae los datos de un DTO de tipo 'dto_modelos' para instanciar
+    * y devolver un nuevo objeto del modelo 'modelos'.
     *
-    * @param object toDto DTO que se va a convertir.
-    * @return mixed object si la conversión se completa correctamente;
+    * @param object toDto DTO (dto_modelos) que se va a convertir.
+    * @return mixed object modelo si la conversión se completa correctamente, o
     *               .F. si el parámetro de entrada no es un objeto válido.
-    * @uses bool es_objeto(object toObjeto, string [tcClase])
-    *       Para validar si un valor es un objeto y, opcionalmente, corresponde
-    *       a una clase específica.
     * @override
     */
     PROTECTED FUNCTION convertir_dto_a_modelo
         LPARAMETERS toDto
 
-        IF !es_objeto(toDto) THEN
+        IF VARTYPE(toDto) != 'O' THEN
             RETURN .F.
         ENDIF
 
-        LOCAL m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente
+        LOCAL lnCodigo, lcNombre, lnMaquina, lnMarca, llVigente
 
         WITH toDto
-            m.codigo = .obtener('codigo')
-            m.nombre = .obtener('nombre')
-            m.departamen = .obtener('departamen')
-            m.ciudad = .obtener('ciudad')
-            m.vigente = .obtener('vigente')
+            lnCodigo = .obtener_codigo()
+            lcNombre = ALLTRIM(.obtener_nombre())
+            lnMaquina = .obtener_maquina()
+            lnMarca = .obtener_marca()
+            llVigente = .esta_vigente()
         ENDWITH
 
         RETURN NEWOBJECT(THIS.cModelo, THIS.cModelo + '.prg', '', ;
-            m.codigo, m.nombre, m.departamen, m.ciudad, m.vigente)
+            lnCodigo, lcNombre, lnMaquina, lnMarca, llVigente)
     ENDFUNC
 ENDDEFINE

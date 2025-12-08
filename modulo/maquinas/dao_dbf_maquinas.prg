@@ -87,10 +87,14 @@ DEFINE CLASS dao_dbf_maquinas AS dao_dbf OF dao_dbf.prg
         ENDIF
 
         LOCAL lcCondicionFiltro, llRelacionado
-        lcCondicionFiltro = 'marca == ' + ALLTRIM(STR(tnCodigo))
+        lcCondicionFiltro = 'maquina == ' + ALLTRIM(STR(tnCodigo))
 
-        IF !llRelacionado THEN    && Artículos.
-            llRelacionado = dao_existe_referencia('maesprod', lcCondicionFiltro)
+        IF !llRelacionado THEN    && Modelos.
+            llRelacionado = dao_existe_referencia('modelos', lcCondicionFiltro)
+        ENDIF
+
+        IF !llRelacionado THEN    && Órdenes de trabajo.
+            llRelacionado = dao_existe_referencia('ot', lcCondicionFiltro)
         ENDIF
 
         IF !llRelacionado THEN
